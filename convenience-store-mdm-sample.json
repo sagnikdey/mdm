@@ -1,0 +1,1675 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2026-08-05T14:30:00Z",
+    "source": "Convenience Store MDM System",
+    "dataTypes": ["stores", "vendors", "categories", "products", "storeVendorRelationships", "storeProductAvailability", "inventory"]
+  },
+  "stores": [
+    {
+      "storeId": "STR001",
+      "storeName": "Downtown Houston",
+      "address": "123 Main St, Houston, TX 77002",
+      "city": "Houston",
+      "state": "TX",
+      "zipCode": "77002",
+      "region": "South",
+      "storeType": "standalone",
+      "operatingHours": {
+        "monday": "06:00-23:00",
+        "tuesday": "06:00-23:00",
+        "wednesday": "06:00-23:00",
+        "thursday": "06:00-23:00",
+        "friday": "06:00-00:00",
+        "saturday": "06:00-00:00",
+        "sunday": "07:00-23:00"
+      },
+      "squareFootage": 2500,
+      "manager": "John Smith",
+      "managerPhone": "713-555-0101",
+      "isActive": true
+    },
+    {
+      "storeId": "STR002",
+      "storeName": "Midtown Plaza",
+      "address": "456 Park Ave, Houston, TX 77004",
+      "city": "Houston",
+      "state": "TX",
+      "zipCode": "77004",
+      "region": "South",
+      "storeType": "kiosk",
+      "operatingHours": {
+        "monday": "07:00-22:00",
+        "tuesday": "07:00-22:00",
+        "wednesday": "07:00-22:00",
+        "thursday": "07:00-22:00",
+        "friday": "07:00-23:00",
+        "saturday": "08:00-23:00",
+        "sunday": "08:00-22:00"
+      },
+      "squareFootage": 1200,
+      "manager": "Maria Garcia",
+      "managerPhone": "713-555-0102",
+      "isActive": true
+    },
+    {
+      "storeId": "STR003",
+      "storeName": "Airport Express",
+      "address": "2000 Airport Blvd, Houston, TX 77010",
+      "city": "Houston",
+      "state": "TX",
+      "zipCode": "77010",
+      "region": "South",
+      "storeType": "express",
+      "operatingHours": {
+        "monday": "05:00-23:59",
+        "tuesday": "05:00-23:59",
+        "wednesday": "05:00-23:59",
+        "thursday": "05:00-23:59",
+        "friday": "05:00-23:59",
+        "saturday": "05:00-23:59",
+        "sunday": "05:00-23:59"
+      },
+      "squareFootage": 3000,
+      "manager": "David Chen",
+      "managerPhone": "713-555-0103",
+      "isActive": true
+    },
+    {
+      "storeId": "STR004",
+      "storeName": "Dallas Central",
+      "address": "789 Commerce St, Dallas, TX 75201",
+      "city": "Dallas",
+      "state": "TX",
+      "zipCode": "75201",
+      "region": "North",
+      "storeType": "standalone",
+      "operatingHours": {
+        "monday": "06:00-23:00",
+        "tuesday": "06:00-23:00",
+        "wednesday": "06:00-23:00",
+        "thursday": "06:00-23:00",
+        "friday": "06:00-00:00",
+        "saturday": "06:00-00:00",
+        "sunday": "07:00-23:00"
+      },
+      "squareFootage": 2800,
+      "manager": "James Rodriguez",
+      "managerPhone": "214-555-0104",
+      "isActive": true
+    },
+    {
+      "storeId": "STR005",
+      "storeName": "Fort Worth Station",
+      "address": "500 Main St, Fort Worth, TX 76102",
+      "city": "Fort Worth",
+      "state": "TX",
+      "zipCode": "76102",
+      "region": "North",
+      "storeType": "express",
+      "operatingHours": {
+        "monday": "05:30-23:30",
+        "tuesday": "05:30-23:30",
+        "wednesday": "05:30-23:30",
+        "thursday": "05:30-23:30",
+        "friday": "05:30-00:00",
+        "saturday": "06:00-00:00",
+        "sunday": "06:00-23:30"
+      },
+      "squareFootage": 1800,
+      "manager": "Sarah Johnson",
+      "managerPhone": "817-555-0105",
+      "isActive": true
+    },
+    {
+      "storeId": "STR006",
+      "storeName": "Austin Convention Center",
+      "address": "100 Congress Ave, Austin, TX 78701",
+      "city": "Austin",
+      "state": "TX",
+      "zipCode": "78701",
+      "region": "Central",
+      "storeType": "kiosk",
+      "operatingHours": {
+        "monday": "07:00-22:00",
+        "tuesday": "07:00-22:00",
+        "wednesday": "07:00-22:00",
+        "thursday": "07:00-22:00",
+        "friday": "07:00-23:00",
+        "saturday": "09:00-23:00",
+        "sunday": "09:00-22:00"
+      },
+      "squareFootage": 900,
+      "manager": "Emily Watson",
+      "managerPhone": "512-555-0106",
+      "isActive": true
+    },
+    {
+      "storeId": "STR007",
+      "storeName": "San Antonio Tower",
+      "address": "300 Broadway, San Antonio, TX 78215",
+      "city": "San Antonio",
+      "state": "TX",
+      "zipCode": "78215",
+      "region": "South",
+      "storeType": "standalone",
+      "operatingHours": {
+        "monday": "06:00-23:00",
+        "tuesday": "06:00-23:00",
+        "wednesday": "06:00-23:00",
+        "thursday": "06:00-23:00",
+        "friday": "06:00-00:00",
+        "saturday": "06:00-00:00",
+        "sunday": "07:00-23:00"
+      },
+      "squareFootage": 2600,
+      "manager": "Carlos Hernandez",
+      "managerPhone": "210-555-0107",
+      "isActive": true
+    },
+    {
+      "storeId": "STR008",
+      "storeName": "Corpus Christi Harbor",
+      "address": "2000 Port Ave, Corpus Christi, TX 78401",
+      "city": "Corpus Christi",
+      "state": "TX",
+      "zipCode": "78401",
+      "region": "South",
+      "storeType": "express",
+      "operatingHours": {
+        "monday": "05:00-23:59",
+        "tuesday": "05:00-23:59",
+        "wednesday": "05:00-23:59",
+        "thursday": "05:00-23:59",
+        "friday": "05:00-23:59",
+        "saturday": "05:00-23:59",
+        "sunday": "05:00-23:59"
+      },
+      "squareFootage": 2200,
+      "manager": "Miguel Santos",
+      "managerPhone": "361-555-0108",
+      "isActive": true
+    },
+    {
+      "storeId": "STR009",
+      "storeName": "Lubbock Tech Park",
+      "address": "3500 50th St, Lubbock, TX 79413",
+      "city": "Lubbock",
+      "state": "TX",
+      "zipCode": "79413",
+      "region": "West",
+      "storeType": "standalone",
+      "operatingHours": {
+        "monday": "06:00-23:00",
+        "tuesday": "06:00-23:00",
+        "wednesday": "06:00-23:00",
+        "thursday": "06:00-23:00",
+        "friday": "06:00-23:30",
+        "saturday": "07:00-23:30",
+        "sunday": "08:00-22:00"
+      },
+      "squareFootage": 2000,
+      "manager": "Robert Patterson",
+      "managerPhone": "806-555-0109",
+      "isActive": true
+    },
+    {
+      "storeId": "STR010",
+      "storeName": "El Paso Downtown",
+      "address": "100 Oregon St, El Paso, TX 79901",
+      "city": "El Paso",
+      "state": "TX",
+      "zipCode": "79901",
+      "region": "West",
+      "storeType": "kiosk",
+      "operatingHours": {
+        "monday": "07:00-21:00",
+        "tuesday": "07:00-21:00",
+        "wednesday": "07:00-21:00",
+        "thursday": "07:00-21:00",
+        "friday": "07:00-22:00",
+        "saturday": "08:00-22:00",
+        "sunday": "08:00-21:00"
+      },
+      "squareFootage": 1100,
+      "manager": "Patricia Lopez",
+      "managerPhone": "915-555-0110",
+      "isActive": false
+    }
+  ],
+  "vendors": [
+    {
+      "vendorId": "VEN001",
+      "vendorName": "National Beverage Co.",
+      "vendorCategory": "beverages",
+      "contactPerson": "Robert Wilson",
+      "email": "robert.wilson@nationalbeverage.com",
+      "phone": "214-555-0201",
+      "address": "1000 Industrial Way, Dallas, TX 75201",
+      "paymentTerms": "Net 30",
+      "isActive": true,
+      "minimumOrderQuantity": 100
+    },
+    {
+      "vendorId": "VEN002",
+      "vendorName": "Snack Master Inc.",
+      "vendorCategory": "snacks",
+      "contactPerson": "Lisa Anderson",
+      "email": "lisa.anderson@snackmaster.com",
+      "phone": "512-555-0202",
+      "address": "2500 Commerce St, Austin, TX 78701",
+      "paymentTerms": "Net 45",
+      "isActive": true,
+      "minimumOrderQuantity": 50
+    },
+    {
+      "vendorId": "VEN003",
+      "vendorName": "Fresh Foods Logistics",
+      "vendorCategory": "food",
+      "contactPerson": "Michael Thompson",
+      "email": "m.thompson@freshfoods.com",
+      "phone": "713-555-0203",
+      "address": "5000 Warehouse Rd, Houston, TX 77040",
+      "paymentTerms": "Net 15",
+      "isActive": true,
+      "minimumOrderQuantity": 75
+    },
+    {
+      "vendorId": "VEN004",
+      "vendorName": "Texas Coffee Roasters",
+      "vendorCategory": "beverages",
+      "contactPerson": "Jennifer Blake",
+      "email": "jennifer.blake@txcoffee.com",
+      "phone": "512-555-0204",
+      "address": "1200 Coffee Lane, Austin, TX 78704",
+      "paymentTerms": "Net 30",
+      "isActive": true,
+      "minimumOrderQuantity": 25
+    },
+    {
+      "vendorId": "VEN005",
+      "vendorName": "Premium Candy & Confections",
+      "vendorCategory": "snacks",
+      "contactPerson": "Kevin Martinez",
+      "email": "kevin.m@premiumcandy.com",
+      "phone": "210-555-0205",
+      "address": "800 Sweet St, San Antonio, TX 78201",
+      "paymentTerms": "Net 60",
+      "isActive": true,
+      "minimumOrderQuantity": 40
+    },
+    {
+      "vendorId": "VEN006",
+      "vendorName": "Gourmet Sandwich Solutions",
+      "vendorCategory": "food",
+      "contactPerson": "Amanda Foster",
+      "email": "amanda.foster@gourmetsandwich.com",
+      "phone": "713-555-0206",
+      "address": "3000 Deli Drive, Houston, TX 77030",
+      "paymentTerms": "Net 14",
+      "isActive": true,
+      "minimumOrderQuantity": 60
+    },
+    {
+      "vendorId": "VEN007",
+      "vendorName": "Healthy Beverage Corp",
+      "vendorCategory": "beverages",
+      "contactPerson": "David Kim",
+      "email": "d.kim@healthybev.com",
+      "phone": "713-555-0207",
+      "address": "2200 Health Way, Houston, TX 77002",
+      "paymentTerms": "Net 45",
+      "isActive": true,
+      "minimumOrderQuantity": 80
+    },
+    {
+      "vendorId": "VEN008",
+      "vendorName": "Artisan Bakery Partners",
+      "vendorCategory": "food",
+      "contactPerson": "Sophie Turner",
+      "email": "sophie.t@artisanbakery.com",
+      "phone": "817-555-0208",
+      "address": "1500 Bakers Road, Fort Worth, TX 76102",
+      "paymentTerms": "Net 7",
+      "isActive": true,
+      "minimumOrderQuantity": 30
+    },
+    {
+      "vendorId": "VEN009",
+      "vendorName": "Nuts & Dried Fruits Ltd",
+      "vendorCategory": "snacks",
+      "contactPerson": "Thomas Green",
+      "email": "thomas.g@nutsandfruit.com",
+      "phone": "361-555-0209",
+      "address": "5500 Natural Lane, Corpus Christi, TX 78410",
+      "paymentTerms": "Net 30",
+      "isActive": true,
+      "minimumOrderQuantity": 35
+    },
+    {
+      "vendorId": "VEN010",
+      "vendorName": "Cold Beverage Distributor",
+      "vendorCategory": "beverages",
+      "contactPerson": "Rachel White",
+      "email": "rachel.w@coldbev.com",
+      "phone": "806-555-0210",
+      "address": "700 Ice St, Lubbock, TX 79415",
+      "paymentTerms": "Net 30",
+      "isActive": true,
+      "minimumOrderQuantity": 120
+    }
+  ],
+  "categories": [
+    {
+      "categoryId": "CAT001",
+      "categoryName": "Beverages",
+      "parentCategoryId": null,
+      "description": "All drink products"
+    },
+    {
+      "categoryId": "CAT002",
+      "categoryName": "Soft Drinks",
+      "parentCategoryId": "CAT001",
+      "description": "Sodas and non-alcoholic drinks"
+    },
+    {
+      "categoryId": "CAT003",
+      "categoryName": "Coffee & Hot Drinks",
+      "parentCategoryId": "CAT001",
+      "description": "Hot beverage products"
+    },
+    {
+      "categoryId": "CAT004",
+      "categoryName": "Energy Drinks",
+      "parentCategoryId": "CAT001",
+      "description": "Energy and sports beverages"
+    },
+    {
+      "categoryId": "CAT005",
+      "categoryName": "Juices & Smoothies",
+      "parentCategoryId": "CAT001",
+      "description": "Fruit juices and smoothie drinks"
+    },
+    {
+      "categoryId": "CAT006",
+      "categoryName": "Water & Hydration",
+      "parentCategoryId": "CAT001",
+      "description": "Bottled water and sports drinks"
+    },
+    {
+      "categoryId": "CAT007",
+      "categoryName": "Snacks",
+      "parentCategoryId": null,
+      "description": "Salty and sweet snack items"
+    },
+    {
+      "categoryId": "CAT008",
+      "categoryName": "Chips & Crisps",
+      "parentCategoryId": "CAT007",
+      "description": "Potato chips and similar products"
+    },
+    {
+      "categoryId": "CAT009",
+      "categoryName": "Nuts & Seeds",
+      "parentCategoryId": "CAT007",
+      "description": "Roasted and salted nuts"
+    },
+    {
+      "categoryId": "CAT010",
+      "categoryName": "Candy & Confections",
+      "parentCategoryId": "CAT007",
+      "description": "Candy bars and sweet treats"
+    },
+    {
+      "categoryId": "CAT011",
+      "categoryName": "Granola & Cereal Bars",
+      "parentCategoryId": "CAT007",
+      "description": "Breakfast and nutrition bars"
+    },
+    {
+      "categoryId": "CAT012",
+      "categoryName": "Prepared Foods",
+      "parentCategoryId": null,
+      "description": "Ready-to-eat food items"
+    },
+    {
+      "categoryId": "CAT013",
+      "categoryName": "Sandwiches",
+      "parentCategoryId": "CAT012",
+      "description": "Pre-made sandwiches and wraps"
+    },
+    {
+      "categoryId": "CAT014",
+      "categoryName": "Bakery Items",
+      "parentCategoryId": "CAT012",
+      "description": "Bread, pastries, and baked goods"
+    },
+    {
+      "categoryId": "CAT015",
+      "categoryName": "Salads & Bowls",
+      "parentCategoryId": "CAT012",
+      "description": "Fresh salads and grain bowls"
+    },
+    {
+      "categoryId": "CAT016",
+      "categoryName": "Hot Foods",
+      "parentCategoryId": "CAT012",
+      "description": "Hot prepared meal items"
+    }
+  ],
+  "products": [
+    {
+      "sku": "PRD001",
+      "productName": "Cola Classic 12oz",
+      "categoryId": "CAT002",
+      "vendorId": "VEN001",
+      "vendorSku": "BEV-COLA-12",
+      "description": "Classic cola soft drink in 12 oz can",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 24,
+      "wholesalePrice": 3.50,
+      "weight": 0.375,
+      "barcode": "012345678901",
+      "isActive": true
+    },
+    {
+      "sku": "PRD002",
+      "productName": "Lemon Lime Soda 20oz",
+      "categoryId": "CAT002",
+      "vendorId": "VEN001",
+      "vendorSku": "BEV-LEMON-20",
+      "description": "Lemon-lime flavored soft drink in 20 oz bottle",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 12,
+      "wholesalePrice": 4.25,
+      "weight": 1.25,
+      "barcode": "012345678902",
+      "isActive": true
+    },
+    {
+      "sku": "PRD003",
+      "productName": "Potato Chips - Salted 1.5oz",
+      "categoryId": "CAT008",
+      "vendorId": "VEN002",
+      "vendorSku": "SNK-CHIP-SALT-15",
+      "description": "Classic salted potato chips single serving bag",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 40,
+      "wholesalePrice": 8.99,
+      "weight": 1.5,
+      "barcode": "012345678903",
+      "isActive": true
+    },
+    {
+      "sku": "PRD004",
+      "productName": "Corn Chips - BBQ 1oz",
+      "categoryId": "CAT008",
+      "vendorId": "VEN002",
+      "vendorSku": "SNK-CORN-BBQ-10",
+      "description": "Barbecue flavored corn chips",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 50,
+      "wholesalePrice": 7.50,
+      "weight": 1.0,
+      "barcode": "012345678904",
+      "isActive": true
+    },
+    {
+      "sku": "PRD005",
+      "productName": "Chicken Sandwich",
+      "categoryId": "CAT013",
+      "vendorId": "VEN003",
+      "vendorSku": "FOOD-CHICK-SAND",
+      "description": "Ready-to-eat grilled chicken sandwich",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 3.75,
+      "weight": 0.35,
+      "barcode": "012345678905",
+      "isActive": true
+    },
+    {
+      "sku": "PRD006",
+      "productName": "Bottled Coffee - Iced 16oz",
+      "categoryId": "CAT003",
+      "vendorId": "VEN004",
+      "vendorSku": "BEV-ICECOFF-16",
+      "description": "Ready-to-drink iced coffee beverage",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 12,
+      "wholesalePrice": 5.99,
+      "weight": 1.0,
+      "barcode": "012345678906",
+      "isActive": true
+    },
+    {
+      "sku": "PRD007",
+      "productName": "Energy Drink - Berry Blast 16oz",
+      "categoryId": "CAT004",
+      "vendorId": "VEN007",
+      "vendorSku": "ENR-BERRY-16",
+      "description": "High-performance energy drink with berry flavor",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 12,
+      "wholesalePrice": 7.25,
+      "weight": 1.0,
+      "barcode": "012345678907",
+      "isActive": true
+    },
+    {
+      "sku": "PRD008",
+      "productName": "Orange Juice 100% Pure 12oz",
+      "categoryId": "CAT005",
+      "vendorId": "VEN001",
+      "vendorSku": "JUI-ORANGE-12",
+      "description": "Fresh squeezed 100% pure orange juice",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 24,
+      "wholesalePrice": 4.99,
+      "weight": 0.8,
+      "barcode": "012345678908",
+      "isActive": true
+    },
+    {
+      "sku": "PRD009",
+      "productName": "Bottled Spring Water 16.9oz",
+      "categoryId": "CAT006",
+      "vendorId": "VEN007",
+      "vendorSku": "WAT-SPRING-17",
+      "description": "Pure spring water in convenient bottles",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 35,
+      "wholesalePrice": 2.99,
+      "weight": 0.6,
+      "barcode": "012345678909",
+      "isActive": true
+    },
+    {
+      "sku": "PRD010",
+      "productName": "Mixed Nuts 1oz",
+      "categoryId": "CAT009",
+      "vendorId": "VEN009",
+      "vendorSku": "NUT-MIX-10",
+      "description": "Roasted and salted mixed nuts",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 42,
+      "wholesalePrice": 9.99,
+      "weight": 1.0,
+      "barcode": "012345678910",
+      "isActive": true
+    },
+    {
+      "sku": "PRD011",
+      "productName": "Almonds Raw 1.5oz",
+      "categoryId": "CAT009",
+      "vendorId": "VEN009",
+      "vendorSku": "NUT-ALM-15",
+      "description": "Raw unsalted almonds",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 36,
+      "wholesalePrice": 11.50,
+      "weight": 1.5,
+      "barcode": "012345678911",
+      "isActive": true
+    },
+    {
+      "sku": "PRD012",
+      "productName": "Chocolate Bar - Dark 2oz",
+      "categoryId": "CAT010",
+      "vendorId": "VEN005",
+      "vendorSku": "CAN-DARK-20",
+      "description": "Dark chocolate bar 70% cocoa",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 48,
+      "wholesalePrice": 6.50,
+      "weight": 2.0,
+      "barcode": "012345678912",
+      "isActive": true
+    },
+    {
+      "sku": "PRD013",
+      "productName": "Gummy Bears 3.5oz",
+      "categoryId": "CAT010",
+      "vendorId": "VEN005",
+      "vendorSku": "CAN-GUMMY-35",
+      "description": "Assorted fruit flavored gummy bears",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 36,
+      "wholesalePrice": 5.25,
+      "weight": 3.5,
+      "barcode": "012345678913",
+      "isActive": true
+    },
+    {
+      "sku": "PRD014",
+      "productName": "Granola Bar - Oats & Honey",
+      "categoryId": "CAT011",
+      "vendorId": "VEN005",
+      "vendorSku": "BAR-GRAN-OH",
+      "description": "Natural oats and honey granola bar",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 40,
+      "wholesalePrice": 7.75,
+      "weight": 1.2,
+      "barcode": "012345678914",
+      "isActive": true
+    },
+    {
+      "sku": "PRD015",
+      "productName": "Turkey & Cheese Sandwich",
+      "categoryId": "CAT013",
+      "vendorId": "VEN006",
+      "vendorSku": "FOOD-TURK-CH",
+      "description": "Premium turkey and cheddar sandwich",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 4.50,
+      "weight": 0.40,
+      "barcode": "012345678915",
+      "isActive": true
+    },
+    {
+      "sku": "PRD016",
+      "productName": "Ham & Swiss Wrap",
+      "categoryId": "CAT013",
+      "vendorId": "VEN006",
+      "vendorSku": "FOOD-HAM-SW",
+      "description": "Sliced ham with swiss cheese wrap",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 4.25,
+      "weight": 0.38,
+      "barcode": "012345678916",
+      "isActive": true
+    },
+    {
+      "sku": "PRD017",
+      "productName": "Croissant - Butter",
+      "categoryId": "CAT014",
+      "vendorId": "VEN008",
+      "vendorSku": "BKE-CROIS-BU",
+      "description": "Fresh baked buttery croissant",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 1.50,
+      "weight": 0.12,
+      "barcode": "012345678917",
+      "isActive": true
+    },
+    {
+      "sku": "PRD018",
+      "productName": "Blueberry Muffin",
+      "categoryId": "CAT014",
+      "vendorId": "VEN008",
+      "vendorSku": "BKE-MUFF-BLU",
+      "description": "Fresh blueberry muffin",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 1.75,
+      "weight": 0.15,
+      "barcode": "012345678918",
+      "isActive": true
+    },
+    {
+      "sku": "PRD019",
+      "productName": "Whole Grain Bread",
+      "categoryId": "CAT014",
+      "vendorId": "VEN008",
+      "vendorSku": "BKE-BREAD-WG",
+      "description": "Fresh whole grain bread loaf",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 2.50,
+      "weight": 0.80,
+      "barcode": "012345678919",
+      "isActive": true
+    },
+    {
+      "sku": "PRD020",
+      "productName": "Spinach Salad with Dressing",
+      "categoryId": "CAT015",
+      "vendorId": "VEN003",
+      "vendorSku": "FOOD-SPIN-SAL",
+      "description": "Fresh spinach salad with vinaigrette",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 3.99,
+      "weight": 0.35,
+      "barcode": "012345678920",
+      "isActive": true
+    },
+    {
+      "sku": "PRD021",
+      "productName": "Espresso Shot - Double",
+      "categoryId": "CAT003",
+      "vendorId": "VEN004",
+      "vendorSku": "COFFEE-DOUBLE-ESP",
+      "description": "Double shot espresso",
+      "unitOfMeasure": "unit",
+      "unitsPerCase": 1,
+      "wholesalePrice": 1.25,
+      "weight": 0.10,
+      "barcode": "012345678921",
+      "isActive": true
+    },
+    {
+      "sku": "PRD022",
+      "productName": "Whole Wheat Granola Bar",
+      "categoryId": "CAT011",
+      "vendorId": "VEN002",
+      "vendorSku": "BAR-GRAIN-WW",
+      "description": "Whole wheat granola bar with nuts",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 35,
+      "wholesalePrice": 7.50,
+      "weight": 1.3,
+      "barcode": "012345678922",
+      "isActive": true
+    },
+    {
+      "sku": "PRD023",
+      "productName": "Cola Zero Sugar 12oz",
+      "categoryId": "CAT002",
+      "vendorId": "VEN001",
+      "vendorSku": "BEV-COLA-ZERO",
+      "description": "Zero sugar cola soft drink",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 24,
+      "wholesalePrice": 3.75,
+      "weight": 0.375,
+      "barcode": "012345678923",
+      "isActive": true
+    },
+    {
+      "sku": "PRD024",
+      "productName": "Sports Drink - Citrus 20oz",
+      "categoryId": "CAT006",
+      "vendorId": "VEN007",
+      "vendorSku": "SPORT-CITUS-20",
+      "description": "Electrolyte sports drink",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 12,
+      "wholesalePrice": 4.75,
+      "weight": 1.25,
+      "barcode": "012345678924",
+      "isActive": true
+    },
+    {
+      "sku": "PRD025",
+      "productName": "Beef Jerky - Original 2oz",
+      "categoryId": "CAT009",
+      "vendorId": "VEN009",
+      "vendorSku": "SNACK-JERKY-ORIG",
+      "description": "Tender beef jerky strips",
+      "unitOfMeasure": "case",
+      "unitsPerCase": 24,
+      "wholesalePrice": 14.99,
+      "weight": 2.0,
+      "barcode": "012345678925",
+      "isActive": true
+    }
+  ],
+  "storeVendorRelationships": [
+    {
+      "relationshipId": "SV001",
+      "storeId": "STR001",
+      "vendorId": "VEN001",
+      "vendorRepresentative": "Robert Wilson",
+      "vendorPhone": "214-555-0201",
+      "deliveryFrequency": "3x weekly",
+      "deliveryDays": ["Monday", "Wednesday", "Friday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV002",
+      "storeId": "STR001",
+      "vendorId": "VEN002",
+      "vendorRepresentative": "Lisa Anderson",
+      "vendorPhone": "512-555-0202",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Tuesday", "Saturday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV003",
+      "storeId": "STR001",
+      "vendorId": "VEN003",
+      "vendorRepresentative": "Michael Thompson",
+      "vendorPhone": "713-555-0203",
+      "deliveryFrequency": "daily",
+      "deliveryDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV004",
+      "storeId": "STR001",
+      "vendorId": "VEN004",
+      "vendorRepresentative": "Jennifer Blake",
+      "vendorPhone": "512-555-0204",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Wednesday", "Friday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV005",
+      "storeId": "STR001",
+      "vendorId": "VEN005",
+      "vendorRepresentative": "Kevin Martinez",
+      "vendorPhone": "210-555-0205",
+      "deliveryFrequency": "weekly",
+      "deliveryDays": ["Monday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV006",
+      "storeId": "STR002",
+      "vendorId": "VEN001",
+      "vendorRepresentative": "Robert Wilson",
+      "vendorPhone": "214-555-0201",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Wednesday", "Saturday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV007",
+      "storeId": "STR002",
+      "vendorId": "VEN002",
+      "vendorRepresentative": "Lisa Anderson",
+      "vendorPhone": "512-555-0202",
+      "deliveryFrequency": "weekly",
+      "deliveryDays": ["Friday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV008",
+      "storeId": "STR003",
+      "vendorId": "VEN001",
+      "vendorRepresentative": "Robert Wilson",
+      "vendorPhone": "214-555-0201",
+      "deliveryFrequency": "daily",
+      "deliveryDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV009",
+      "storeId": "STR003",
+      "vendorId": "VEN003",
+      "vendorRepresentative": "Michael Thompson",
+      "vendorPhone": "713-555-0203",
+      "deliveryFrequency": "2x daily",
+      "deliveryDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV010",
+      "storeId": "STR004",
+      "vendorId": "VEN001",
+      "vendorRepresentative": "Robert Wilson",
+      "vendorPhone": "214-555-0201",
+      "deliveryFrequency": "3x weekly",
+      "deliveryDays": ["Tuesday", "Thursday", "Saturday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV011",
+      "storeId": "STR004",
+      "vendorId": "VEN002",
+      "vendorRepresentative": "Lisa Anderson",
+      "vendorPhone": "512-555-0202",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Monday", "Thursday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV012",
+      "storeId": "STR005",
+      "vendorId": "VEN001",
+      "vendorRepresentative": "Robert Wilson",
+      "vendorPhone": "214-555-0201",
+      "deliveryFrequency": "daily",
+      "deliveryDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV013",
+      "storeId": "STR005",
+      "vendorId": "VEN008",
+      "vendorRepresentative": "Sophie Turner",
+      "vendorPhone": "817-555-0208",
+      "deliveryFrequency": "daily",
+      "deliveryDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV014",
+      "storeId": "STR006",
+      "vendorId": "VEN004",
+      "vendorRepresentative": "Jennifer Blake",
+      "vendorPhone": "512-555-0204",
+      "deliveryFrequency": "3x weekly",
+      "deliveryDays": ["Wednesday", "Friday", "Sunday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV015",
+      "storeId": "STR006",
+      "vendorId": "VEN002",
+      "vendorRepresentative": "Lisa Anderson",
+      "vendorPhone": "512-555-0202",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Tuesday", "Saturday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV016",
+      "storeId": "STR007",
+      "vendorId": "VEN001",
+      "vendorRepresentative": "Robert Wilson",
+      "vendorPhone": "214-555-0201",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Monday", "Thursday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV017",
+      "storeId": "STR007",
+      "vendorId": "VEN005",
+      "vendorRepresentative": "Kevin Martinez",
+      "vendorPhone": "210-555-0205",
+      "deliveryFrequency": "weekly",
+      "deliveryDays": ["Tuesday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV018",
+      "storeId": "STR007",
+      "vendorId": "VEN006",
+      "vendorRepresentative": "Amanda Foster",
+      "vendorPhone": "713-555-0206",
+      "deliveryFrequency": "daily",
+      "deliveryDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV019",
+      "storeId": "STR008",
+      "vendorId": "VEN001",
+      "vendorRepresentative": "Robert Wilson",
+      "vendorPhone": "214-555-0201",
+      "deliveryFrequency": "daily",
+      "deliveryDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV020",
+      "storeId": "STR008",
+      "vendorId": "VEN007",
+      "vendorRepresentative": "David Kim",
+      "vendorPhone": "713-555-0207",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Wednesday", "Saturday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV021",
+      "storeId": "STR009",
+      "vendorId": "VEN010",
+      "vendorRepresentative": "Rachel White",
+      "vendorPhone": "806-555-0210",
+      "deliveryFrequency": "3x weekly",
+      "deliveryDays": ["Monday", "Wednesday", "Friday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV022",
+      "storeId": "STR009",
+      "vendorId": "VEN002",
+      "vendorRepresentative": "Lisa Anderson",
+      "vendorPhone": "512-555-0202",
+      "deliveryFrequency": "weekly",
+      "deliveryDays": ["Saturday"],
+      "isActive": true
+    },
+    {
+      "relationshipId": "SV023",
+      "storeId": "STR010",
+      "vendorId": "VEN010",
+      "vendorRepresentative": "Rachel White",
+      "vendorPhone": "806-555-0210",
+      "deliveryFrequency": "2x weekly",
+      "deliveryDays": ["Tuesday", "Friday"],
+      "isActive": false
+    }
+  ],
+  "storeProductAvailability": [
+    {
+      "availabilityId": "SPA001",
+      "storeId": "STR001",
+      "sku": "PRD001",
+      "retailPrice": 0.99,
+      "isAvailable": true,
+      "minStockLevel": 50,
+      "maxStockLevel": 200,
+      "reorderPoint": 75
+    },
+    {
+      "availabilityId": "SPA002",
+      "storeId": "STR001",
+      "sku": "PRD002",
+      "retailPrice": 1.49,
+      "isAvailable": true,
+      "minStockLevel": 30,
+      "maxStockLevel": 120,
+      "reorderPoint": 50
+    },
+    {
+      "availabilityId": "SPA003",
+      "storeId": "STR001",
+      "sku": "PRD003",
+      "retailPrice": 0.79,
+      "isAvailable": true,
+      "minStockLevel": 100,
+      "maxStockLevel": 300,
+      "reorderPoint": 150
+    },
+    {
+      "availabilityId": "SPA004",
+      "storeId": "STR001",
+      "sku": "PRD004",
+      "retailPrice": 0.69,
+      "isAvailable": true,
+      "minStockLevel": 100,
+      "maxStockLevel": 350,
+      "reorderPoint": 150
+    },
+    {
+      "availabilityId": "SPA005",
+      "storeId": "STR001",
+      "sku": "PRD005",
+      "retailPrice": 6.99,
+      "isAvailable": true,
+      "minStockLevel": 5,
+      "maxStockLevel": 20,
+      "reorderPoint": 10
+    },
+    {
+      "availabilityId": "SPA006",
+      "storeId": "STR001",
+      "sku": "PRD006",
+      "retailPrice": 2.49,
+      "isAvailable": true,
+      "minStockLevel": 10,
+      "maxStockLevel": 50,
+      "reorderPoint": 20
+    },
+    {
+      "availabilityId": "SPA007",
+      "storeId": "STR001",
+      "sku": "PRD007",
+      "retailPrice": 2.99,
+      "isAvailable": true,
+      "minStockLevel": 20,
+      "maxStockLevel": 80,
+      "reorderPoint": 40
+    },
+    {
+      "availabilityId": "SPA008",
+      "storeId": "STR001",
+      "sku": "PRD010",
+      "retailPrice": 3.99,
+      "isAvailable": true,
+      "minStockLevel": 30,
+      "maxStockLevel": 100,
+      "reorderPoint": 50
+    },
+    {
+      "availabilityId": "SPA009",
+      "storeId": "STR002",
+      "sku": "PRD001",
+      "retailPrice": 0.99,
+      "isAvailable": true,
+      "minStockLevel": 30,
+      "maxStockLevel": 100,
+      "reorderPoint": 50
+    },
+    {
+      "availabilityId": "SPA010",
+      "storeId": "STR002",
+      "sku": "PRD003",
+      "retailPrice": 0.79,
+      "isAvailable": true,
+      "minStockLevel": 50,
+      "maxStockLevel": 150,
+      "reorderPoint": 75
+    },
+    {
+      "availabilityId": "SPA011",
+      "storeId": "STR002",
+      "sku": "PRD012",
+      "retailPrice": 1.99,
+      "isAvailable": true,
+      "minStockLevel": 20,
+      "maxStockLevel": 60,
+      "reorderPoint": 30
+    },
+    {
+      "availabilityId": "SPA012",
+      "storeId": "STR003",
+      "sku": "PRD001",
+      "retailPrice": 1.09,
+      "isAvailable": true,
+      "minStockLevel": 100,
+      "maxStockLevel": 400,
+      "reorderPoint": 200
+    },
+    {
+      "availabilityId": "SPA013",
+      "storeId": "STR003",
+      "sku": "PRD006",
+      "retailPrice": 2.49,
+      "isAvailable": true,
+      "minStockLevel": 20,
+      "maxStockLevel": 80,
+      "reorderPoint": 40
+    },
+    {
+      "availabilityId": "SPA014",
+      "storeId": "STR003",
+      "sku": "PRD005",
+      "retailPrice": 7.99,
+      "isAvailable": true,
+      "minStockLevel": 15,
+      "maxStockLevel": 50,
+      "reorderPoint": 25
+    },
+    {
+      "availabilityId": "SPA015",
+      "storeId": "STR004",
+      "sku": "PRD001",
+      "retailPrice": 0.99,
+      "isAvailable": true,
+      "minStockLevel": 60,
+      "maxStockLevel": 220,
+      "reorderPoint": 90
+    },
+    {
+      "availabilityId": "SPA016",
+      "storeId": "STR004",
+      "sku": "PRD002",
+      "retailPrice": 1.49,
+      "isAvailable": true,
+      "minStockLevel": 35,
+      "maxStockLevel": 140,
+      "reorderPoint": 60
+    },
+    {
+      "availabilityId": "SPA017",
+      "storeId": "STR004",
+      "sku": "PRD012",
+      "retailPrice": 1.99,
+      "isAvailable": true,
+      "minStockLevel": 25,
+      "maxStockLevel": 80,
+      "reorderPoint": 40
+    },
+    {
+      "availabilityId": "SPA018",
+      "storeId": "STR004",
+      "sku": "PRD023",
+      "retailPrice": 1.19,
+      "isAvailable": true,
+      "minStockLevel": 50,
+      "maxStockLevel": 200,
+      "reorderPoint": 80
+    },
+    {
+      "availabilityId": "SPA019",
+      "storeId": "STR005",
+      "sku": "PRD001",
+      "retailPrice": 1.09,
+      "isAvailable": true,
+      "minStockLevel": 45,
+      "maxStockLevel": 180,
+      "reorderPoint": 70
+    },
+    {
+      "availabilityId": "SPA020",
+      "storeId": "STR005",
+      "sku": "PRD017",
+      "retailPrice": 2.49,
+      "isAvailable": true,
+      "minStockLevel": 8,
+      "maxStockLevel": 25,
+      "reorderPoint": 12
+    },
+    {
+      "availabilityId": "SPA021",
+      "storeId": "STR005",
+      "sku": "PRD018",
+      "retailPrice": 2.99,
+      "isAvailable": true,
+      "minStockLevel": 10,
+      "maxStockLevel": 30,
+      "reorderPoint": 15
+    },
+    {
+      "availabilityId": "SPA022",
+      "storeId": "STR006",
+      "sku": "PRD006",
+      "retailPrice": 2.49,
+      "isAvailable": true,
+      "minStockLevel": 12,
+      "maxStockLevel": 50,
+      "reorderPoint": 25
+    },
+    {
+      "availabilityId": "SPA023",
+      "storeId": "STR006",
+      "sku": "PRD007",
+      "retailPrice": 2.99,
+      "isAvailable": true,
+      "minStockLevel": 15,
+      "maxStockLevel": 60,
+      "reorderPoint": 30
+    },
+    {
+      "availabilityId": "SPA024",
+      "storeId": "STR006",
+      "sku": "PRD014",
+      "retailPrice": 1.99,
+      "isAvailable": true,
+      "minStockLevel": 18,
+      "maxStockLevel": 60,
+      "reorderPoint": 30
+    },
+    {
+      "availabilityId": "SPA025",
+      "storeId": "STR007",
+      "sku": "PRD001",
+      "retailPrice": 0.99,
+      "isAvailable": true,
+      "minStockLevel": 55,
+      "maxStockLevel": 210,
+      "reorderPoint": 85
+    },
+    {
+      "availabilityId": "SPA026",
+      "storeId": "STR007",
+      "sku": "PRD005",
+      "retailPrice": 6.99,
+      "isAvailable": true,
+      "minStockLevel": 8,
+      "maxStockLevel": 25,
+      "reorderPoint": 12
+    },
+    {
+      "availabilityId": "SPA027",
+      "storeId": "STR007",
+      "sku": "PRD013",
+      "retailPrice": 1.49,
+      "isAvailable": true,
+      "minStockLevel": 20,
+      "maxStockLevel": 70,
+      "reorderPoint": 35
+    },
+    {
+      "availabilityId": "SPA028",
+      "storeId": "STR008",
+      "sku": "PRD001",
+      "retailPrice": 1.19,
+      "isAvailable": true,
+      "minStockLevel": 80,
+      "maxStockLevel": 350,
+      "reorderPoint": 150
+    },
+    {
+      "availabilityId": "SPA029",
+      "storeId": "STR008",
+      "sku": "PRD024",
+      "retailPrice": 1.99,
+      "isAvailable": true,
+      "minStockLevel": 25,
+      "maxStockLevel": 100,
+      "reorderPoint": 50
+    },
+    {
+      "availabilityId": "SPA030",
+      "storeId": "STR008",
+      "sku": "PRD009",
+      "retailPrice": 1.49,
+      "isAvailable": true,
+      "minStockLevel": 40,
+      "maxStockLevel": 150,
+      "reorderPoint": 70
+    },
+    {
+      "availabilityId": "SPA031",
+      "storeId": "STR009",
+      "sku": "PRD001",
+      "retailPrice": 0.99,
+      "isAvailable": true,
+      "minStockLevel": 50,
+      "maxStockLevel": 180,
+      "reorderPoint": 75
+    },
+    {
+      "availabilityId": "SPA032",
+      "storeId": "STR009",
+      "sku": "PRD003",
+      "retailPrice": 0.79,
+      "isAvailable": true,
+      "minStockLevel": 60,
+      "maxStockLevel": 200,
+      "reorderPoint": 100
+    },
+    {
+      "availabilityId": "SPA033",
+      "storeId": "STR009",
+      "sku": "PRD011",
+      "retailPrice": 4.49,
+      "isAvailable": true,
+      "minStockLevel": 20,
+      "maxStockLevel": 70,
+      "reorderPoint": 35
+    }
+  ],
+  "inventory": [
+    {
+      "inventoryId": "INV001",
+      "storeId": "STR001",
+      "sku": "PRD001",
+      "currentQuantity": 125,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T10:00:00Z",
+      "nextCountDate": "2026-08-12T10:00:00Z"
+    },
+    {
+      "inventoryId": "INV002",
+      "storeId": "STR001",
+      "sku": "PRD002",
+      "currentQuantity": 75,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T10:15:00Z",
+      "nextCountDate": "2026-08-12T10:15:00Z"
+    },
+    {
+      "inventoryId": "INV003",
+      "storeId": "STR001",
+      "sku": "PRD003",
+      "currentQuantity": 200,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T10:30:00Z",
+      "nextCountDate": "2026-08-12T10:30:00Z"
+    },
+    {
+      "inventoryId": "INV004",
+      "storeId": "STR001",
+      "sku": "PRD004",
+      "currentQuantity": 220,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T10:45:00Z",
+      "nextCountDate": "2026-08-12T10:45:00Z"
+    },
+    {
+      "inventoryId": "INV005",
+      "storeId": "STR001",
+      "sku": "PRD005",
+      "currentQuantity": 12,
+      "unitOfMeasure": "unit",
+      "lastCountDate": "2026-08-04T15:30:00Z",
+      "nextCountDate": "2026-08-11T15:30:00Z"
+    },
+    {
+      "inventoryId": "INV006",
+      "storeId": "STR001",
+      "sku": "PRD006",
+      "currentQuantity": 35,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T11:00:00Z",
+      "nextCountDate": "2026-08-12T11:00:00Z"
+    },
+    {
+      "inventoryId": "INV007",
+      "storeId": "STR001",
+      "sku": "PRD007",
+      "currentQuantity": 45,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T11:15:00Z",
+      "nextCountDate": "2026-08-12T11:15:00Z"
+    },
+    {
+      "inventoryId": "INV008",
+      "storeId": "STR001",
+      "sku": "PRD010",
+      "currentQuantity": 68,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T11:30:00Z",
+      "nextCountDate": "2026-08-12T11:30:00Z"
+    },
+    {
+      "inventoryId": "INV009",
+      "storeId": "STR002",
+      "sku": "PRD001",
+      "currentQuantity": 65,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T11:00:00Z",
+      "nextCountDate": "2026-08-12T11:00:00Z"
+    },
+    {
+      "inventoryId": "INV010",
+      "storeId": "STR002",
+      "sku": "PRD003",
+      "currentQuantity": 95,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T11:15:00Z",
+      "nextCountDate": "2026-08-12T11:15:00Z"
+    },
+    {
+      "inventoryId": "INV011",
+      "storeId": "STR002",
+      "sku": "PRD012",
+      "currentQuantity": 42,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T11:30:00Z",
+      "nextCountDate": "2026-08-12T11:30:00Z"
+    },
+    {
+      "inventoryId": "INV012",
+      "storeId": "STR003",
+      "sku": "PRD001",
+      "currentQuantity": 350,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T09:30:00Z",
+      "nextCountDate": "2026-08-12T09:30:00Z"
+    },
+    {
+      "inventoryId": "INV013",
+      "storeId": "STR003",
+      "sku": "PRD006",
+      "currentQuantity": 58,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T09:45:00Z",
+      "nextCountDate": "2026-08-12T09:45:00Z"
+    },
+    {
+      "inventoryId": "INV014",
+      "storeId": "STR003",
+      "sku": "PRD005",
+      "currentQuantity": 18,
+      "unitOfMeasure": "unit",
+      "lastCountDate": "2026-08-04T16:00:00Z",
+      "nextCountDate": "2026-08-11T16:00:00Z"
+    },
+    {
+      "inventoryId": "INV015",
+      "storeId": "STR004",
+      "sku": "PRD001",
+      "currentQuantity": 145,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T08:00:00Z",
+      "nextCountDate": "2026-08-12T08:00:00Z"
+    },
+    {
+      "inventoryId": "INV016",
+      "storeId": "STR004",
+      "sku": "PRD002",
+      "currentQuantity": 88,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T08:15:00Z",
+      "nextCountDate": "2026-08-12T08:15:00Z"
+    },
+    {
+      "inventoryId": "INV017",
+      "storeId": "STR004",
+      "sku": "PRD012",
+      "currentQuantity": 52,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T08:30:00Z",
+      "nextCountDate": "2026-08-12T08:30:00Z"
+    },
+    {
+      "inventoryId": "INV018",
+      "storeId": "STR004",
+      "sku": "PRD023",
+      "currentQuantity": 120,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T08:45:00Z",
+      "nextCountDate": "2026-08-12T08:45:00Z"
+    },
+    {
+      "inventoryId": "INV019",
+      "storeId": "STR005",
+      "sku": "PRD001",
+      "currentQuantity": 98,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T09:00:00Z",
+      "nextCountDate": "2026-08-12T09:00:00Z"
+    },
+    {
+      "inventoryId": "INV020",
+      "storeId": "STR005",
+      "sku": "PRD017",
+      "currentQuantity": 15,
+      "unitOfMeasure": "unit",
+      "lastCountDate": "2026-08-04T14:30:00Z",
+      "nextCountDate": "2026-08-11T14:30:00Z"
+    },
+    {
+      "inventoryId": "INV021",
+      "storeId": "STR005",
+      "sku": "PRD018",
+      "currentQuantity": 22,
+      "unitOfMeasure": "unit",
+      "lastCountDate": "2026-08-04T14:45:00Z",
+      "nextCountDate": "2026-08-11T14:45:00Z"
+    },
+    {
+      "inventoryId": "INV022",
+      "storeId": "STR006",
+      "sku": "PRD006",
+      "currentQuantity": 28,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T12:00:00Z",
+      "nextCountDate": "2026-08-12T12:00:00Z"
+    },
+    {
+      "inventoryId": "INV023",
+      "storeId": "STR006",
+      "sku": "PRD007",
+      "currentQuantity": 38,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T12:15:00Z",
+      "nextCountDate": "2026-08-12T12:15:00Z"
+    },
+    {
+      "inventoryId": "INV024",
+      "storeId": "STR006",
+      "sku": "PRD014",
+      "currentQuantity": 35,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T12:30:00Z",
+      "nextCountDate": "2026-08-12T12:30:00Z"
+    },
+    {
+      "inventoryId": "INV025",
+      "storeId": "STR007",
+      "sku": "PRD001",
+      "currentQuantity": 132,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T07:00:00Z",
+      "nextCountDate": "2026-08-12T07:00:00Z"
+    },
+    {
+      "inventoryId": "INV026",
+      "storeId": "STR007",
+      "sku": "PRD005",
+      "currentQuantity": 14,
+      "unitOfMeasure": "unit",
+      "lastCountDate": "2026-08-04T17:00:00Z",
+      "nextCountDate": "2026-08-11T17:00:00Z"
+    },
+    {
+      "inventoryId": "INV027",
+      "storeId": "STR007",
+      "sku": "PRD013",
+      "currentQuantity": 48,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T07:15:00Z",
+      "nextCountDate": "2026-08-12T07:15:00Z"
+    },
+    {
+      "inventoryId": "INV028",
+      "storeId": "STR008",
+      "sku": "PRD001",
+      "currentQuantity": 285,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T06:00:00Z",
+      "nextCountDate": "2026-08-12T06:00:00Z"
+    },
+    {
+      "inventoryId": "INV029",
+      "storeId": "STR008",
+      "sku": "PRD024",
+      "currentQuantity": 72,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T06:15:00Z",
+      "nextCountDate": "2026-08-12T06:15:00Z"
+    },
+    {
+      "inventoryId": "INV030",
+      "storeId": "STR008",
+      "sku": "PRD009",
+      "currentQuantity": 108,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T06:30:00Z",
+      "nextCountDate": "2026-08-12T06:30:00Z"
+    },
+    {
+      "inventoryId": "INV031",
+      "storeId": "STR009",
+      "sku": "PRD001",
+      "currentQuantity": 112,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T13:00:00Z",
+      "nextCountDate": "2026-08-12T13:00:00Z"
+    },
+    {
+      "inventoryId": "INV032",
+      "storeId": "STR009",
+      "sku": "PRD003",
+      "currentQuantity": 142,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T13:15:00Z",
+      "nextCountDate": "2026-08-12T13:15:00Z"
+    },
+    {
+      "inventoryId": "INV033",
+      "storeId": "STR009",
+      "sku": "PRD011",
+      "currentQuantity": 48,
+      "unitOfMeasure": "case",
+      "lastCountDate": "2026-08-05T13:30:00Z",
+      "nextCountDate": "2026-08-12T13:30:00Z"
+    }
+  ]
+}
