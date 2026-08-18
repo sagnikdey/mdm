@@ -26,6 +26,8 @@ const navItems = [
   { title: "Products", href: "/products", icon: PackageIcon },
   { title: "Inventory", href: "/inventory", icon: ArchiveIcon },
   { title: "Search", href: "/search", icon: SearchIcon },
+  { title: "Invite Vendor", href: "/admin/vendors/invite", icon: UsersIcon },
+  { title: "Applications", href: "/admin/applications", icon: ArchiveIcon },
 ]
 
 export function NavMdm() {

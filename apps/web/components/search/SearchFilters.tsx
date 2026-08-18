@@ -87,7 +87,7 @@ export function SearchFiltersPanel({
           </div>
         </div>
 
-        <Button variant="outline" className="w-full" onClick={clearFilters}>
+        <Button variant="outline" size="lg" className="w-full" onClick={clearFilters}>
           Clear Filters
         </Button>
       </div>

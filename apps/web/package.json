@@ -10,13 +10,15 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "db:seed": "tsx db/seed-from-json.ts"
+    "db:seed": "tsx db/seed-from-json.ts",
+    "db:onboarding": "tsx db/apply-onboarding-schema.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-table": "^8.21.3",
     "@workspace/ui": "*",
+    "@workspace/vendor-onboarding": "*",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.28.0",
     "next": "16.2.6",

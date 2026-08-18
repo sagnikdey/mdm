@@ -39,10 +39,10 @@ export function EntityFormLayout({
           <CardContent className="space-y-6">{children}</CardContent>
 
           <CardFooter className="justify-end gap-3 border-t">
-            <Button type="button" variant="outline" asChild>
+            <Button type="button" variant="outline" size="lg" asChild>
               <Link href={cancelHref}>Cancel</Link>
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" size="lg" disabled={isSubmitting}>
               {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </CardFooter>

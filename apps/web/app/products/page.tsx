@@ -14,9 +14,9 @@ export default function ProductsPage() {
             Manage product catalog and SKUs
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="lg">
           <Link href="/products/new">
-            <Plus className="size-4" />
+            <Plus data-icon="inline-start" />
             New Product
           </Link>
         </Button>

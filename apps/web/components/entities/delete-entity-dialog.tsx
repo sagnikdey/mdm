@@ -53,7 +53,7 @@ export function DeleteEntityDialog({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         {trigger ?? (
-          <Button variant="destructive" size="sm">
+          <Button variant="destructive" size="lg">
             Delete
           </Button>
         )}
@@ -67,8 +67,9 @@ export function DeleteEntityDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel size="lg" disabled={isDeleting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
+            size="lg"
             disabled={isDeleting}
             onClick={(event) => {
               event.preventDefault()
