@@ -7,7 +7,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "turbo format",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "deploy:web": "vercel --cwd apps/web",
+    "deploy:onboarding": "vercel --cwd apps/onboarding"
   },
   "devDependencies": {
     "@workspace/eslint-config": "*",
