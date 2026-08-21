@@ -1,10 +1,10 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
+  GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
+  GlassCardHeader,
+  GlassCardTitle,
+} from "@workspace/ui/components/glass-card"
 import { Archive, Building2, Package, Users } from "lucide-react"
 import Link from "next/link"
 
@@ -72,55 +72,53 @@ export default async function DashboardPage() {
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
-            <Link key={stat.label} href={stat.href}>
-              <Card className="transition-colors hover:bg-muted/50">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {stat.label}
-                  </CardTitle>
+            <Link key={stat.label} href={stat.href} className="block">
+              <GlassCard className="transition-colors hover:bg-white/60 dark:hover:bg-white/12">
+                <GlassCardHeader className="flex flex-row items-center justify-between pb-2">
+                  <GlassCardTitle>{stat.label}</GlassCardTitle>
                   <Icon className="size-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
+                </GlassCardHeader>
+                <GlassCardContent>
                   <div className="text-3xl font-bold">{stat.value}</div>
                   <p className="text-xs text-muted-foreground">
                     {stat.description}
                   </p>
-                </CardContent>
-              </Card>
+                </GlassCardContent>
+              </GlassCard>
             </Link>
           )
         })}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Store-Vendor Relationships</CardTitle>
-            <CardDescription>
+        <GlassCard>
+          <GlassCardHeader>
+            <GlassCardTitle>Store-Vendor Relationships</GlassCardTitle>
+            <GlassCardDescription>
               Active delivery partnerships across locations
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </GlassCardDescription>
+          </GlassCardHeader>
+          <GlassCardContent>
             <p className="text-3xl font-bold">{relationships.length}</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Configured store-vendor delivery schedules
             </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Product Availability</CardTitle>
-            <CardDescription>
+          </GlassCardContent>
+        </GlassCard>
+        <GlassCard>
+          <GlassCardHeader>
+            <GlassCardTitle>Product Availability</GlassCardTitle>
+            <GlassCardDescription>
               Store-level pricing and stock thresholds
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </GlassCardDescription>
+          </GlassCardHeader>
+          <GlassCardContent>
             <p className="text-3xl font-bold">{availability.length}</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Products available across store locations
             </p>
-          </CardContent>
-        </Card>
+          </GlassCardContent>
+        </GlassCard>
       </div>
     </div>
   )

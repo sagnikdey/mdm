@@ -11,7 +11,7 @@ export default async function OnboardingPage() {
   const application = await getOnboardingApplication()
 
   return (
-    <main className="mx-auto min-h-screen max-w-4xl p-6">
+    <main className="mx-auto min-h-screen max-w-6xl p-6">
       <div className="mb-6">
         <p className="text-xs uppercase tracking-wide text-muted-foreground">
           Vendor onboarding

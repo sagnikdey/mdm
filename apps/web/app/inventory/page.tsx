@@ -14,7 +14,7 @@ export default function InventoryPage() {
             Track stock levels across store locations
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="lg">
           <Link href="/inventory/new">
             <Plus className="size-4" />
             New Record

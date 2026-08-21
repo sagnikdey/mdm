@@ -22,7 +22,7 @@ export default async function ApplicationsPage() {
             Review onboarding submissions and promote approved vendors into MDM
           </p>
         </div>
-        <Button asChild variant="outline">
+        <Button asChild  size="lg">
           <Link href="/admin/vendors/invite">Send invitation</Link>
         </Button>
       </div>

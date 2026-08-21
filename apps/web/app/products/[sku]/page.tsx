@@ -6,10 +6,16 @@ import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import {
+  GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
+  GlassCardHeader,
+  GlassCardTitle,
+} from "@workspace/ui/components/glass-card"
 import {
   Table,
   TableBody,
@@ -135,49 +141,63 @@ export default async function ProductDetailPage({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Store Availability</CardTitle>
-          <CardDescription>Pricing and stock levels by location</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Store</TableHead>
-                <TableHead>Retail Price</TableHead>
-                <TableHead>Min / Max</TableHead>
-                <TableHead>Reorder Point</TableHead>
-                <TableHead>Available</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {availability.map((item) => (
-                <TableRow key={item.availabilityId}>
-                  <TableCell>
-                    <Link
-                      href={`/stores/${item.storeId}`}
-                      className="font-medium hover:underline"
-                    >
-                      {storeName(item.storeId)}
-                    </Link>
-                  </TableCell>
-                  <TableCell>${item.retailPrice.toFixed(2)}</TableCell>
-                  <TableCell>
-                    {item.minStockLevel} / {item.maxStockLevel}
-                  </TableCell>
-                  <TableCell>{item.reorderPoint}</TableCell>
-                  <TableCell>
-                    <Badge variant={item.isAvailable ? "default" : "secondary"}>
-                      {item.isAvailable ? "Yes" : "No"}
-                    </Badge>
-                  </TableCell>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle className="text-lg font-semibold">
+            Store availability
+          </GlassCardTitle>
+          <GlassCardDescription>
+            Pricing and stock levels by location
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Store</TableHead>
+                  <TableHead>Retail Price</TableHead>
+                  <TableHead>Min / Max</TableHead>
+                  <TableHead>Reorder Point</TableHead>
+                  <TableHead>Available</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {availability.length ? (
+                  availability.map((item) => (
+                    <TableRow key={item.availabilityId}>
+                      <TableCell>
+                        <Link
+                          href={`/stores/${item.storeId}`}
+                          className="font-medium hover:underline"
+                        >
+                          {storeName(item.storeId)}
+                        </Link>
+                      </TableCell>
+                      <TableCell>${item.retailPrice.toFixed(2)}</TableCell>
+                      <TableCell>
+                        {item.minStockLevel} / {item.maxStockLevel}
+                      </TableCell>
+                      <TableCell>{item.reorderPoint}</TableCell>
+                      <TableCell>
+                        <Badge variant={item.isAvailable ? "active" : "inactive"}>
+                          {item.isAvailable ? "Yes" : "No"}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                      No availability records.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </GlassCardContent>
+      </GlassCard>
     </div>
   )
 }

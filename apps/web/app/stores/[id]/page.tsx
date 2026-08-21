@@ -12,6 +12,13 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card"
 import {
+  GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
+  GlassCardHeader,
+  GlassCardTitle,
+} from "@workspace/ui/components/glass-card"
+import {
   Table,
   TableBody,
   TableCell,
@@ -121,127 +128,167 @@ export default async function StoreDetailPage({ params }: StoreDetailPageProps) 
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Vendor Relationships</CardTitle>
-          <CardDescription>Delivery schedules for this store</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Vendor</TableHead>
-                <TableHead>Representative</TableHead>
-                <TableHead>Frequency</TableHead>
-                <TableHead>Delivery Days</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {relationships.map((rel) => (
-                <TableRow key={rel.relationshipId}>
-                  <TableCell>
-                    <Link
-                      href={`/vendors/${rel.vendorId}`}
-                      className="font-medium hover:underline"
-                    >
-                      {vendorName(rel.vendorId)}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{rel.vendorRepresentative}</TableCell>
-                  <TableCell>{rel.deliveryFrequency}</TableCell>
-                  <TableCell>{rel.deliveryDays.join(", ")}</TableCell>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle className="text-lg font-semibold">
+            Vendor relationships
+          </GlassCardTitle>
+          <GlassCardDescription>
+            Delivery schedules for this store
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vendor</TableHead>
+                  <TableHead>Representative</TableHead>
+                  <TableHead>Frequency</TableHead>
+                  <TableHead>Delivery Days</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {relationships.length ? (
+                  relationships.map((rel) => (
+                    <TableRow key={rel.relationshipId}>
+                      <TableCell>
+                        <Link
+                          href={`/vendors/${rel.vendorId}`}
+                          className="font-medium hover:underline"
+                        >
+                          {vendorName(rel.vendorId)}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{rel.vendorRepresentative}</TableCell>
+                      <TableCell>{rel.deliveryFrequency}</TableCell>
+                      <TableCell>{rel.deliveryDays.join(", ")}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                      No vendor relationships.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </GlassCardContent>
+      </GlassCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Product Availability</CardTitle>
-          <CardDescription>Retail pricing and stock thresholds</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Retail Price</TableHead>
-                <TableHead>Min / Max</TableHead>
-                <TableHead>Reorder Point</TableHead>
-                <TableHead>Available</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {availability.map((item) => (
-                <TableRow key={item.availabilityId}>
-                  <TableCell>
-                    <Link
-                      href={`/products/${item.sku}`}
-                      className="font-medium hover:underline"
-                    >
-                      {productName(item.sku)}
-                    </Link>
-                  </TableCell>
-                  <TableCell>${item.retailPrice.toFixed(2)}</TableCell>
-                  <TableCell>
-                    {item.minStockLevel} / {item.maxStockLevel}
-                  </TableCell>
-                  <TableCell>{item.reorderPoint}</TableCell>
-                  <TableCell>
-                    <Badge variant={item.isAvailable ? "default" : "secondary"}>
-                      {item.isAvailable ? "Yes" : "No"}
-                    </Badge>
-                  </TableCell>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle className="text-lg font-semibold">
+            Product availability
+          </GlassCardTitle>
+          <GlassCardDescription>
+            Retail pricing and stock thresholds
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Product</TableHead>
+                  <TableHead>Retail Price</TableHead>
+                  <TableHead>Min / Max</TableHead>
+                  <TableHead>Reorder Point</TableHead>
+                  <TableHead>Available</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {availability.length ? (
+                  availability.map((item) => (
+                    <TableRow key={item.availabilityId}>
+                      <TableCell>
+                        <Link
+                          href={`/products/${item.sku}`}
+                          className="font-medium hover:underline"
+                        >
+                          {productName(item.sku)}
+                        </Link>
+                      </TableCell>
+                      <TableCell>${item.retailPrice.toFixed(2)}</TableCell>
+                      <TableCell>
+                        {item.minStockLevel} / {item.maxStockLevel}
+                      </TableCell>
+                      <TableCell>{item.reorderPoint}</TableCell>
+                      <TableCell>
+                        <Badge variant={item.isAvailable ? "active" : "inactive"}>
+                          {item.isAvailable ? "Yes" : "No"}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                      No availability records.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </GlassCardContent>
+      </GlassCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Inventory</CardTitle>
-          <CardDescription>Current stock at this location</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Last Count</TableHead>
-                <TableHead>Next Count</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {inventory.map((record) => (
-                <TableRow key={record.inventoryId}>
-                  <TableCell>
-                    <Link
-                      href={`/inventory/${record.inventoryId}`}
-                      className="font-medium hover:underline"
-                    >
-                      {productName(record.sku)}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {record.currentQuantity} {record.unitOfMeasure}
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(record.lastCountDate), "MMM d, yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(record.nextCountDate), "MMM d, yyyy")}
-                  </TableCell>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle className="text-lg font-semibold">Inventory</GlassCardTitle>
+          <GlassCardDescription>
+            Current stock at this location
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Product</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Last Count</TableHead>
+                  <TableHead>Next Count</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {inventory.length ? (
+                  inventory.map((record) => (
+                    <TableRow key={record.inventoryId}>
+                      <TableCell>
+                        <Link
+                          href={`/inventory/${record.inventoryId}`}
+                          className="font-medium hover:underline"
+                        >
+                          {productName(record.sku)}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        {record.currentQuantity} {record.unitOfMeasure}
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(record.lastCountDate), "MMM d, yyyy")}
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(record.nextCountDate), "MMM d, yyyy")}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                      No inventory records.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </GlassCardContent>
+      </GlassCard>
     </div>
   )
 }

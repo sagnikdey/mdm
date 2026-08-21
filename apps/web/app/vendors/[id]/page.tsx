@@ -4,12 +4,12 @@ import { notFound } from "next/navigation"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
+  GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
+  GlassCardHeader,
+  GlassCardTitle,
+} from "@workspace/ui/components/glass-card"
 import {
   Table,
   TableBody,
@@ -63,127 +63,153 @@ export default async function VendorDetailPage({
             {vendor.vendorCategory} supplier
           </p>
         </div>
-        <Badge variant={vendor.isActive ? "default" : "secondary"}>
+        <Badge variant={vendor.isActive ? "active" : "inactive"}>
           {vendor.isActive ? "Active" : "Inactive"}
         </Badge>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Contact Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <p>
-              <span className="text-muted-foreground">Contact: </span>
-              {vendor.contactPerson}
-            </p>
-            <p>
-              <span className="text-muted-foreground">Email: </span>
-              {vendor.email}
-            </p>
-            <p>
-              <span className="text-muted-foreground">Phone: </span>
-              {vendor.phone}
-            </p>
-            <p>
-              <span className="text-muted-foreground">Address: </span>
-              {vendor.address}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Terms</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <p>
-              <span className="text-muted-foreground">Payment Terms: </span>
-              {vendor.paymentTerms}
-            </p>
-            <p>
-              <span className="text-muted-foreground">Minimum Order: </span>
-              {vendor.minimumOrderQuantity} units
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle className="text-lg font-semibold">
+            Vendor information
+          </GlassCardTitle>
+          <GlassCardDescription>
+            Contact details and commercial terms
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent className="grid gap-8 text-sm md:grid-cols-2">
+          <dl className="grid gap-3">
+            <div>
+              <dt className="text-muted-foreground">Contact</dt>
+              <dd className="font-medium">{vendor.contactPerson}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">Email</dt>
+              <dd className="font-medium">{vendor.email}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">Phone</dt>
+              <dd className="font-medium">{vendor.phone}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">Address</dt>
+              <dd className="font-medium">{vendor.address}</dd>
+            </div>
+          </dl>
+          <dl className="grid gap-3">
+            <div>
+              <dt className="text-muted-foreground">Payment terms</dt>
+              <dd className="font-medium">{vendor.paymentTerms}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">Minimum order</dt>
+              <dd className="font-medium">{vendor.minimumOrderQuantity} units</dd>
+            </div>
+          </dl>
+        </GlassCardContent>
+      </GlassCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Store Relationships</CardTitle>
-          <CardDescription>Stores this vendor delivers to</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Store</TableHead>
-                <TableHead>Representative</TableHead>
-                <TableHead>Frequency</TableHead>
-                <TableHead>Delivery Days</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {relationships.map((rel) => (
-                <TableRow key={rel.relationshipId}>
-                  <TableCell>
-                    <Link
-                      href={`/stores/${rel.storeId}`}
-                      className="font-medium hover:underline"
-                    >
-                      {storeName(rel.storeId)}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{rel.vendorRepresentative}</TableCell>
-                  <TableCell>{rel.deliveryFrequency}</TableCell>
-                  <TableCell>{rel.deliveryDays.join(", ")}</TableCell>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle className="text-lg font-semibold">
+            Store relationships
+          </GlassCardTitle>
+          <GlassCardDescription>
+            Stores this vendor delivers to
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Store</TableHead>
+                  <TableHead>Representative</TableHead>
+                  <TableHead>Frequency</TableHead>
+                  <TableHead>Delivery Days</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {relationships.length ? (
+                  relationships.map((rel) => (
+                    <TableRow key={rel.relationshipId}>
+                      <TableCell>
+                        <Link
+                          href={`/stores/${rel.storeId}`}
+                          className="font-medium hover:underline"
+                        >
+                          {storeName(rel.storeId)}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{rel.vendorRepresentative}</TableCell>
+                      <TableCell>{rel.deliveryFrequency}</TableCell>
+                      <TableCell>{rel.deliveryDays.join(", ")}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                      No store relationships.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </GlassCardContent>
+      </GlassCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Products</CardTitle>
-          <CardDescription>Catalog items from this vendor</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>SKU</TableHead>
-                <TableHead>Wholesale</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {vendorProducts.map((product) => (
-                <TableRow key={product.sku}>
-                  <TableCell>
-                    <Link
-                      href={`/products/${product.sku}`}
-                      className="font-medium hover:underline"
-                    >
-                      {product.productName}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{product.sku}</TableCell>
-                  <TableCell>${product.wholesalePrice.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Badge variant={product.isActive ? "default" : "secondary"}>
-                      {product.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle className="text-lg font-semibold">Products</GlassCardTitle>
+          <GlassCardDescription>
+            Catalog items from this vendor
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Product</TableHead>
+                  <TableHead>SKU</TableHead>
+                  <TableHead>Wholesale</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {vendorProducts.length ? (
+                  vendorProducts.map((product) => (
+                    <TableRow key={product.sku}>
+                      <TableCell>
+                        <Link
+                          href={`/products/${product.sku}`}
+                          className="font-medium hover:underline"
+                        >
+                          {product.productName}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{product.sku}</TableCell>
+                      <TableCell>${product.wholesalePrice.toFixed(2)}</TableCell>
+                      <TableCell>
+                        <Badge variant={product.isActive ? "active" : "inactive"}>
+                          {product.isActive ? "Active" : "Inactive"}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                      No products.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </GlassCardContent>
+      </GlassCard>
     </div>
   )
 }

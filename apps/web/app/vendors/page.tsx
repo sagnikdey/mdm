@@ -14,7 +14,7 @@ export default function VendorsPage() {
             Manage supplier relationships
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="lg">
           <Link href="/vendors/new">
             <Plus className="size-4" />
             New Vendor

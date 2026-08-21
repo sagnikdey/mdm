@@ -56,14 +56,14 @@ export function AppHeader() {
   const breadcrumbs = getBreadcrumbs(pathname)
 
   return (
-    <header className="flex shrink-0 flex-col gap-4 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:min-h-12">
+    <header className="border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:min-h-12">
       <div className="flex h-16 items-center gap-2 px-4">
-        <SidebarTrigger className="-ms-1" />
+        <SidebarTrigger className="-ms-1 shrink-0" />
         <Separator
           orientation="vertical"
-          className="me-2 data-[orientation=vertical]:h-4"
+          className="me-2 shrink-0 data-[orientation=vertical]:h-4"
         />
-        <Breadcrumb>
+        <Breadcrumb className="min-w-0 flex-1">
           <BreadcrumbList>
             {breadcrumbs.map((crumb, index) => (
               <span key={crumb.href} className="contents">
@@ -81,9 +81,9 @@ export function AppHeader() {
             ))}
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
-      <div className="px-4 pb-4">
-        <UniversalSearch />
+        <div className="ms-auto w-full max-w-sm shrink-0 lg:max-w-md xl:max-w-lg">
+          <UniversalSearch />
+        </div>
       </div>
     </header>
   )

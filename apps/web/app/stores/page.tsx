@@ -14,7 +14,7 @@ export default function StoresPage() {
             Manage all store locations
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="lg">
           <Link href="/stores/new">
             <Plus className="size-4" />
             New Store

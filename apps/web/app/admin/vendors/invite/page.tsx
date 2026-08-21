@@ -3,14 +3,22 @@ import Link from "next/link"
 import { InviteVendorForm } from "@/app/admin/vendors/invite/invite-vendor-form"
 import { fetchInvitations } from "@/app/admin/vendors/invite/actions"
 import { Badge } from "@workspace/ui/components/badge"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 import { Button } from "@workspace/ui/components/button"
+import {
+  GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
+  GlassCardHeader,
+  GlassCardTitle,
+} from "@workspace/ui/components/glass-card"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@workspace/ui/components/table"
 
 export default async function InviteVendorPage() {
   const invitations = await fetchInvitations()
@@ -31,35 +39,56 @@ export default async function InviteVendorPage() {
 
       <InviteVendorForm />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent invitations</CardTitle>
-          <CardDescription>Token hashes are stored; raw links are only shown once at creation.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {invitations.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No invitations yet.</p>
-          ) : (
-            invitations.map((invite) => (
-              <div
-                key={invite.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"
-              >
-                <div>
-                  <p className="font-medium">{invite.invitedEmail}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {invite.invitedCompany ?? "No company prefilled"} · invited by{" "}
-                    {invite.invitedByEmail}
-                  </p>
-                </div>
-                <Badge variant={invite.status === "pending" ? "active" : "inactive"}>
-                  {invite.status}
-                </Badge>
-              </div>
-            ))
-          )}
-        </CardContent>
-      </Card>
+      <GlassCard>
+        <GlassCardHeader>
+          <GlassCardTitle>Recent invitations</GlassCardTitle>
+          <GlassCardDescription>Token hashes are stored; raw links are only shown once at creation.</GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Invited by</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invitations.length ? (
+                  invitations.map((invite) => (
+                    <TableRow key={invite.id}>
+                      <TableCell className="font-medium">
+                        {invite.invitedEmail}
+                      </TableCell>
+                      <TableCell>
+                        {invite.invitedCompany ?? "No company prefilled"}
+                      </TableCell>
+                      <TableCell>{invite.invitedByEmail}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            invite.status === "pending" ? "active" : "inactive"
+                          }
+                        >
+                          {invite.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                      No invitations yet.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </GlassCardContent>
+      </GlassCard>
     </div>
   )
 }

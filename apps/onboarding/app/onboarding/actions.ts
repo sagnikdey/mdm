@@ -12,6 +12,7 @@ import {
   type PaymentData,
 } from "@workspace/vendor-onboarding"
 
+import { getFirstInvalidOnboardingStep } from "@/lib/onboarding-schema"
 import { getVendorSession } from "@/lib/session"
 
 async function requireSession() {
@@ -50,6 +51,17 @@ export async function saveOnboardingStep(input: {
 
 export async function submitOnboardingApplication() {
   const session = await requireSession()
+  const application = await getApplication(session.applicationId)
+  if (!application) throw new Error("Application not found")
+  if (application.status !== "draft" && application.status !== "needs_info") {
+    throw new Error("Application is no longer editable")
+  }
+
+  const invalid = getFirstInvalidOnboardingStep(application)
+  if (invalid) {
+    throw new Error("Please complete all required fields before submitting")
+  }
+
   return submitApplication(session.applicationId)
 }
 

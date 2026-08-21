@@ -8,25 +8,24 @@ import {
   submitOnboardingApplication,
 } from "@/app/onboarding/actions"
 import {
+  getFirstInvalidOnboardingStep,
+  validateOnboardingStep,
+} from "@/lib/onboarding-schema"
+import {
   ONBOARDING_STEPS,
   type VendorApplication,
 } from "@workspace/vendor-onboarding/types"
+import { FormLayout } from "@workspace/ui/components/form-layout"
 import { LoadingState } from "@workspace/ui/components/loading-state"
 import { TaskRows, type TaskRowItem } from "@workspace/ui/components/task-rows"
 import { ContextCard } from "@workspace/ui/components/context-card"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
+import { GlassCardFooter } from "@workspace/ui/components/glass-card"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
   Field,
   FieldContent,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@workspace/ui/components/field"
@@ -39,7 +38,18 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import { Textarea } from "@workspace/ui/components/textarea"
-import { Badge } from "@workspace/ui/components/badge"
+import {
+  Stepper,
+  StepperDescription,
+  StepperIndicator,
+  StepperItem,
+  StepperNav,
+  StepperPanel,
+  StepperSeparator,
+  StepperTitle,
+  StepperTrigger,
+} from "@workspace/ui/components/stepper"
+import { CheckIcon, CircleAlertIcon, LoaderCircleIcon } from "lucide-react"
 
 const CATEGORY_OPTIONS = [
   "Beverages",
@@ -60,6 +70,8 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
   const [isSaving, setIsSaving] = useState(false)
   const [submitTasks, setSubmitTasks] = useState<TaskRowItem[]>([])
   const [elapsed, setElapsed] = useState(0)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errorSteps, setErrorSteps] = useState<Set<number>>(new Set())
 
   const isSubmitted = application.status === "submitted" || application.status === "under_review" || application.status === "approved"
 
@@ -71,7 +83,98 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
   const stepMeta = ONBOARDING_STEPS[step - 1]!
 
+  function markStepError(stepId: number) {
+    setErrorSteps((current) => {
+      if (current.has(stepId)) return current
+      const next = new Set(current)
+      next.add(stepId)
+      return next
+    })
+  }
+
+  function clearStepError(stepId: number) {
+    setErrorSteps((current) => {
+      if (!current.has(stepId)) return current
+      const next = new Set(current)
+      next.delete(stepId)
+      return next
+    })
+  }
+
+  useEffect(() => {
+    if (!errorSteps.has(step)) return
+
+    const result = validateOnboardingStep(step, application)
+    if (result.ok) {
+      setErrors({})
+      clearStepError(step)
+      return
+    }
+
+    setErrors(result.errors)
+  }, [application, errorSteps, step])
+
+  function clearError(name: string) {
+    setErrors((current) => {
+      if (!current[name]) return current
+      const next = { ...current }
+      delete next[name]
+      return next
+    })
+  }
+
+  function fieldError(name: string) {
+    const message = errors[name]
+    return message ? [{ message }] : undefined
+  }
+
+  function validateCurrentStep() {
+    if (step >= 7) {
+      const invalid = getFirstInvalidOnboardingStep(application)
+      if (!invalid) {
+        setErrors({})
+        setErrorSteps(new Set())
+        return true
+      }
+      setErrors(invalid.errors)
+      markStepError(invalid.step)
+      setStep(invalid.step)
+      toast.error("Please complete the required fields")
+      return false
+    }
+
+    const result = validateOnboardingStep(step, application)
+    if (result.ok) {
+      setErrors({})
+      clearStepError(step)
+      return true
+    }
+
+    setErrors(result.errors)
+    markStepError(step)
+    toast.error("Please complete the required fields")
+    return false
+  }
+
+  function goToStep(next: number) {
+    if (
+      next === step ||
+      isSaving ||
+      next < 1 ||
+      next > ONBOARDING_STEPS.length
+    ) {
+      return
+    }
+    if (next < step) {
+      setErrors({})
+      setStep(next)
+      return
+    }
+    void persist(next)
+  }
+
   async function persist(nextStep: number) {
+    if (!validateCurrentStep()) return
     setIsSaving(true)
     setElapsed(0)
     try {
@@ -94,6 +197,15 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
   }
 
   async function handleSubmit() {
+    const invalid = getFirstInvalidOnboardingStep(application)
+    if (invalid) {
+      setErrors(invalid.errors)
+      markStepError(invalid.step)
+      setStep(invalid.step)
+      toast.error("Please complete the required fields")
+      return
+    }
+
     setSubmitTasks([
       { id: "1", label: "Validating application", status: "running" },
       { id: "2", label: "Checking documents", status: "pending" },
@@ -162,67 +274,121 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
   if (isSubmitted && step === 8) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Application submitted</CardTitle>
-          <CardDescription>
-            Your vendor application is in the review queue. We&apos;ll email{" "}
-            {application.ownerEmail} with updates.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <TaskRows tasks={submitTasks.length ? submitTasks : [
-            { id: "done", label: "Submitted for review", status: "completed" },
-          ]} />
-        </CardContent>
-      </Card>
+      <FormLayout
+        contained={false}
+        title="Application submitted"
+        description={`Your vendor application is in the review queue. We'll email ${application.ownerEmail} with updates.`}
+      >
+        <TaskRows
+          tasks={
+            submitTasks.length
+              ? submitTasks
+              : [{ id: "done", label: "Submitted for review", status: "completed" }]
+          }
+        />
+      </FormLayout>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap gap-2">
-        {ONBOARDING_STEPS.map((item) => (
-          <Badge
+    <Stepper
+      value={step}
+      onValueChange={goToStep}
+      orientation="vertical"
+      className="items-start gap-8 lg:gap-10"
+      indicators={{
+        completed: <CheckIcon className="size-3.5" />,
+        loading: <LoaderCircleIcon className="size-3.5 animate-spin" />,
+        error: <CircleAlertIcon className="size-3.5" />,
+      }}
+    >
+      <StepperNav>
+        {ONBOARDING_STEPS.map((item, index) => (
+          <StepperItem
             key={item.id}
-            variant={item.id === step ? "default" : item.id < step ? "secondary" : "outline"}
+            step={item.id}
+            loading={isSaving && item.id === step}
+            error={errorSteps.has(item.id)}
+            disabled={isSaving}
           >
-            {item.id}. {item.title}
-          </Badge>
+            <StepperTrigger className="items-start gap-2.5">
+              <StepperIndicator>{item.id}</StepperIndicator>
+              <div className="mt-0.5 space-y-0.5 text-start">
+                <StepperTitle>{item.title}</StepperTitle>
+                <StepperDescription>{item.description}</StepperDescription>
+              </div>
+            </StepperTrigger>
+            {index < ONBOARDING_STEPS.length - 1 ? <StepperSeparator /> : null}
+          </StepperItem>
         ))}
-      </div>
+      </StepperNav>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            Step {step}: {stepMeta.title}
-          </CardTitle>
-          <CardDescription>{stepMeta.description}</CardDescription>
-        </CardHeader>
+      <StepperPanel>
+        <FormLayout
+          contained={false}
+          title={`Step ${step}: ${stepMeta.title}`}
+          description={stepMeta.description}
+        footer={
+          <GlassCardFooter className="justify-between gap-3 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              disabled={step <= 1 || isSaving}
+              onClick={() => goToStep(step - 1)}
+            >
+              Back
+            </Button>
 
-        <CardContent>
+            {step < 8 ? (
+              <Button
+                type="button"
+                size="lg"
+                disabled={isSaving}
+                onClick={() => void persist(step + 1)}
+              >
+                Save & continue
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                size="lg"
+                disabled={isSaving}
+                onClick={() => void handleSubmit()}
+              >
+                Submit application
+              </Button>
+            )}
+          </GlassCardFooter>
+        }
+      >
           {isSaving ? <LoadingState label="Saving step" elapsedSeconds={elapsed} /> : null}
 
           {!isSaving && step === 1 ? (
             <FieldGroup>
-              <Field>
-                <FieldLabel>Legal company name</FieldLabel>
+              <Field data-invalid={Boolean(errors.legalName) || undefined}>
+                <FieldLabel htmlFor="legalName">Legal company name</FieldLabel>
                 <FieldContent>
                   <Input
+                    id="legalName"
                     value={application.companyData.legalName}
-                    onChange={(e) =>
+                    aria-invalid={Boolean(errors.legalName) || undefined}
+                    onChange={(e) => {
+                      clearError("legalName")
                       setApplication((prev) => ({
                         ...prev,
                         companyData: { ...prev.companyData, legalName: e.target.value },
                       }))
-                    }
+                    }}
                   />
+                  <FieldError errors={fieldError("legalName")} />
                 </FieldContent>
               </Field>
               <Field>
-                <FieldLabel>DBA name (optional)</FieldLabel>
+                <FieldLabel htmlFor="dbaName">DBA name (optional)</FieldLabel>
                 <FieldContent>
                   <Input
+                    id="dbaName"
                     value={application.companyData.dbaName ?? ""}
                     onChange={(e) =>
                       setApplication((prev) => ({
@@ -235,9 +401,10 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
               </Field>
               <div className="grid gap-4 md:grid-cols-2">
                 <Field>
-                  <FieldLabel>Tax ID / EIN</FieldLabel>
+                  <FieldLabel htmlFor="taxId">Tax ID / EIN (optional)</FieldLabel>
                   <FieldContent>
                     <Input
+                      id="taxId"
                       value={application.companyData.taxId ?? ""}
                       onChange={(e) =>
                         setApplication((prev) => ({
@@ -248,20 +415,21 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
                     />
                   </FieldContent>
                 </Field>
-                <Field>
+                <Field data-invalid={Boolean(errors.vendorCategory) || undefined}>
                   <FieldLabel>Primary category</FieldLabel>
                   <FieldContent>
                     <Select
                       value={application.companyData.vendorCategory}
-                      onValueChange={(value) =>
+                      onValueChange={(value) => {
+                        clearError("vendorCategory")
                         setApplication((prev) => ({
                           ...prev,
                           companyData: { ...prev.companyData, vendorCategory: value },
                         }))
-                      }
+                      }}
                     >
-                      <SelectTrigger>
-                        <SelectValue />
+                      <SelectTrigger aria-invalid={Boolean(errors.vendorCategory) || undefined}>
+                        <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
                         {["beverages", "snacks", "food"].map((value) => (
@@ -271,6 +439,7 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
                         ))}
                       </SelectContent>
                     </Select>
+                    <FieldError errors={fieldError("vendorCategory")} />
                   </FieldContent>
                 </Field>
               </div>
@@ -279,38 +448,47 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
           {!isSaving && step === 2 ? (
             <FieldGroup>
-              <Field>
-                <FieldLabel>Contact person</FieldLabel>
+              <Field data-invalid={Boolean(errors.contactPerson) || undefined}>
+                <FieldLabel htmlFor="contactPerson">Contact person</FieldLabel>
                 <FieldContent>
                   <Input
+                    id="contactPerson"
                     value={application.contactData.contactPerson}
-                    onChange={(e) =>
+                    aria-invalid={Boolean(errors.contactPerson) || undefined}
+                    onChange={(e) => {
+                      clearError("contactPerson")
                       setApplication((prev) => ({
                         ...prev,
                         contactData: { ...prev.contactData, contactPerson: e.target.value },
                       }))
-                    }
+                    }}
                   />
+                  <FieldError errors={fieldError("contactPerson")} />
                 </FieldContent>
               </Field>
               <Field>
-                <FieldLabel>Email (from invitation)</FieldLabel>
+                <FieldLabel htmlFor="contactEmail">Email (from invitation)</FieldLabel>
                 <FieldContent>
-                  <Input value={application.contactData.email} disabled />
+                  <Input id="contactEmail" value={application.contactData.email} disabled />
                 </FieldContent>
               </Field>
-              <Field>
-                <FieldLabel>Phone</FieldLabel>
+              <Field data-invalid={Boolean(errors.phone) || undefined}>
+                <FieldLabel htmlFor="phone">Phone</FieldLabel>
                 <FieldContent>
                   <Input
+                    id="phone"
+                    type="tel"
                     value={application.contactData.phone}
-                    onChange={(e) =>
+                    aria-invalid={Boolean(errors.phone) || undefined}
+                    onChange={(e) => {
+                      clearError("phone")
                       setApplication((prev) => ({
                         ...prev,
                         contactData: { ...prev.contactData, phone: e.target.value },
                       }))
-                    }
+                    }}
                   />
+                  <FieldError errors={fieldError("phone")} />
                 </FieldContent>
               </Field>
             </FieldGroup>
@@ -318,61 +496,78 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
           {!isSaving && step === 3 ? (
             <FieldGroup>
-              <Field>
-                <FieldLabel>Street address</FieldLabel>
+              <Field data-invalid={Boolean(errors.street) || undefined}>
+                <FieldLabel htmlFor="street">Street address</FieldLabel>
                 <FieldContent>
                   <Textarea
+                    id="street"
                     value={application.addressData.street}
-                    onChange={(e) =>
+                    aria-invalid={Boolean(errors.street) || undefined}
+                    onChange={(e) => {
+                      clearError("street")
                       setApplication((prev) => ({
                         ...prev,
                         addressData: { ...prev.addressData, street: e.target.value },
                       }))
-                    }
+                    }}
                   />
+                  <FieldError errors={fieldError("street")} />
                 </FieldContent>
               </Field>
               <div className="grid gap-4 md:grid-cols-3">
-                <Field>
-                  <FieldLabel>City</FieldLabel>
+                <Field data-invalid={Boolean(errors.city) || undefined}>
+                  <FieldLabel htmlFor="city">City</FieldLabel>
                   <FieldContent>
                     <Input
+                      id="city"
                       value={application.addressData.city}
-                      onChange={(e) =>
+                      aria-invalid={Boolean(errors.city) || undefined}
+                      onChange={(e) => {
+                        clearError("city")
                         setApplication((prev) => ({
                           ...prev,
                           addressData: { ...prev.addressData, city: e.target.value },
                         }))
-                      }
+                      }}
                     />
+                    <FieldError errors={fieldError("city")} />
                   </FieldContent>
                 </Field>
-                <Field>
-                  <FieldLabel>State</FieldLabel>
+                <Field data-invalid={Boolean(errors.state) || undefined}>
+                  <FieldLabel htmlFor="state">State</FieldLabel>
                   <FieldContent>
                     <Input
+                      id="state"
                       value={application.addressData.state}
-                      onChange={(e) =>
+                      aria-invalid={Boolean(errors.state) || undefined}
+                      onChange={(e) => {
+                        clearError("state")
                         setApplication((prev) => ({
                           ...prev,
                           addressData: { ...prev.addressData, state: e.target.value },
                         }))
-                      }
+                      }}
                     />
+                    <FieldError errors={fieldError("state")} />
                   </FieldContent>
                 </Field>
-                <Field>
-                  <FieldLabel>ZIP</FieldLabel>
+                <Field data-invalid={Boolean(errors.zipCode) || undefined}>
+                  <FieldLabel htmlFor="zipCode">ZIP</FieldLabel>
                   <FieldContent>
                     <Input
+                      id="zipCode"
+                      inputMode="numeric"
                       value={application.addressData.zipCode}
-                      onChange={(e) =>
+                      aria-invalid={Boolean(errors.zipCode) || undefined}
+                      onChange={(e) => {
+                        clearError("zipCode")
                         setApplication((prev) => ({
                           ...prev,
                           addressData: { ...prev.addressData, zipCode: e.target.value },
                         }))
-                      }
+                      }}
                     />
+                    <FieldError errors={fieldError("zipCode")} />
                   </FieldContent>
                 </Field>
               </div>
@@ -381,36 +576,45 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
           {!isSaving && step === 4 ? (
             <FieldGroup>
-              <Field>
-                <FieldLabel>Payment terms</FieldLabel>
+              <Field data-invalid={Boolean(errors.paymentTerms) || undefined}>
+                <FieldLabel htmlFor="paymentTerms">Payment terms</FieldLabel>
                 <FieldContent>
                   <Input
+                    id="paymentTerms"
                     value={application.paymentData.paymentTerms}
-                    onChange={(e) =>
+                    aria-invalid={Boolean(errors.paymentTerms) || undefined}
+                    onChange={(e) => {
+                      clearError("paymentTerms")
                       setApplication((prev) => ({
                         ...prev,
                         paymentData: { ...prev.paymentData, paymentTerms: e.target.value },
                       }))
-                    }
+                    }}
                   />
+                  <FieldError errors={fieldError("paymentTerms")} />
                 </FieldContent>
               </Field>
-              <Field>
-                <FieldLabel>Minimum order quantity</FieldLabel>
+              <Field data-invalid={Boolean(errors.minimumOrderQuantity) || undefined}>
+                <FieldLabel htmlFor="minimumOrderQuantity">Minimum order quantity</FieldLabel>
                 <FieldContent>
                   <Input
+                    id="minimumOrderQuantity"
                     type="number"
+                    min={1}
                     value={application.paymentData.minimumOrderQuantity}
-                    onChange={(e) =>
+                    aria-invalid={Boolean(errors.minimumOrderQuantity) || undefined}
+                    onChange={(e) => {
+                      clearError("minimumOrderQuantity")
                       setApplication((prev) => ({
                         ...prev,
                         paymentData: {
                           ...prev.paymentData,
-                          minimumOrderQuantity: Number(e.target.value) || 1,
+                          minimumOrderQuantity: Number(e.target.value) || 0,
                         },
                       }))
-                    }
+                    }}
                   />
+                  <FieldError errors={fieldError("minimumOrderQuantity")} />
                 </FieldContent>
               </Field>
             </FieldGroup>
@@ -418,29 +622,37 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
           {!isSaving && step === 5 ? (
             <FieldGroup>
-              <FieldLabel>Categories you supply</FieldLabel>
-              {CATEGORY_OPTIONS.map((category) => {
-                const checked = application.categoriesData.categories.includes(category)
-                return (
-                  <Field key={category} orientation="horizontal">
-                    <Checkbox
-                      checked={checked}
-                      onCheckedChange={(value) =>
-                        setApplication((prev) => ({
-                          ...prev,
-                          categoriesData: {
-                            ...prev.categoriesData,
-                            categories: value
-                              ? [...prev.categoriesData.categories, category]
-                              : prev.categoriesData.categories.filter((item) => item !== category),
-                          },
-                        }))
-                      }
-                    />
-                    <FieldLabel>{category}</FieldLabel>
-                  </Field>
-                )
-              })}
+              <Field data-invalid={Boolean(errors.categories) || undefined}>
+                <FieldLabel>Categories you supply</FieldLabel>
+                <FieldContent>
+                  {CATEGORY_OPTIONS.map((category) => {
+                    const checked = application.categoriesData.categories.includes(category)
+                    return (
+                      <Field key={category} orientation="horizontal">
+                        <Checkbox
+                          checked={checked}
+                          onCheckedChange={(value) => {
+                            clearError("categories")
+                            setApplication((prev) => ({
+                              ...prev,
+                              categoriesData: {
+                                ...prev.categoriesData,
+                                categories: value
+                                  ? [...prev.categoriesData.categories, category]
+                                  : prev.categoriesData.categories.filter(
+                                      (item) => item !== category
+                                    ),
+                              },
+                            }))
+                          }}
+                        />
+                        <FieldLabel>{category}</FieldLabel>
+                      </Field>
+                    )
+                  })}
+                  <FieldError errors={fieldError("categories")} />
+                </FieldContent>
+              </Field>
             </FieldGroup>
           ) : null}
 
@@ -506,35 +718,8 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
               <TaskRows tasks={submitTasks} />
             </div>
           ) : null}
-        </CardContent>
-
-        <CardFooter className="justify-between gap-3 border-t">
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            disabled={step <= 1 || isSaving}
-            onClick={() => setStep((current) => Math.max(1, current - 1))}
-          >
-            Back
-          </Button>
-
-          {step < 8 ? (
-            <Button
-              type="button"
-              size="lg"
-              disabled={isSaving}
-              onClick={() => void persist(step + 1)}
-            >
-              Save & continue
-            </Button>
-          ) : (
-            <Button type="button" size="lg" disabled={isSaving} onClick={() => void handleSubmit()}>
-              Submit application
-            </Button>
-          )}
-        </CardFooter>
-      </Card>
-    </div>
+      </FormLayout>
+      </StepperPanel>
+    </Stepper>
   )
 }
