@@ -11,7 +11,8 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "db:seed": "tsx db/seed-from-json.ts",
-    "db:onboarding": "tsx db/apply-onboarding-schema.ts"
+    "db:onboarding": "tsx db/apply-onboarding-schema.ts",
+    "db:portal": "tsx db/apply-vendor-portal-schema.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",

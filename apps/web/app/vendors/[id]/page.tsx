@@ -19,7 +19,11 @@ import {
   TableRow,
 } from "@workspace/ui/components/table"
 
+import { getPortalAccountByVendorId } from "@workspace/vendor-onboarding"
+
+import { PortalAccessCard } from "@/app/vendors/[id]/portal-access-card"
 import {
+  categoriesAPI,
   productsAPI,
   relationshipsAPI,
   storesAPI,
@@ -40,11 +44,14 @@ export default async function VendorDetailPage({
     notFound()
   }
 
-  const [relationships, products, stores] = await Promise.all([
-    relationshipsAPI.getByVendor(id),
-    productsAPI.list(),
-    storesAPI.list(),
-  ])
+  const [relationships, products, stores, portalAccount, categories] =
+    await Promise.all([
+      relationshipsAPI.getByVendor(id),
+      productsAPI.list(),
+      storesAPI.list(),
+      getPortalAccountByVendorId(id).catch(() => undefined),
+      categoriesAPI.list(),
+    ])
 
   const vendorProducts = products.filter((p) => p.vendorId === id)
 
@@ -108,6 +115,13 @@ export default async function VendorDetailPage({
           </dl>
         </GlassCardContent>
       </GlassCard>
+
+      <PortalAccessCard
+        vendorId={vendor.vendorId}
+        email={vendor.email}
+        account={portalAccount ?? null}
+        categories={categories}
+      />
 
       <GlassCard>
         <GlassCardHeader>

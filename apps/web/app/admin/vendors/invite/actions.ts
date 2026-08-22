@@ -2,23 +2,56 @@
 
 import {
   createInvitation,
+  createPortalAccount,
   generateRawToken,
   hashToken,
+  issuePortalLoginToken,
   listApplications,
   getApplication,
+  getPortalAccountByVendorId,
   reviewApplication,
+  resolveAllowedCategoryIds,
   countApplicationsByStatus,
   listInvitations,
   revokeInvitation,
 } from "@workspace/vendor-onboarding"
 
-import { sendInvitationEmail } from "@/lib/email"
+import { sendInvitationEmail, sendPortalWelcomeEmail } from "@/lib/email"
 import { requireStaff } from "@/lib/staff"
 import { createVendor, getNextVendorId } from "@/lib/db/vendors"
 import type { Vendor } from "@/lib/types"
 
 const ONBOARDING_APP_URL =
   process.env.ONBOARDING_APP_URL ?? "http://localhost:3001"
+const VENDOR_PORTAL_URL =
+  process.env.VENDOR_PORTAL_URL ?? "http://localhost:3002"
+
+async function issuePortalWelcome(input: {
+  vendorId: string
+  email: string
+  categoryNames?: string[]
+}) {
+  const allowedCategoryIds = await resolveAllowedCategoryIds(
+    input.categoryNames ?? []
+  )
+  const account = await createPortalAccount({
+    vendorId: input.vendorId,
+    email: input.email,
+    allowedCategoryIds,
+  })
+  const { rawToken, expiresAt } = await issuePortalLoginToken({
+    accountId: account.id,
+    purpose: "welcome",
+    ttlMs: 14 * 24 * 60 * 60 * 1000,
+  })
+  const loginUrl = `${VENDOR_PORTAL_URL}/auth/verify?token=${rawToken}`
+  await sendPortalWelcomeEmail({
+    to: account.email,
+    loginUrl,
+    expiresAt,
+  })
+  return loginUrl
+}
 
 export async function createVendorInvitation(input: {
   email: string
@@ -107,12 +140,42 @@ export async function approveVendorApplication(id: string, notes?: string) {
 
   await createVendor(vendor)
 
-  return reviewApplication(id, {
+  const welcomeUrl = await issuePortalWelcome({
+    vendorId,
+    email: application.ownerEmail,
+    categoryNames: application.categoriesData.categories,
+  })
+
+  const applicationResult = await reviewApplication(id, {
     status: "approved",
     reviewerEmail: staff.email,
     reviewerNotes: notes,
     promotedVendorId: vendorId,
   })
+
+  return { ...applicationResult, welcomeUrl }
+}
+
+export async function grantVendorPortalAccess(vendorId: string, email: string) {
+  await requireStaff()
+  const existing = await getPortalAccountByVendorId(vendorId)
+  if (existing) {
+    const { rawToken, expiresAt } = await issuePortalLoginToken({
+      accountId: existing.id,
+      purpose: "welcome",
+      ttlMs: 14 * 24 * 60 * 60 * 1000,
+    })
+    const loginUrl = `${VENDOR_PORTAL_URL}/auth/verify?token=${rawToken}`
+    await sendPortalWelcomeEmail({
+      to: existing.email,
+      loginUrl,
+      expiresAt,
+    })
+    return { ok: true as const, loginUrl }
+  }
+
+  const loginUrl = await issuePortalWelcome({ vendorId, email })
+  return { ok: true as const, loginUrl }
 }
 
 export async function rejectVendorApplication(id: string, notes?: string) {

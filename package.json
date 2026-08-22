@@ -9,7 +9,8 @@
     "format": "turbo format",
     "typecheck": "turbo typecheck",
     "deploy:web": "vercel --cwd apps/web",
-    "deploy:onboarding": "vercel --cwd apps/onboarding"
+    "deploy:onboarding": "vercel --cwd apps/onboarding",
+    "deploy:vendor-portal": "vercel --cwd apps/vendor-portal"
   },
   "devDependencies": {
     "@workspace/eslint-config": "*",

@@ -5,7 +5,9 @@
     "DATABASE_URL",
     "ONBOARDING_APP_URL",
     "ONBOARDING_SESSION_SECRET",
-    "STAFF_EMAIL"
+    "STAFF_EMAIL",
+    "VENDOR_PORTAL_URL",
+    "VENDOR_PORTAL_SESSION_SECRET"
   ],
   "tasks": {
     "build": {

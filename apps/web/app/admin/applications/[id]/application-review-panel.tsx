@@ -31,12 +31,42 @@ type ApplicationReviewPanelProps = {
 export function ApplicationReviewPanel({ application }: ApplicationReviewPanelProps) {
   const router = useRouter()
   const [isWorking, setIsWorking] = useState(false)
+  const [welcomeUrl, setWelcomeUrl] = useState<string | null>(null)
+
+  async function copyWelcomeUrl(url: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      toast.success("Portal login link copied")
+    } catch {
+      toast.error("Could not copy link")
+    }
+  }
 
   async function run(action: () => Promise<unknown>, successMessage: string) {
     setIsWorking(true)
     try {
-      await action()
-      toast.success(successMessage)
+      const result = await action()
+      const welcomeLink =
+        result &&
+        typeof result === "object" &&
+        "welcomeUrl" in result &&
+        typeof result.welcomeUrl === "string"
+          ? result.welcomeUrl
+          : null
+      if (welcomeLink) {
+        setWelcomeUrl(welcomeLink)
+        toast.success(successMessage, {
+          duration: 8000,
+          action: {
+            label: "Copy link",
+            onClick: () => {
+              void copyWelcomeUrl(welcomeLink)
+            },
+          },
+        })
+      } else {
+        toast.success(successMessage)
+      }
       router.refresh()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Action failed")
@@ -114,7 +144,7 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
               onClick: () =>
                 void run(
                   () => approveVendorApplication(application.id),
-                  "Vendor approved and promoted"
+                  "Vendor approved. Portal welcome link issued."
                 ),
               disabled: isWorking || application.status === "approved",
             },
@@ -140,6 +170,38 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
             },
           ]}
         />
+
+        {welcomeUrl ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Vendor portal login</CardTitle>
+              <CardDescription>
+                Email is logged in this environment. Copy the 14-day welcome
+                link for the vendor.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="break-all text-xs text-muted-foreground">
+                {welcomeUrl}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void copyWelcomeUrl(welcomeUrl)}
+                >
+                  Copy link
+                </Button>
+                <Button type="button" size="sm" asChild>
+                  <a href={welcomeUrl} target="_blank" rel="noreferrer">
+                    Open portal
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
 
         {application.status === "submitted" ? (
           <Button
