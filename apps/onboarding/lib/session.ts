@@ -11,7 +11,7 @@ export type VendorSession = {
 }
 
 function getSecret() {
-  const secret = process.env.ONBOARDING_SESSION_SECRET
+  const secret = process.env["ONBOARDING_SESSION_SECRET"]?.trim()
   if (!secret) {
     throw new Error("ONBOARDING_SESSION_SECRET is required")
   }

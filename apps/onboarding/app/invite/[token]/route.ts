@@ -8,6 +8,8 @@ import {
 
 import { applyVendorSessionCookie } from "@/lib/session"
 
+export const runtime = "nodejs"
+
 type RouteParams = { params: Promise<{ token: string }> }
 
 export async function GET(request: Request, { params }: RouteParams) {
