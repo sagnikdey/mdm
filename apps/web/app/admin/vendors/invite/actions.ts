@@ -140,11 +140,20 @@ export async function approveVendorApplication(id: string, notes?: string) {
 
   await createVendor(vendor)
 
-  const welcomeUrl = await issuePortalWelcome({
-    vendorId,
-    email: application.ownerEmail,
-    categoryNames: application.categoriesData.categories,
-  })
+  let welcomeUrl: string | null = null
+  try {
+    const portalEmail =
+      application.ownerEmail || application.contactData.email
+    if (portalEmail) {
+      welcomeUrl = await issuePortalWelcome({
+        vendorId,
+        email: portalEmail,
+        categoryNames: application.categoriesData?.categories ?? [],
+      })
+    }
+  } catch (error) {
+    console.error("[vendor-portal-welcome] skipped portal handoff", error)
+  }
 
   const applicationResult = await reviewApplication(id, {
     status: "approved",

@@ -17,7 +17,12 @@ import { requireStaff } from "@/lib/staff"
 
 export async function fetchPendingSubmissions() {
   await requireStaff()
-  return listAllPendingInboxItems()
+  try {
+    return await listAllPendingInboxItems()
+  } catch (error) {
+    console.error("[vendor-submissions] inbox query failed", error)
+    return []
+  }
 }
 
 export async function fetchProfileEditReview(id: string) {

@@ -67,20 +67,38 @@ export async function createPortalAccount(input: {
   email: string
   allowedCategoryIds?: string[]
 }) {
-  const result = await query<AccountRow>(
-    `INSERT INTO vendor_portal_accounts (vendor_id, email, allowed_category_ids)
-     VALUES ($1, $2, $3::jsonb)
-     ON CONFLICT (vendor_id) DO UPDATE SET
-       email = EXCLUDED.email,
-       allowed_category_ids = EXCLUDED.allowed_category_ids
-     RETURNING *`,
-    [
-      input.vendorId,
-      input.email.toLowerCase(),
-      JSON.stringify(input.allowedCategoryIds ?? []),
-    ]
-  )
-  return mapAccount(result.rows[0]!)
+  const email = input.email.trim().toLowerCase()
+  const allowedCategoryIds = JSON.stringify(input.allowedCategoryIds ?? [])
+
+  try {
+    const result = await query<AccountRow>(
+      `INSERT INTO vendor_portal_accounts (vendor_id, email, allowed_category_ids)
+       VALUES ($1, $2, $3::jsonb)
+       ON CONFLICT (vendor_id) DO UPDATE SET
+         email = EXCLUDED.email,
+         allowed_category_ids = EXCLUDED.allowed_category_ids
+       RETURNING *`,
+      [input.vendorId, email, allowedCategoryIds]
+    )
+    return mapAccount(result.rows[0]!)
+  } catch (error) {
+    const code =
+      typeof error === "object" && error && "code" in error
+        ? String(error.code)
+        : ""
+    if (code !== "23505") throw error
+
+    const existing =
+      (await getPortalAccountByVendorId(input.vendorId)) ??
+      (await getPortalAccountByEmail(email))
+    if (!existing) throw error
+    if (existing.vendorId !== input.vendorId) {
+      throw new Error(
+        `A portal account already exists for ${email}. Grant access from the vendor page with a different email.`
+      )
+    }
+    return existing
+  }
 }
 
 export async function getPortalAccountByEmail(email: string) {
