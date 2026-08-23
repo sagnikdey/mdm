@@ -20,14 +20,13 @@ import {
 } from "@workspace/vendor-onboarding"
 
 import { sendInvitationEmail, sendPortalWelcomeEmail } from "@/lib/email"
+import { getVendorPortalUrl } from "@/lib/portal-url"
 import { requireStaff } from "@/lib/staff"
 import { createVendor, getNextVendorId } from "@/lib/db/vendors"
 import type { Vendor } from "@/lib/types"
 
 const ONBOARDING_APP_URL =
   process.env.ONBOARDING_APP_URL ?? "http://localhost:3001"
-const VENDOR_PORTAL_URL =
-  process.env.VENDOR_PORTAL_URL ?? "http://localhost:3002"
 
 async function issuePortalWelcome(input: {
   vendorId: string
@@ -47,7 +46,7 @@ async function issuePortalWelcome(input: {
     purpose: "welcome",
     ttlMs: 14 * 24 * 60 * 60 * 1000,
   })
-  const loginUrl = `${VENDOR_PORTAL_URL}/auth/verify?token=${rawToken}`
+  const loginUrl = `${getVendorPortalUrl()}/auth/verify?token=${rawToken}`
   await sendPortalWelcomeEmail({
     to: account.email,
     loginUrl,
@@ -176,7 +175,7 @@ async function grantPortalAccessOnce(vendorId: string, email: string) {
       purpose: "welcome",
       ttlMs: 14 * 24 * 60 * 60 * 1000,
     })
-    const loginUrl = `${VENDOR_PORTAL_URL}/auth/verify?token=${rawToken}`
+    const loginUrl = `${getVendorPortalUrl()}/auth/verify?token=${rawToken}`
     await sendPortalWelcomeEmail({
       to: existing.email,
       loginUrl,

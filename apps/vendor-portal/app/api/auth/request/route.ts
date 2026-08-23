@@ -9,11 +9,10 @@ import { allowLoginRequest } from "@/lib/auth/rate-limit"
 
 const LOGIN_TTL_MS = 15 * 60 * 1000
 
-function portalUrl() {
-  return (
-    process.env["VENDOR_PORTAL_URL"]?.replace(/\/$/, "") ??
-    "http://localhost:3002"
-  )
+function portalUrl(request: Request) {
+  const fromEnv = process.env["VENDOR_PORTAL_URL"]?.trim().replace(/\/$/, "")
+  if (fromEnv) return fromEnv
+  return new URL(request.url).origin
 }
 
 export async function POST(request: Request) {
@@ -40,7 +39,7 @@ export async function POST(request: Request) {
 
   await sendPortalLoginEmail({
     to: account.email,
-    loginUrl: `${portalUrl()}/auth/verify?token=${rawToken}`,
+    loginUrl: `${portalUrl(request)}/auth/verify?token=${rawToken}`,
     expiresAt,
     purpose: "login",
   })
