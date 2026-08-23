@@ -1,14 +1,6 @@
 import { listPendingProductInboxItems } from "./catalog"
+import { isMissingRelation } from "./portal-schema"
 import { listPendingInboxItems as listPendingProfileInboxItems } from "./profile-edits"
-
-function isMissingRelation(error: unknown) {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    String(error.code) === "42P01"
-  )
-}
 
 async function safeList<T>(fn: () => Promise<T[]>) {
   try {

@@ -3,12 +3,15 @@
 import {
   createInvitation,
   createPortalAccount,
+  ensurePortalSchema,
   generateRawToken,
   hashToken,
   issuePortalLoginToken,
   listApplications,
   getApplication,
   getPortalAccountByVendorId,
+  isMissingRelation,
+  portalActionError,
   reviewApplication,
   resolveAllowedCategoryIds,
   countApplicationsByStatus,
@@ -165,8 +168,7 @@ export async function approveVendorApplication(id: string, notes?: string) {
   return { ...applicationResult, welcomeUrl }
 }
 
-export async function grantVendorPortalAccess(vendorId: string, email: string) {
-  await requireStaff()
+async function grantPortalAccessOnce(vendorId: string, email: string) {
   const existing = await getPortalAccountByVendorId(vendorId)
   if (existing) {
     const { rawToken, expiresAt } = await issuePortalLoginToken({
@@ -185,6 +187,27 @@ export async function grantVendorPortalAccess(vendorId: string, email: string) {
 
   const loginUrl = await issuePortalWelcome({ vendorId, email })
   return { ok: true as const, loginUrl }
+}
+
+export async function grantVendorPortalAccess(vendorId: string, email: string) {
+  await requireStaff()
+  if (!email.trim()) {
+    throw new Error("This vendor has no email. Add one before granting portal access.")
+  }
+
+  try {
+    return await grantPortalAccessOnce(vendorId, email)
+  } catch (error) {
+    if (isMissingRelation(error)) {
+      try {
+        await ensurePortalSchema()
+        return await grantPortalAccessOnce(vendorId, email)
+      } catch (retryError) {
+        throw portalActionError(retryError)
+      }
+    }
+    throw portalActionError(error)
+  }
 }
 
 export async function rejectVendorApplication(id: string, notes?: string) {
