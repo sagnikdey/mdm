@@ -27,12 +27,16 @@ export default async function PortalProductPage({ params }: PageProps) {
 
   const rows = [
     ["SKU", product.sku],
+    ["Brand", product.brand || "—"],
+    ["Manufacturer", product.manufacturer || "—"],
     ["Vendor SKU", product.vendorSku],
     ["Category", product.categoryName],
+    ["Pack", `${product.packType} / ${product.packSize}`],
+    ["Base unit", product.baseUnitSku || "—"],
     ["Wholesale", `$${product.wholesalePrice.toFixed(2)}`],
     ["Unit of measure", product.unitOfMeasure || "—"],
     ["Units per case", String(product.unitsPerCase)],
-    ["Weight", String(product.weight)],
+    ["Weight", `${product.weight} ${product.weightUnit}`],
     ["Barcode", product.barcode || "—"],
   ]
 

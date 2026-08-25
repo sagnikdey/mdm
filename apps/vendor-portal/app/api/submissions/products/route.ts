@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import {
-  createProductSubmission,
+  appendDraftItems,
   getPortalAccountById,
+  normalizeProposedProduct,
 } from "@workspace/vendor-onboarding"
 
 import { getPortalSession } from "@/lib/auth/session"
@@ -27,14 +28,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const submission = await createProductSubmission({
+    const packet = await appendDraftItems({
       vendorId: session.vendorId,
       submittedBy: session.email,
       allowedCategoryIds: account.allowedCategoryIds,
       source: "single_form",
-      items: [parsed.data],
+      items: [normalizeProposedProduct(parsed.data)],
     })
-    return NextResponse.json({ ok: true, id: submission.id })
+    return NextResponse.json({ ok: true, id: packet?.id, itemCount: packet?.itemCount })
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Submit failed" },

@@ -53,6 +53,8 @@ export function ProductForm({ initialValues, mode }: ProductFormProps) {
     defaultValues: initialValues ?? {
       sku: "",
       productName: "",
+      brand: "",
+      manufacturer: "",
       categoryId: "",
       vendorId: "",
       vendorSku: "",
@@ -61,7 +63,11 @@ export function ProductForm({ initialValues, mode }: ProductFormProps) {
       unitsPerCase: 1,
       wholesalePrice: 0,
       weight: 0,
+      weightUnit: "lb",
       barcode: "",
+      packType: "case",
+      packSize: 1,
+      baseUnitSku: null,
       isActive: true,
     },
   })
@@ -108,6 +114,21 @@ export function ProductForm({ initialValues, mode }: ProductFormProps) {
             <FieldContent>
               <Input id="productName" {...form.register("productName")} />
               <FieldError errors={[form.formState.errors.productName]} />
+            </FieldContent>
+          </Field>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="brand">Brand</FieldLabel>
+            <FieldContent>
+              <Input id="brand" {...form.register("brand")} />
+            </FieldContent>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="manufacturer">Manufacturer</FieldLabel>
+            <FieldContent>
+              <Input id="manufacturer" {...form.register("manufacturer")} />
             </FieldContent>
           </Field>
         </div>
@@ -174,6 +195,49 @@ export function ProductForm({ initialValues, mode }: ProductFormProps) {
 
         <div className="grid gap-4 md:grid-cols-3">
           <Field>
+            <FieldLabel>Pack type</FieldLabel>
+            <FieldContent>
+              <Select
+                value={form.watch("packType")}
+                onValueChange={(value) => form.setValue("packType", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="single">Single</SelectItem>
+                  <SelectItem value="multi_pack">Multi-pack</SelectItem>
+                  <SelectItem value="case">Case</SelectItem>
+                </SelectContent>
+              </Select>
+            </FieldContent>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="packSize">Pack size</FieldLabel>
+            <FieldContent>
+              <Input
+                id="packSize"
+                type="number"
+                {...form.register("packSize", { valueAsNumber: true })}
+              />
+            </FieldContent>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="baseUnitSku">Base unit SKU</FieldLabel>
+            <FieldContent>
+              <Input
+                id="baseUnitSku"
+                value={form.watch("baseUnitSku") ?? ""}
+                onChange={(event) =>
+                  form.setValue("baseUnitSku", event.target.value || null)
+                }
+              />
+            </FieldContent>
+          </Field>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <Field>
             <FieldLabel htmlFor="unitOfMeasure">Unit of Measure</FieldLabel>
             <FieldContent>
               <Input id="unitOfMeasure" {...form.register("unitOfMeasure")} />
@@ -198,11 +262,17 @@ export function ProductForm({ initialValues, mode }: ProductFormProps) {
           </Field>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <Field>
-            <FieldLabel htmlFor="weight">Weight (lbs)</FieldLabel>
+            <FieldLabel htmlFor="weight">Weight</FieldLabel>
             <FieldContent>
               <Input id="weight" type="number" step="0.01" {...form.register("weight", { valueAsNumber: true })} />
+            </FieldContent>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="weightUnit">Weight unit</FieldLabel>
+            <FieldContent>
+              <Input id="weightUnit" {...form.register("weightUnit")} />
             </FieldContent>
           </Field>
           <Field>

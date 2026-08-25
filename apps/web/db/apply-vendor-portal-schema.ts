@@ -34,6 +34,11 @@ async function main() {
   try {
     const sql = readFileSync(join(__dirname, "schema-vendor-portal.sql"), "utf-8")
     await client.query(sql)
+    const onboarding = readFileSync(
+      join(__dirname, "schema-product-onboarding.sql"),
+      "utf-8"
+    )
+    await client.query(onboarding)
     console.log("Vendor portal schema applied.")
   } finally {
     await client.end()

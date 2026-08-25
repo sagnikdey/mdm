@@ -23,3 +23,7 @@ export function allowLoginRequest(email: string, ip: string) {
 export function allowVerifyAttempt(ip: string) {
   return hit(`verify:${ip}`, 30, HOUR)
 }
+
+export function allowBarcodeLookup(accountId: string) {
+  return hit(`lookup:${accountId}`, 30, HOUR)
+}

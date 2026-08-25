@@ -1,5 +1,5 @@
 export type PortalAccountStatus = "active" | "suspended"
-export type SubmissionStatus = "pending" | "approved" | "rejected"
+export type SubmissionStatus = "draft" | "pending" | "approved" | "rejected"
 export type LoginTokenPurpose = "login" | "welcome"
 
 export type VendorProfileFields = {
@@ -47,6 +47,8 @@ export type VendorSubmissionInboxItem = {
 export type CatalogProduct = {
   sku: string
   productName: string
+  brand: string
+  manufacturer: string
   categoryId: string
   categoryName: string
   vendorSku: string
@@ -55,20 +57,12 @@ export type CatalogProduct = {
   unitsPerCase: number
   wholesalePrice: number
   weight: number
+  weightUnit: string
   barcode: string
+  packType: string
+  packSize: number
+  baseUnitSku: string | null
   isActive: boolean
-}
-
-export type ProposedProduct = {
-  vendorSku: string
-  productName: string
-  categoryId: string
-  description: string
-  unitOfMeasure: string
-  unitsPerCase: number
-  wholesalePrice: number
-  weight: number
-  barcode: string
 }
 
 export type ProductSubmissionItem = {
@@ -76,6 +70,8 @@ export type ProductSubmissionItem = {
   submissionId: string
   proposedSku: string
   productName: string
+  brand: string
+  manufacturer: string
   categoryId: string | null
   vendorSku: string
   description: string
@@ -83,10 +79,16 @@ export type ProductSubmissionItem = {
   unitsPerCase: number
   wholesalePrice: number
   weight: number
+  weightUnit: string
   barcode: string
+  noBarcode: boolean
+  packType: string
+  packSize: number
+  baseUnitVendorSku: string
   itemStatus: SubmissionStatus
   itemNote: string | null
   createdSku: string | null
+  errors: string[]
 }
 
 export type ProductSubmission = {

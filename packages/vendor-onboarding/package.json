@@ -5,13 +5,16 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./portal-types": "./src/portal-types.ts",
+    "./product-fields": "./src/product-fields.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "pg": "^8.23.0"
+    "pg": "^8.23.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@types/pg": "^8.21.0",

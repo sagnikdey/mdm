@@ -81,6 +81,12 @@ CREATE TABLE IF NOT EXISTS product_submission_items (
     weight DECIMAL(8, 3),
     barcode VARCHAR(50),
     manufacturer VARCHAR(255),
+    brand VARCHAR(128),
+    weight_unit VARCHAR(8) NOT NULL DEFAULT 'lb',
+    pack_type VARCHAR(16) NOT NULL DEFAULT 'case',
+    pack_size INT NOT NULL DEFAULT 1,
+    base_unit_vendor_sku VARCHAR(100),
+    no_barcode BOOLEAN NOT NULL DEFAULT false,
     item_status submission_status NOT NULL DEFAULT 'pending',
     item_note TEXT,
     created_sku VARCHAR(50)

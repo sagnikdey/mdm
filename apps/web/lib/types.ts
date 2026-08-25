@@ -41,6 +41,8 @@ export interface CategoryTreeNode extends Category {
 export interface Product {
   sku: string
   productName: string
+  brand: string
+  manufacturer: string
   categoryId: string
   vendorId: string
   vendorSku: string
@@ -49,7 +51,11 @@ export interface Product {
   unitsPerCase: number
   wholesalePrice: number
   weight: number
+  weightUnit: string
   barcode: string
+  packType: string
+  packSize: number
+  baseUnitSku: string | null
   isActive: boolean
 }
 

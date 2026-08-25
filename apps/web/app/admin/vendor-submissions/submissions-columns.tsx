@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
 
-import type { VendorSubmissionInboxItem } from "@workspace/vendor-onboarding"
+import type { VendorSubmissionInboxItem } from "@workspace/vendor-onboarding/portal-types"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 

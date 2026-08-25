@@ -2,9 +2,9 @@ import { Plus } from "lucide-react"
 import Link from "next/link"
 
 import {
+  getAnnotatedPacket,
   getPortalAccountById,
   listCategoriesByIds,
-  listPendingCatalogItems,
   listVendorProducts,
 } from "@workspace/vendor-onboarding"
 
@@ -17,10 +17,10 @@ export default async function ProductsPage() {
   const account = await getPortalAccountById(session.accountId)
   const allowedCategoryIds = account?.allowedCategoryIds ?? []
 
-  const [products, pending, categories] = await Promise.all([
+  const [products, categories, packet] = await Promise.all([
     listVendorProducts(session.vendorId),
-    listPendingCatalogItems(session.vendorId),
     listCategoriesByIds(allowedCategoryIds),
+    getAnnotatedPacket(session.vendorId, allowedCategoryIds),
   ])
 
   return (
@@ -29,22 +29,31 @@ export default async function ProductsPage() {
         <div>
           <h2 className="text-3xl font-bold">Products</h2>
           <p className="mt-1 text-muted-foreground">
-            Live catalog plus submissions waiting for MDM review
+            Live catalog. New items go into a draft packet, then MDM review.
           </p>
         </div>
         <Button asChild size="lg">
-          <Link href="/products/new">
+          <Link href="/products/add">
             <Plus data-icon="inline-start" />
-            New Product
+            Add products
           </Link>
         </Button>
       </div>
 
-      <ProductsTable
-        products={products}
-        pending={pending}
-        categories={categories}
-      />
+      {packet ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-muted/40 px-4 py-3 text-sm">
+          <p>
+            {packet.status === "pending"
+              ? `${packet.itemCount} products waiting for MDM review.`
+              : `${packet.itemCount} products in your draft packet.`}
+          </p>
+          <Button asChild size="sm">
+            <Link href="/products/review">Open packet</Link>
+          </Button>
+        </div>
+      ) : null}
+
+      <ProductsTable products={products} categories={categories} />
     </div>
   )
 }

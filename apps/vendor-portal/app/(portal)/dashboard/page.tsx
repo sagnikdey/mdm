@@ -2,9 +2,10 @@ import Link from "next/link"
 import { FileEdit, Package, Settings } from "lucide-react"
 
 import {
+  getAnnotatedPacket,
   getPendingProfileEdit,
+  getPortalAccountById,
   getVendorSnapshot,
-  listPendingCatalogItems,
   listVendorProducts,
 } from "@workspace/vendor-onboarding"
 
@@ -19,12 +20,16 @@ import {
 
 export default async function DashboardPage() {
   const session = await requireVendorSession()
-  const [profile, products, pendingItems, pendingEdit] = await Promise.all([
+  const account = await getPortalAccountById(session.accountId)
+  const [profile, products, packet, pendingEdit] = await Promise.all([
     getVendorSnapshot(session.vendorId),
     listVendorProducts(session.vendorId),
-    listPendingCatalogItems(session.vendorId),
+    getAnnotatedPacket(session.vendorId, account?.allowedCategoryIds ?? []),
     getPendingProfileEdit(session.vendorId),
   ])
+
+  const packetCount = packet?.itemCount ?? 0
+  const packetPending = packet?.status === "pending"
 
   const stats = [
     {
@@ -35,12 +40,12 @@ export default async function DashboardPage() {
       description: `${products.filter((product) => product.isActive).length} live SKUs`,
     },
     {
-      label: "Pending review",
-      value: pendingItems.length + (pendingEdit ? 1 : 0),
-      href: pendingItems.length ? "/products" : "/settings",
+      label: packetPending ? "Pending review" : "Draft packet",
+      value: packetCount + (pendingEdit ? 1 : 0),
+      href: packetCount ? "/products/review" : pendingEdit ? "/settings" : "/products/add",
       icon: FileEdit,
-      description: pendingItems.length
-        ? `${pendingItems.length} product submission${pendingItems.length === 1 ? "" : "s"}`
+      description: packetCount
+        ? `${packetCount} product${packetCount === 1 ? "" : "s"} ${packetPending ? "waiting" : "in draft"}`
         : pendingEdit
           ? "Profile edit waiting"
           : "Nothing waiting",
@@ -89,8 +94,8 @@ export default async function DashboardPage() {
         <GlassCardHeader>
           <GlassCardTitle>Catalog</GlassCardTitle>
           <GlassCardDescription>
-            Add products the same way MDM does. New items go to staff review
-            before they become live SKUs.
+            Add products in bulk, by barcode, or by hand. Send the packet once
+            when you are done — MDM reviews the whole list.
           </GlassCardDescription>
         </GlassCardHeader>
       </GlassCard>

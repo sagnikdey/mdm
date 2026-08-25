@@ -9,7 +9,7 @@ import { toast } from "sonner"
 import type {
   VendorProfileEdit,
   VendorProfileFields,
-} from "@workspace/vendor-onboarding"
+} from "@workspace/vendor-onboarding/portal-types"
 import { ApprovalCard } from "@workspace/ui/components/approval-card"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"

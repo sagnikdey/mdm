@@ -67,6 +67,8 @@ CREATE TABLE operating_hours (
 CREATE TABLE products (
     sku VARCHAR(50) PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
+    brand VARCHAR(128),
+    manufacturer VARCHAR(255),
     category_id VARCHAR(20) NOT NULL REFERENCES categories(category_id),
     vendor_id VARCHAR(20) NOT NULL REFERENCES vendors(vendor_id) ON DELETE RESTRICT,
     vendor_sku VARCHAR(100) NOT NULL,
@@ -75,7 +77,11 @@ CREATE TABLE products (
     units_per_case INT DEFAULT 1,
     wholesale_price DECIMAL(10, 2) NOT NULL,
     weight DECIMAL(8, 3),
+    weight_unit VARCHAR(8) NOT NULL DEFAULT 'lb',
     barcode VARCHAR(50),
+    pack_type VARCHAR(16) NOT NULL DEFAULT 'case',
+    pack_size INT NOT NULL DEFAULT 1,
+    base_unit_sku VARCHAR(50) REFERENCES products(sku) ON DELETE SET NULL,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -85,6 +91,10 @@ CREATE INDEX idx_products_name ON products(product_name);
 CREATE INDEX idx_products_category ON products(category_id);
 CREATE INDEX idx_products_vendor ON products(vendor_id);
 CREATE INDEX idx_products_active ON products(is_active);
+CREATE UNIQUE INDEX products_vendor_sku_unique ON products (vendor_id, vendor_sku);
+CREATE UNIQUE INDEX products_vendor_barcode_unique
+  ON products (vendor_id, barcode)
+  WHERE barcode IS NOT NULL AND barcode <> '';
 
 CREATE TABLE store_vendor_relationships (
     relationship_id VARCHAR(20) PRIMARY KEY,

@@ -11,6 +11,8 @@ import {
 } from "@workspace/ui/components/glass-card"
 import { cn } from "@workspace/ui/lib/utils"
 
+export const formContainerClassName = "mx-auto w-full max-w-6xl"
+
 export type FormLayoutProps = {
   title: string
   description: string
@@ -71,5 +73,7 @@ export function FormLayout({
     return <div className={className}>{card}</div>
   }
 
-  return <div className={cn("mx-auto max-w-3xl p-6", className)}>{card}</div>
+  return (
+    <div className={cn(formContainerClassName, "p-6", className)}>{card}</div>
+  )
 }

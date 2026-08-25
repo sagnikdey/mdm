@@ -51,6 +51,8 @@ export type CategoryRow = {
 export type ProductRow = {
   sku: string
   product_name: string
+  brand: string | null
+  manufacturer: string | null
   category_id: string
   vendor_id: string
   vendor_sku: string
@@ -59,7 +61,11 @@ export type ProductRow = {
   units_per_case: number | null
   wholesale_price: string | number
   weight: string | number | null
+  weight_unit: string | null
   barcode: string | null
+  pack_type: string | null
+  pack_size: number | null
+  base_unit_sku: string | null
   is_active: boolean
 }
 
@@ -150,6 +156,8 @@ export function mapProduct(row: ProductRow): Product {
   return {
     sku: row.sku,
     productName: row.product_name,
+    brand: row.brand ?? "",
+    manufacturer: row.manufacturer ?? "",
     categoryId: row.category_id,
     vendorId: row.vendor_id,
     vendorSku: row.vendor_sku,
@@ -158,7 +166,11 @@ export function mapProduct(row: ProductRow): Product {
     unitsPerCase: row.units_per_case ?? 1,
     wholesalePrice: Number(row.wholesale_price),
     weight: Number(row.weight ?? 0),
+    weightUnit: row.weight_unit ?? "lb",
     barcode: row.barcode ?? "",
+    packType: row.pack_type ?? "case",
+    packSize: row.pack_size ?? row.units_per_case ?? 1,
+    baseUnitSku: row.base_unit_sku,
     isActive: row.is_active,
   }
 }

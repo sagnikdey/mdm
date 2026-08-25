@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
-import type { VendorProfileFields } from "@workspace/vendor-onboarding"
+import type { VendorProfileFields } from "@workspace/vendor-onboarding/portal-types"
 import { Field, FieldContent, FieldLabel } from "@workspace/ui/components/field"
 import { FormLayout } from "@workspace/ui/components/form-layout"
 import { Input } from "@workspace/ui/components/input"

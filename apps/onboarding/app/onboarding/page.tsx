@@ -1,5 +1,8 @@
 import { redirect } from "next/navigation"
 
+import { formContainerClassName } from "@workspace/ui/components/form-layout"
+import { cn } from "@workspace/ui/lib/utils"
+
 import { getVendorSession } from "@/lib/session"
 import { getOnboardingApplication } from "@/app/onboarding/actions"
 import { OnboardingWizard } from "@/components/onboarding-wizard"
@@ -11,7 +14,7 @@ export default async function OnboardingPage() {
   const application = await getOnboardingApplication()
 
   return (
-    <main className="mx-auto min-h-screen max-w-6xl p-6">
+    <main className={cn(formContainerClassName, "min-h-screen p-6")}>
       <div className="mb-6">
         <p className="text-xs uppercase tracking-wide text-muted-foreground">
           Vendor onboarding

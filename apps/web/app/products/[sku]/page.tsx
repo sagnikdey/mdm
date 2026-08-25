@@ -120,6 +120,14 @@ export default async function ProductDetailPage({
         </CardHeader>
         <CardContent className="grid gap-2 text-sm sm:grid-cols-2">
           <p>
+            <span className="text-muted-foreground">Brand: </span>
+            {product.brand || "—"}
+          </p>
+          <p>
+            <span className="text-muted-foreground">Manufacturer: </span>
+            {product.manufacturer || "—"}
+          </p>
+          <p>
             <span className="text-muted-foreground">Description: </span>
             {product.description}
           </p>
@@ -132,12 +140,17 @@ export default async function ProductDetailPage({
             {product.barcode}
           </p>
           <p>
+            <span className="text-muted-foreground">Pack: </span>
+            {product.packType} / {product.packSize}
+            {product.baseUnitSku ? ` (base ${product.baseUnitSku})` : ""}
+          </p>
+          <p>
             <span className="text-muted-foreground">Units per Case: </span>
             {product.unitsPerCase}
           </p>
           <p>
             <span className="text-muted-foreground">Weight: </span>
-            {product.weight} lbs
+            {product.weight} {product.weightUnit}
           </p>
         </CardContent>
       </Card>

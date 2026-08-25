@@ -9,7 +9,7 @@ import { toast } from "sonner"
 import type {
   CatalogCategory,
   ProductSubmission,
-} from "@workspace/vendor-onboarding"
+} from "@workspace/vendor-onboarding/portal-types"
 import { ApprovalCard } from "@workspace/ui/components/approval-card"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
@@ -108,8 +108,11 @@ export function ProductSubmissionReview({
               <TableHeader>
                 <TableRow>
                   <TableHead>Product</TableHead>
+                  <TableHead>Brand</TableHead>
                   <TableHead>Vendor SKU</TableHead>
+                  <TableHead>Barcode</TableHead>
                   <TableHead>Category</TableHead>
+                  <TableHead>Pack</TableHead>
                   <TableHead>Wholesale</TableHead>
                   <TableHead>MDM SKU</TableHead>
                 </TableRow>
@@ -120,8 +123,18 @@ export function ProductSubmissionReview({
                     <TableCell className="font-medium">
                       {item.productName}
                     </TableCell>
+                    <TableCell>{item.brand || "—"}</TableCell>
                     <TableCell>{item.vendorSku}</TableCell>
+                    <TableCell>
+                      {item.noBarcode ? "None" : item.barcode || "—"}
+                    </TableCell>
                     <TableCell>{categoryName(item.categoryId)}</TableCell>
+                    <TableCell>
+                      {item.packType} / {item.packSize}
+                      {item.baseUnitVendorSku
+                        ? ` → ${item.baseUnitVendorSku}`
+                        : ""}
+                    </TableCell>
                     <TableCell>${item.wholesalePrice.toFixed(2)}</TableCell>
                     <TableCell>{item.createdSku ?? "Assigned on approve"}</TableCell>
                   </TableRow>
@@ -162,10 +175,10 @@ export function ProductSubmissionReview({
         <ApprovalCard
           title="Review decision"
           description="Approved items are inserted into the product master with a new PRD SKU."
-          question={`Add ${submission.itemCount} product${submission.itemCount === 1 ? "" : "s"} for ${submission.vendorId}?`}
+          question={`Approve this packet of ${submission.itemCount} product${submission.itemCount === 1 ? "" : "s"} for ${submission.vendorId}?`}
           actions={[
             {
-              label: "Approve",
+              label: "Approve packet",
               onClick: () =>
                 void run(
                   () => approveProductSubmission(submission.id, notes || undefined),
@@ -174,7 +187,7 @@ export function ProductSubmissionReview({
               disabled: isWorking || !isPending,
             },
             {
-              label: "Reject",
+              label: "Reject packet",
               variant: "destructive",
               onClick: () =>
                 void run(
@@ -183,7 +196,7 @@ export function ProductSubmissionReview({
                       submission.id,
                       notes || undefined
                     ),
-                  "Product submission rejected"
+                  "Packet returned to vendor"
                 ),
               disabled: isWorking || !isPending,
             },
