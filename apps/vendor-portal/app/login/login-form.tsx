@@ -49,12 +49,36 @@ export function LoginForm() {
       >
         {error === "invalid" ? (
           <p className="text-sm text-destructive">
-            That login link is invalid or expired. Request a new one.
+            That login link is invalid. Ask MDM to grant portal access again,
+            or request a new link below.
+          </p>
+        ) : null}
+        {error === "expired" ? (
+          <p className="text-sm text-destructive">
+            That login link has expired. Request a new one below.
           </p>
         ) : null}
         {error === "suspended" ? (
           <p className="text-sm text-destructive">
             This portal account is suspended. Contact your buyer.
+          </p>
+        ) : null}
+        {error === "config" ? (
+          <p className="text-sm text-destructive">
+            Vendor portal is missing DATABASE_URL or VENDOR_PORTAL_SESSION_SECRET
+            on its Vercel project. Those must match MDM&apos;s production
+            database.
+          </p>
+        ) : null}
+        {error === "unavailable" ? (
+          <p className="text-sm text-destructive">
+            Could not reach the login database. Check that the vendor-portal
+            Vercel project uses the same DATABASE_URL as MDM.
+          </p>
+        ) : null}
+        {error === "rate_limited" ? (
+          <p className="text-sm text-destructive">
+            Too many login attempts. Wait a few minutes and request a new link.
           </p>
         ) : null}
         <Field>

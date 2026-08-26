@@ -24,7 +24,7 @@ function mapToken(row: TokenRow): VendorPortalLoginToken {
     accountId: row.account_id,
     tokenHash: row.token_hash,
     purpose: row.purpose,
-    expiresAt: asIso(row.expires_at) ?? new Date().toISOString(),
+    expiresAt: asIso(row.expires_at) ?? "",
     usedAt: asIso(row.used_at),
     requestedFromIp: row.requested_from_ip,
     createdAt: asIso(row.created_at) ?? new Date().toISOString(),
