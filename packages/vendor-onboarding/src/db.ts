@@ -16,11 +16,19 @@ function getDatabaseUrl() {
   return url
 }
 
+function sslConfig(connectionString: string) {
+  if (/sslmode=disable/i.test(connectionString)) return undefined
+  if (/(localhost|127\.0\.0\.1)/i.test(connectionString)) return undefined
+  return { rejectUnauthorized: false }
+}
+
 export function getPool() {
   if (!globalForPg.onboardingPool) {
+    const connectionString = getDatabaseUrl()
     globalForPg.onboardingPool = new Pool({
-      connectionString: getDatabaseUrl(),
+      connectionString,
       max: 10,
+      ssl: sslConfig(connectionString),
     })
   }
 
