@@ -70,35 +70,50 @@ export async function createPortalAccount(input: {
   const email = input.email.trim().toLowerCase()
   const allowedCategoryIds = JSON.stringify(input.allowedCategoryIds ?? [])
 
-  try {
-    const result = await query<AccountRow>(
-      `INSERT INTO vendor_portal_accounts (vendor_id, email, allowed_category_ids)
-       VALUES ($1, $2, $3::jsonb)
-       ON CONFLICT (vendor_id) DO UPDATE SET
-         email = EXCLUDED.email,
-         allowed_category_ids = EXCLUDED.allowed_category_ids
-       RETURNING *`,
-      [input.vendorId, email, allowedCategoryIds]
-    )
-    return mapAccount(result.rows[0]!)
-  } catch (error) {
-    const code =
-      typeof error === "object" && error && "code" in error
-        ? String(error.code)
-        : ""
-    if (code !== "23505") throw error
-
-    const existing =
-      (await getPortalAccountByVendorId(input.vendorId)) ??
-      (await getPortalAccountByEmail(email))
-    if (!existing) throw error
-    if (existing.vendorId !== input.vendorId) {
+  const existingForVendor = await getPortalAccountByVendorId(input.vendorId)
+  if (existingForVendor) {
+    const existingForEmail = await getPortalAccountByEmail(email)
+    if (existingForEmail && existingForEmail.vendorId !== input.vendorId) {
       throw new Error(
         `A portal account already exists for ${email}. Grant access from the vendor page with a different email.`
       )
     }
-    return existing
+
+    const result = await query<AccountRow>(
+      `UPDATE vendor_portal_accounts
+       SET email = $2,
+           allowed_category_ids = $3::jsonb
+       WHERE vendor_id = $1
+       RETURNING *`,
+      [input.vendorId, email, allowedCategoryIds]
+    )
+    return mapAccount(result.rows[0]!)
   }
+
+  const existingForEmail = await getPortalAccountByEmail(email)
+  if (existingForEmail) {
+    if (existingForEmail.vendorId !== input.vendorId) {
+      throw new Error(
+        `A portal account already exists for ${email}. Grant access from the vendor page with a different email.`
+      )
+    }
+    const result = await query<AccountRow>(
+      `UPDATE vendor_portal_accounts
+       SET allowed_category_ids = $2::jsonb
+       WHERE vendor_id = $1
+       RETURNING *`,
+      [input.vendorId, allowedCategoryIds]
+    )
+    return mapAccount(result.rows[0]!)
+  }
+
+  const result = await query<AccountRow>(
+    `INSERT INTO vendor_portal_accounts (vendor_id, email, allowed_category_ids)
+     VALUES ($1, $2, $3::jsonb)
+     RETURNING *`,
+    [input.vendorId, email, allowedCategoryIds]
+  )
+  return mapAccount(result.rows[0]!)
 }
 
 export async function getPortalAccountByEmail(email: string) {
