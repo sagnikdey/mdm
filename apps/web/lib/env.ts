@@ -1,13 +1,13 @@
 import "server-only"
 
-export function getDatabaseUrl(): string {
-  const url = process.env.DATABASE_URL
+import { resolveDatabaseUrl } from "@workspace/vendor-onboarding/pg-connection"
 
-  if (!url) {
+export function getDatabaseUrl(): string {
+  try {
+    return resolveDatabaseUrl()
+  } catch {
     throw new Error(
-      "DATABASE_URL is not set. Add it to apps/web/.env.local (see MDM-Database-Implementation-Guide.md)."
+      "DATABASE_URL is not set. Add it to apps/web/.env.local or connect Neon on Vercel (see MDM-Database-Implementation-Guide.md)."
     )
   }
-
-  return url
 }

@@ -4,6 +4,11 @@ import { fileURLToPath } from "node:url"
 
 import pg from "pg"
 
+import {
+  pgPoolConnectionOptions,
+  resolveDatabaseUrl,
+} from "@workspace/vendor-onboarding/pg-connection"
+
 import type { MdmData } from "../lib/types"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -37,8 +42,10 @@ function loadEnvLocal() {
 
 loadEnvLocal()
 
-const databaseUrl = process.env.DATABASE_URL
-if (!databaseUrl) {
+let databaseUrl: string
+try {
+  databaseUrl = resolveDatabaseUrl()
+} catch {
   console.error("DATABASE_URL is required. Set it in apps/web/.env.local")
   process.exit(1)
 }
@@ -47,7 +54,7 @@ const jsonPath = join(__dirname, "../../../convenience-store-mdm-sample.json")
 const data = JSON.parse(readFileSync(jsonPath, "utf-8")) as MdmData
 
 async function main() {
-  const client = new pg.Client({ connectionString: databaseUrl })
+  const client = new pg.Client(pgPoolConnectionOptions(databaseUrl))
   await client.connect()
 
   try {

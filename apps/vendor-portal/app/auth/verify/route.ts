@@ -8,6 +8,7 @@ import {
   markPortalLoginTokenUsed,
   touchPortalLogin,
 } from "@workspace/vendor-onboarding"
+import { hasDatabaseUrl } from "@workspace/vendor-onboarding/pg-connection"
 
 import { allowVerifyAttempt } from "@/lib/auth/rate-limit"
 import { applyPortalSessionCookie } from "@/lib/auth/session"
@@ -34,7 +35,7 @@ function isExpired(expiresAt: string) {
 
 function missingConfig() {
   const missing: string[] = []
-  if (!process.env["DATABASE_URL"]?.trim()) missing.push("DATABASE_URL")
+  if (!hasDatabaseUrl()) missing.push("DATABASE_URL")
   if (!process.env["VENDOR_PORTAL_SESSION_SECRET"]?.trim()) {
     missing.push("VENDOR_PORTAL_SESSION_SECRET")
   }

@@ -7,7 +7,8 @@
     ".": "./src/index.ts",
     "./types": "./src/types.ts",
     "./portal-types": "./src/portal-types.ts",
-    "./product-fields": "./src/product-fields.ts"
+    "./product-fields": "./src/product-fields.ts",
+    "./pg-connection": "./src/pg-connection.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
