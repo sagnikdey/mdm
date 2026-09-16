@@ -7,10 +7,6 @@
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
-@import "tailwindcss";
-
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --background: oklch(0.9383 0.0042 236.4993);
   --foreground: oklch(0.3211 0 0);
@@ -241,4 +237,19 @@ input:not(
 textarea:not([aria-invalid="true"]):not(:focus-visible),
 select:not([aria-invalid="true"]):not(:focus-visible) {
   border-color: color-mix(in oklch, var(--foreground) 16%, var(--border));
+}
+
+.bg-striped {
+  background-image: linear-gradient(
+    135deg,
+    var(--foreground) 12.5%,
+    var(--background) 12.5%,
+    var(--background) 50%,
+    var(--foreground) 50%,
+    var(--foreground) 62.5%,
+    var(--background) 62.5%,
+    var(--background) 100%
+  );
+  opacity: 0.05;
+  background-size: 5.66px 5.66px;
 }

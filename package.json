@@ -10,7 +10,9 @@
     "typecheck": "turbo typecheck",
     "deploy:web": "vercel --cwd apps/web",
     "deploy:onboarding": "vercel --cwd apps/onboarding",
-    "deploy:vendor-portal": "vercel --cwd apps/vendor-portal"
+    "deploy:vendor-portal": "vercel --cwd apps/vendor-portal",
+    "dev:design-system": "turbo dev --filter=design-system",
+    "deploy:design-system": "vercel --cwd apps/design-system"
   },
   "devDependencies": {
     "@workspace/eslint-config": "*",
