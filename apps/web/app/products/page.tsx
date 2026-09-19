@@ -14,12 +14,12 @@ export default function ProductsPage() {
             Manage product catalog and SKUs
           </p>
         </div>
-        <Button asChild size="lg">
+        {/* <Button asChild size="lg">
           <Link href="/products/new">
             <Plus data-icon="inline-start" />
             New Product
           </Link>
-        </Button>
+        </Button> */}
       </div>
 
       <ProductsTable />
