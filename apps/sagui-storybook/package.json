@@ -2,8 +2,16 @@
   "name": "@sagui/storybook",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "storybook dev -p 6006", "build": "storybook build" },
-  "dependencies": { "@sagui/ui": "workspace:*", "@sagui/tokens": "workspace:*", "react": "^19.0.0", "react-dom": "^19.0.0" },
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build"
+  },
+  "dependencies": {
+    "@sagui/ui": "*",
+    "@sagui/tokens": "*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "devDependencies": {
     "@storybook/react-vite": "^9.0.0",
     "@storybook/addon-docs": "^9.0.0",

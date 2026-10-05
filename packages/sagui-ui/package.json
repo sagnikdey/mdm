@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
-    "@sagui/tokens": "workspace:*",
+    "@sagui/tokens": "*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "motion": "^11.11.0",
