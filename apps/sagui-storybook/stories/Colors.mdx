@@ -1,0 +1,18 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Colors" />
+
+# Colors
+
+Components only use **semantic** tokens. Switch the theme in the toolbar to see dark values.
+
+export const tokens = ["background","foreground","surface","muted","muted-foreground","border","ring","primary","primary-foreground","secondary","secondary-foreground","destructive","destructive-foreground"];
+
+<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: 16 }}>
+  {tokens.map((t) => (
+    <div key={t}>
+      <div style={{ height: 64, borderRadius: 10, border: "1px solid var(--color-border)", background: `var(--color-${t})` }} />
+      <code>--color-{t}</code>
+    </div>
+  ))}
+</div>

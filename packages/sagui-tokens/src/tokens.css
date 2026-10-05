@@ -1,0 +1,61 @@
+/* SagUI tokens. Primitives -> semantic. Components only use semantic tokens. */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 120ms; --duration-base: 200ms; --duration-slow: 360ms;
+
+  --color-background: var(--sg-background);
+  --color-foreground: var(--sg-foreground);
+  --color-muted: var(--sg-muted);
+  --color-muted-foreground: var(--sg-muted-foreground);
+  --color-surface: var(--sg-surface);
+  --color-border: var(--sg-border);
+  --color-ring: var(--sg-ring);
+  --color-primary: var(--sg-primary);
+  --color-primary-foreground: var(--sg-primary-foreground);
+  --color-secondary: var(--sg-secondary);
+  --color-secondary-foreground: var(--sg-secondary-foreground);
+  --color-destructive: var(--sg-destructive);
+  --color-destructive-foreground: var(--sg-destructive-foreground);
+}
+
+:root {
+  --sg-background: oklch(0.99 0.003 85);
+  --sg-foreground: oklch(0.21 0.01 260);
+  --sg-surface: oklch(1 0 0);
+  --sg-muted: oklch(0.96 0.005 85);
+  --sg-muted-foreground: oklch(0.52 0.01 260);
+  --sg-border: oklch(0.91 0.006 85);
+  --sg-ring: oklch(0.62 0.17 255);
+  --sg-primary: oklch(0.55 0.19 255);
+  --sg-primary-foreground: oklch(0.99 0 0);
+  --sg-secondary: oklch(0.95 0.01 255);
+  --sg-secondary-foreground: oklch(0.3 0.05 255);
+  --sg-destructive: oklch(0.58 0.21 27);
+  --sg-destructive-foreground: oklch(0.99 0 0);
+}
+
+[data-theme="dark"] {
+  --sg-background: oklch(0.17 0.008 260);
+  --sg-foreground: oklch(0.96 0.004 85);
+  --sg-surface: oklch(0.21 0.01 260);
+  --sg-muted: oklch(0.25 0.01 260);
+  --sg-muted-foreground: oklch(0.7 0.01 260);
+  --sg-border: oklch(0.3 0.01 260);
+  --sg-ring: oklch(0.7 0.15 255);
+  --sg-primary: oklch(0.68 0.16 255);
+  --sg-primary-foreground: oklch(0.15 0.02 255);
+  --sg-secondary: oklch(0.28 0.03 255);
+  --sg-secondary-foreground: oklch(0.92 0.02 255);
+  --sg-destructive: oklch(0.65 0.2 27);
+  --sg-destructive-foreground: oklch(0.99 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
+}
