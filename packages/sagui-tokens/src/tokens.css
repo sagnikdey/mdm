@@ -32,6 +32,7 @@
   --ease-spring: linear(0, 0.0258, 0.09, 0.1763, 0.2732, 0.3724, 0.4683, 0.5573, 0.6376, 0.7082, 0.7689, 0.8202, 0.8628, 0.8976, 0.9256, 0.9476, 0.9648, 0.9778, 0.9875, 0.9945, 0.9994, 1.0026, 1.0047, 1.0058, 1.0062, 1.0062, 1.0059, 1.0055, 1.0049, 1.0043, 1.0036, 1.0031, 1.0025, 1.002, 1.0016, 1.0013, 1);
   --duration-fast: 120ms; --duration-base: 200ms; --duration-slow: 360ms;
   --duration-quick: 160ms; --duration-standard: 240ms; --duration-spring: 580ms;
+  --duration-instant: 120ms; --duration-considered: 480ms;
 
   /* Elevation, lowest to highest. Values switch with the theme (dark shadows need more density to read). */
   --shadow-resting: var(--sg-shadow-resting);
@@ -57,6 +58,15 @@
   --color-destructive-foreground: var(--sg-destructive-foreground);
 }
 
+/* Chart palette. Series 1 leads; 2 to 4 are spaced in hue so adjacent series stay distinct in both themes.
+   Static, because charts pick a series color at runtime (var(--color-chart-N)) where Tailwind cannot see it in use. */
+@theme static {
+  --color-chart-1: var(--sg-chart-1);
+  --color-chart-2: var(--sg-chart-2);
+  --color-chart-3: var(--sg-chart-3);
+  --color-chart-4: var(--sg-chart-4);
+}
+
 :root {
   --sg-background: oklch(0.99 0.003 85);
   --sg-foreground: oklch(0.21 0.01 260);
@@ -74,6 +84,8 @@
   --sg-secondary-foreground: oklch(0.3 0.05 255);
   --sg-destructive: oklch(0.58 0.21 27);
   --sg-destructive-foreground: oklch(0.99 0 0);
+
+  --sg-chart-1: oklch(0.57 0.15 250); --sg-chart-2: oklch(0.45 0.19 310); --sg-chart-3: oklch(0.72 0.17 70); --sg-chart-4: oklch(0.6 0.13 175);
 
   --sg-shadow-resting: 0 1px 2px oklch(0% 0 0 / 0.035);
   --sg-shadow-raised: 0 6px 18px oklch(0% 0 0 / 0.065), 0 1px 3px oklch(0% 0 0 / 0.035);
@@ -99,6 +111,8 @@
   --sg-destructive: oklch(0.65 0.2 27);
   --sg-destructive-foreground: oklch(0.99 0 0);
 
+  --sg-chart-1: oklch(0.72 0.14 250); --sg-chart-2: oklch(0.55 0.2 315); --sg-chart-3: oklch(0.68 0.18 55); --sg-chart-4: oklch(0.65 0.16 155);
+
   --sg-shadow-resting: 0 1px 2px oklch(0% 0 0 / 0.3);
   --sg-shadow-raised: 0 6px 18px oklch(0% 0 0 / 0.36), 0 1px 3px oklch(0% 0 0 / 0.26);
   --sg-shadow-floating: 0 20px 48px oklch(0% 0 0 / 0.46), 0 3px 10px oklch(0% 0 0 / 0.3);
@@ -106,7 +120,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root { --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; --duration-quick: 0ms; --duration-standard: 0ms; --duration-spring: 0ms; }
+  :root { --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; --duration-quick: 0ms; --duration-standard: 0ms; --duration-spring: 0ms; --duration-instant: 0ms; --duration-considered: 0ms; }
 }
 
 /* Type roles: size, line height, weight and tracking set together. Display and h1 scale with the viewport. */

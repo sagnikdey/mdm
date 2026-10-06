@@ -1,0 +1,23 @@
+/* gauge: ported from Arc (uiarc.dev). Classes are prefixed sg-gauge-*; see src/lib/css-module.ts. */
+.sg-gauge-figure { display: grid; justify-items: center; min-width: 0; gap: 10px; margin: 0; text-align: center; }.sg-gauge-figure figcaption { display: grid; gap: 3px; min-width: 0; }.sg-gauge-figure strong { font-size: var(--text-sm); font-weight: 500; }.sg-gauge-detail { color: var(--color-muted-foreground); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.sg-gauge-accent { --gauge-color: var(--color-primary); --gauge-text: var(--color-primary); }.sg-gauge-success { --gauge-color: var(--color-success); --gauge-text: var(--color-success); }.sg-gauge-warning { --gauge-color: var(--color-warning); --gauge-text: var(--color-warning); }.sg-gauge-danger { --gauge-color: var(--color-destructive); --gauge-text: var(--color-destructive); }
+
+/* An activity style ring: a thick stroke with round caps over a faint tint of its own color. The stroke scales with the ring. */
+.sg-gauge-visual { position: relative; width: min(100%, 176px); aspect-ratio: 100 / 90; }
+.sg-gauge-visual svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.sg-gauge-track, .sg-gauge-arc { fill: none; stroke-width: 9; stroke-linecap: round; transition: stroke var(--duration-standard) var(--ease-out-quint); }
+.sg-gauge-track { stroke: color-mix(in oklab, var(--gauge-color) 13%, transparent); }
+.sg-gauge-arc { stroke: var(--gauge-color); }
+
+/* The readout sits on the ring's true centre, which is the middle of a square as wide as the ring. */
+.sg-gauge-readout { position: absolute; top: 0; left: 0; display: grid; width: 100%; aspect-ratio: 1; place-content: center; justify-items: center; gap: 4px; pointer-events: none; }
+.sg-gauge-number { position: relative; display: inline-flex; align-items: baseline; color: var(--color-foreground); font-family: var(--font-sans); font-size: var(--text-3xl); font-weight: 500; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.sg-gauge-digits { display: inline-flex; justify-content: flex-end; white-space: nowrap; }
+.sg-gauge-unit { margin-left: 1px; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-family: var(--font-sans); font-size: .5em; letter-spacing: 0; }
+.sg-gauge-sizer { position: absolute; top: 0; left: 0; visibility: hidden; white-space: nowrap; pointer-events: none; }
+.sg-gauge-status { min-width: 100px; min-height: 1.4em; color: var(--gauge-text); font-size: var(--text-xs); font-weight: 500; line-height: 1.4; transition: color var(--duration-standard) var(--ease-out-quint); }
+
+/* Label, status and detail copy swap in place: the outgoing line is popped out of flow while the new one rises in. */
+.sg-gauge-swap { position: relative; display: block; }
+.sg-gauge-swap > .sg-gauge-text { display: inline-block; }
+@media (prefers-reduced-motion: reduce) { .sg-gauge-track, .sg-gauge-arc, .sg-gauge-status { transition: none; } }

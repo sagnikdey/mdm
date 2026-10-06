@@ -10,7 +10,8 @@
   },
   "files": [
     "dist",
-    "src/styles.css"
+    "src/styles.css",
+    "src/components/**/*.css"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -48,7 +49,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^1.52.0",
-    "motion": "^11.11.0",
+    "motion": "^12.43.0",
     "tailwind-merge": "^2.5.0"
   },
   "devDependencies": {

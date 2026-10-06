@@ -1,0 +1,59 @@
+/* ridgeline: ported from Arc (uiarc.dev). Classes are prefixed sg-ridgeline-*; see src/lib/css-module.ts. */
+.sg-ridgeline-figure { display: grid; min-width: 0; margin: 0; color: var(--color-foreground); font-family: var(--font-sans); letter-spacing: -0.01em; }
+
+/* Series colors (--series-1 to --series-4) come from registry/foundation.sg-ridgeline-css. */
+
+.sg-ridgeline-plot { position: relative; min-width: 0; outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; cursor: crosshair; }
+.sg-ridgeline-svg { position: absolute; inset: 0; display: block; overflow: visible; }
+
+/* Ridges are opaque, so each one hides the valleys of the row behind it. */
+.sg-ridgeline-ridge { transition: opacity var(--duration-standard) var(--ease-out-quint); }
+.sg-ridgeline-fill { fill: color-mix(in oklab, var(--ridge) 34%, var(--color-surface)); stroke: none; transition: fill var(--duration-considered) var(--ease-out-quint); }
+.sg-ridgeline-line { fill: none; stroke: var(--ridge); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; transition: stroke var(--duration-considered) var(--ease-out-quint); }
+.sg-ridgeline-median { stroke: color-mix(in oklab, var(--ridge) 55%, var(--color-surface)); stroke-width: 1; transition: stroke var(--duration-considered) var(--ease-out-quint); }
+.sg-ridgeline-plot[data-active] .sg-ridgeline-ridge[data-dim] { opacity: .38; }
+.sg-ridgeline-ridge[data-lifted] { opacity: 0; transition-duration: var(--duration-fast); }
+
+/* The lifted ridge is a copy drawn above the rest, so it can rise over its neighbours. */
+.sg-ridgeline-lens { opacity: 0; pointer-events: none; transform: translateY(0); transition: opacity var(--duration-quick) var(--ease-out-quint), transform var(--duration-spring) var(--ease-spring); }
+.sg-ridgeline-lens[data-on] { opacity: 1; transform: translateY(-6px); }
+.sg-ridgeline-lensFill { fill: color-mix(in oklab, var(--ridge) 18%, var(--color-surface)); stroke: none; }
+.sg-ridgeline-lensBand { fill: color-mix(in oklab, var(--ridge) 48%, var(--color-surface)); stroke: none; }
+.sg-ridgeline-lensMedian { stroke: var(--color-foreground); stroke-width: 1.5; stroke-linecap: round; }
+.sg-ridgeline-lensLine { fill: none; stroke: var(--ridge); stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+
+.sg-ridgeline-ticks { position: absolute; top: 0; right: 0; left: 0; pointer-events: none; }
+.sg-ridgeline-tick { position: absolute; bottom: 0; left: 0; width: 1px; background: color-mix(in oklab, var(--color-border) 55%, transparent); will-change: transform; animation: sg-ridgeline-tickIn var(--duration-standard) var(--ease-out-quint); }
+.sg-ridgeline-tickLabel { position: absolute; bottom: 0; left: 0; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; translate: -50% 0; }
+@keyframes sg-ridgeline-tickIn { from { opacity: 0; } }
+
+.sg-ridgeline-crosshair { position: absolute; left: 0; width: 1px; background: var(--color-foreground); opacity: 0; pointer-events: none; transition: opacity var(--duration-fast) var(--ease-out-quint); }
+.sg-ridgeline-plot[data-cursor] .sg-ridgeline-crosshair { opacity: .35; }
+
+.sg-ridgeline-labels { position: absolute; inset: 0; pointer-events: none; }
+.sg-ridgeline-rowLabel { position: absolute; left: 0; overflow: hidden; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-xs); line-height: 18px; text-overflow: ellipsis; white-space: nowrap; transition: color var(--duration-quick) var(--ease-out-quint); }
+.sg-ridgeline-rowLabel[data-active] { color: var(--color-foreground); font-weight: 500; }
+
+.sg-ridgeline-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--color-muted-foreground); font-size: var(--text-sm); pointer-events: none; }
+
+.sg-ridgeline-tooltip { position: absolute; top: 0; left: 0; z-index: 2; display: grid; min-width: 170px; max-width: min(240px, 100%); gap: 2px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: var(--shadow-floating); opacity: 0; pointer-events: none; scale: .96; transition: opacity var(--duration-quick) var(--ease-out-quint), scale var(--duration-quick) var(--ease-out-quint); }
+.sg-ridgeline-plot[data-active] .sg-ridgeline-tooltip { opacity: 1; scale: 1; }
+.sg-ridgeline-tipTitle { margin: 0 0 2px; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-xs); line-height: 1.4; }
+.sg-ridgeline-tipValue, .sg-ridgeline-tipRow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sg-ridgeline-tipValue { color: var(--color-foreground); font-size: var(--text-sm); font-weight: 500; line-height: 1.4; }
+.sg-ridgeline-tipRow { color: var(--color-foreground); font-size: var(--text-xs); line-height: 1.4; }
+.sg-ridgeline-tipKey { color: var(--color-muted-foreground); font-weight: 400; }
+.sg-ridgeline-tipValue .sg-ridgeline-tipKey { font-size: var(--text-xs); }
+.sg-ridgeline-tipNote { margin: 4px 0 0; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1.4; font-variant-numeric: tabular-nums; }
+
+.sg-ridgeline-scale { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; margin-top: calc(var(--spacing) * 3); color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1.4; font-variant-numeric: tabular-nums; }
+.sg-ridgeline-scaleLabel { margin-right: 4px; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); }
+.sg-ridgeline-steps { display: inline-flex; gap: 2px; }
+.sg-ridgeline-step { width: 18px; height: 10px; border-radius: 3px; background: var(--ridge); }
+
+.sg-ridgeline-srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-ridgeline-ridge, .sg-ridgeline-lens, .sg-ridgeline-crosshair, .sg-ridgeline-tooltip, .sg-ridgeline-rowLabel { transition: none; }
+  .sg-ridgeline-tick { animation: none; }
+}

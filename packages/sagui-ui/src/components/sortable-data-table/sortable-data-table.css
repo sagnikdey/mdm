@@ -1,0 +1,120 @@
+/* sortable-data-table: ported from Arc (uiarc.dev). Classes are prefixed sg-sortable-data-table-*; see src/lib/css-module.ts. */
+/* Cells are opaque so rows passing each other during a sort cover one another cleanly instead of blending text. */
+.sg-sortable-data-table-wrapper { --column-tint: var(--color-muted); position: relative; width: 100%; min-width: 0; max-width: 100%; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-foreground); font-family: var(--font-sans); }
+.sg-sortable-data-table-scroller { position: relative; overflow-x: auto; overscroll-behavior-x: contain; }
+.sg-sortable-data-table-band { position: absolute; top: 0; bottom: 0; background: var(--column-tint); pointer-events: none; }
+.sg-sortable-data-table-table { position: relative; z-index: 1; width: 100%; min-width: 560px; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); line-height: 1.4; letter-spacing: -0.01em; text-align: left; }
+.sg-sortable-data-table-table[data-fixed] { table-layout: fixed; }
+.sg-sortable-data-table-table caption, .sg-sortable-data-table-srOnly { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.sg-sortable-data-table-selectCol { width: 44px; }
+
+.sg-sortable-data-table-table th, .sg-sortable-data-table-table td { --cell-base: var(--color-surface); --cell-fill: var(--cell-base); background-color: var(--cell-fill); transition: background-color var(--duration-standard) var(--ease-out-quint), color var(--duration-standard) var(--ease-out-quint); }
+.sg-sortable-data-table-table th[data-sorted], .sg-sortable-data-table-table td[data-sorted] { --cell-base: var(--column-tint); }
+.sg-sortable-data-table-table th { height: 44px; padding: 0 calc(var(--spacing) * 4); border-bottom: 1px solid var(--color-border); color: var(--color-muted-foreground); font-size: var(--text-sm); font-weight: 500; text-align: left; white-space: nowrap; }
+.sg-sortable-data-table-table th[data-sortable] { padding: 0; }
+.sg-sortable-data-table-table th[data-sorted] { color: var(--color-foreground); }
+.sg-sortable-data-table-table td { height: 52px; padding: 0 calc(var(--spacing) * 4); border-bottom: 1px solid color-mix(in oklab, var(--color-border) 55%, transparent); color: var(--color-foreground); font-weight: 400; vertical-align: middle; overflow-wrap: anywhere; }
+.sg-sortable-data-table-table tbody tr:last-child td { border-bottom: 0; }
+.sg-sortable-data-table-table [data-numeric] { text-align: right; font-variant-numeric: tabular-nums; }
+.sg-sortable-data-table-table[data-selectable] tbody tr { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.sg-sortable-data-table-table[data-selectable] tbody tr[data-selected] td { --cell-fill: color-mix(in oklab, var(--color-primary) 8%, var(--cell-base)); }
+.sg-sortable-data-table-table[data-selectable] [data-primary]:not([data-sortable]), .sg-sortable-data-table-table[data-selectable] th[data-primary] .sg-sortable-data-table-sortButton { padding-left: calc(var(--spacing) * 2); }
+
+.sg-sortable-data-table-sortButton { display: flex; width: 100%; height: 44px; align-items: center; justify-content: flex-start; border: 0; padding: 0 calc(var(--spacing) * 4); background: transparent; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.sg-sortable-data-table-table th[data-numeric] .sg-sortable-data-table-sortButton { justify-content: flex-end; }
+.sg-sortable-data-table-sortInner { display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-md); transition: color var(--duration-quick) var(--ease-out-quint); }
+/* Right-aligned columns lead with the arrow so the label lines up with the digits below it. */
+.sg-sortable-data-table-table th[data-numeric] .sg-sortable-data-table-sortInner { flex-direction: row-reverse; }
+.sg-sortable-data-table-sortIcon { position: relative; display: grid; width: 16px; height: 16px; flex: none; place-items: center; }
+.sg-sortable-data-table-sortHint, .sg-sortable-data-table-sortArrow { position: absolute; inset: 0; display: grid; place-items: center; }
+.sg-sortable-data-table-sortHint { color: var(--color-muted-foreground); opacity: 0; transition: opacity var(--duration-quick) var(--ease-out-quint); }
+.sg-sortable-data-table-sortArrow { color: var(--color-foreground); }
+.sg-sortable-data-table-sortButton:focus-visible { outline: none; }
+.sg-sortable-data-table-sortButton:focus-visible .sg-sortable-data-table-sortInner { outline: 2px solid var(--color-ring); outline-offset: 4px; }
+.sg-sortable-data-table-sortButton:focus-visible .sg-sortable-data-table-sortHint { opacity: .6; }
+.sg-sortable-data-table-table th[data-sorted] .sg-sortable-data-table-sortHint { opacity: 0; }
+
+.sg-sortable-data-table-selectCell { width: 44px; }
+.sg-sortable-data-table-table .sg-sortable-data-table-selectCell { padding: 0 0 0 calc(var(--spacing) * 4); }
+.sg-sortable-data-table-selectHit { position: relative; display: flex; width: 100%; height: 44px; align-items: center; cursor: pointer; }
+.sg-sortable-data-table-selectInput { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.sg-sortable-data-table-selectBox { position: relative; display: block; width: 18px; height: 18px; flex: none; border: 1px solid var(--color-border-strong); border-radius: 5px; background: var(--color-surface); color: var(--color-primary-foreground); pointer-events: none; transition: border-color var(--duration-quick) var(--ease-out-quint), transform var(--duration-spring) var(--ease-spring); }
+.sg-sortable-data-table-selectBox[data-on] { border-color: var(--color-primary); }
+.sg-sortable-data-table-selectFill { position: absolute; inset: -1px; border-radius: inherit; background: var(--color-primary); }
+.sg-sortable-data-table-selectMark { position: absolute; inset: -1px; width: 18px; height: 18px; overflow: visible; }
+.sg-sortable-data-table-selectInput:focus-visible + .sg-sortable-data-table-selectBox { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+.sg-sortable-data-table-selectInput:active + .sg-sortable-data-table-selectBox { transform: scale(.95); transition: border-color var(--duration-quick) var(--ease-out-quint), transform 110ms var(--ease-out-quint); }
+
+.sg-sortable-data-table-footer { display: flex; height: 44px; align-items: center; justify-content: space-between; gap: calc(var(--spacing) * 3); padding: 0 calc(var(--spacing) * 2) 0 calc(var(--spacing) * 4); border-top: 1px solid var(--color-border); color: var(--color-muted-foreground); font-size: var(--text-sm); line-height: 1.4; letter-spacing: -0.01em; }
+.sg-sortable-data-table-count { display: inline-flex; min-width: 0; align-items: baseline; gap: .28em; white-space: nowrap; transition: color var(--duration-standard) var(--ease-out-quint); }
+.sg-sortable-data-table-count[data-active] { color: var(--color-foreground); }
+.sg-sortable-data-table-swap { display: inline-block; }
+.sg-sortable-data-table-swapInner { position: relative; display: inline-flex; width: max-content; }
+.sg-sortable-data-table-swapText { display: inline-block; white-space: nowrap; }
+.sg-sortable-data-table-number { font-variant-numeric: tabular-nums; }
+.sg-sortable-data-table-clear { height: 30px; flex: none; border: 0; border-radius: var(--radius-md); padding: 0 calc(var(--spacing) * 3); background: transparent; color: var(--color-foreground); font: inherit; font-weight: 500; letter-spacing: inherit; cursor: pointer; transition: background-color var(--duration-quick) var(--ease-out-quint); -webkit-tap-highlight-color: transparent; }
+.sg-sortable-data-table-clear:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+
+.sg-sortable-data-table-empty { height: 120px !important; color: var(--color-muted-foreground) !important; text-align: center !important; }
+
+@media (hover: hover) and (pointer: fine) {
+  .sg-sortable-data-table-table tbody tr:hover td { --cell-fill: color-mix(in oklab, var(--color-foreground) 3%, var(--cell-base)); }
+  .sg-sortable-data-table-table[data-selectable] tbody tr[data-selected]:hover td { --cell-fill: color-mix(in oklab, var(--color-primary) 11%, var(--cell-base)); }
+  .sg-sortable-data-table-table tbody tr:has(.sg-sortable-data-table-empty):hover td { --cell-fill: var(--cell-base); }
+  .sg-sortable-data-table-sortButton:hover .sg-sortable-data-table-sortInner { color: var(--color-foreground); }
+  .sg-sortable-data-table-sortButton:hover .sg-sortable-data-table-sortHint { opacity: .6; }
+  .sg-sortable-data-table-table th[data-sorted] .sg-sortable-data-table-sortButton:hover .sg-sortable-data-table-sortHint { opacity: 0; }
+  .sg-sortable-data-table-selectHit:hover .sg-sortable-data-table-selectBox:not([data-on]) { border-color: var(--color-muted-foreground); }
+  .sg-sortable-data-table-clear:hover { background: var(--color-muted); }
+}
+
+@media (max-width: 620px) {
+  .sg-sortable-data-table-scroller { overflow: visible; }
+  .sg-sortable-data-table-band { display: none; }
+  .sg-sortable-data-table-table { display: block; width: 100%; min-width: 0; max-width: 100%; }
+  .sg-sortable-data-table-table thead { display: block; }
+  /* The header becomes a strip of sort controls, so sorting stays one tap away on a phone. */
+  .sg-sortable-data-table-table thead tr { display: flex; align-items: center; gap: calc(var(--spacing) * 1); padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2); overflow-x: auto; border-bottom: 1px solid var(--color-border); scrollbar-width: none; }
+  .sg-sortable-data-table-table thead tr::-webkit-scrollbar { display: none; }
+  .sg-sortable-data-table-table th { display: block; flex: none; height: auto; border: 0; padding: 0; background: transparent; }
+  /* Select all stays pinned while the sort controls scroll beneath it. */
+  .sg-sortable-data-table-table th.sg-sortable-data-table-selectCell { position: sticky; left: calc(-1 * calc(var(--spacing) * 2)); z-index: 1; width: 40px; margin-left: calc(-1 * calc(var(--spacing) * 2)); padding: 0 0 0 calc(var(--spacing) * 3); background: var(--color-surface); }
+  .sg-sortable-data-table-table th.sg-sortable-data-table-selectCell .sg-sortable-data-table-selectHit { height: 32px; }
+  /* Once the strip scrolls, a fade off the pinned cell hides the word sliding under it. */
+  .sg-sortable-data-table-table th.sg-sortable-data-table-selectCell::after { position: absolute; top: 0; bottom: 0; left: 100%; width: 36px; background: linear-gradient(to right, var(--color-surface) 45%, transparent); content: ""; opacity: 0; pointer-events: none; animation: sg-sortable-data-table-stripFade linear both; animation-timeline: scroll(nearest inline); animation-range: 0 24px; }
+  .sg-sortable-data-table-table th .sg-sortable-data-table-sortButton, .sg-sortable-data-table-table[data-selectable] th[data-primary] .sg-sortable-data-table-sortButton { width: auto; height: 32px; border-radius: var(--radius-md); padding: 0 10px; transition: background-color var(--duration-standard) var(--ease-out-quint), color var(--duration-standard) var(--ease-out-quint); }
+  .sg-sortable-data-table-table th[data-sorted] .sg-sortable-data-table-sortButton { background: var(--color-muted); }
+  .sg-sortable-data-table-table th[data-numeric] .sg-sortable-data-table-sortInner { flex-direction: row; }
+  .sg-sortable-data-table-sortButton:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 1px; }
+  .sg-sortable-data-table-sortButton:focus-visible .sg-sortable-data-table-sortInner { outline: none; }
+  .sg-sortable-data-table-table tbody { display: block; width: 100%; }
+  /* Rows fold into two lines: the first column with its number, then the remaining details. */
+  .sg-sortable-data-table-table tbody tr { --row-fill: var(--color-surface); position: relative; display: flex; width: 100%; min-height: 64px; box-sizing: border-box; flex-wrap: wrap; align-items: baseline; align-content: center; gap: 2px calc(var(--spacing) * 2); padding: 10px calc(var(--spacing) * 4); border-bottom: 1px solid color-mix(in oklab, var(--color-border) 55%, transparent); background-color: var(--row-fill); transition: background-color var(--duration-standard) var(--ease-out-quint); }
+  .sg-sortable-data-table-table tbody tr::after { order: 1; flex-basis: 100%; content: ""; }
+  .sg-sortable-data-table-table[data-selectable] tbody tr { padding-left: 44px; }
+  .sg-sortable-data-table-table[data-selectable] tbody tr[data-selected] { --row-fill: color-mix(in oklab, var(--color-primary) 8%, var(--color-surface)); }
+  .sg-sortable-data-table-table tbody tr:last-child { border-bottom: 0; }
+  .sg-sortable-data-table-table td { order: 2; display: block; min-width: 0; height: auto; border: 0; padding: 0; background: transparent; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-xs); text-align: left; }
+  .sg-sortable-data-table-table[data-selectable] td[data-primary]:not([data-sortable]) { padding-left: 0; }
+  .sg-sortable-data-table-table td[data-primary] { order: 0; flex: 1 1 0; color: var(--color-foreground); font-size: var(--text-sm); font-weight: 500; }
+  .sg-sortable-data-table-table td[data-numeric]:not([data-primary]) { order: 0; flex: none; margin-left: auto; padding-left: calc(var(--spacing) * 2); color: var(--color-foreground); font-size: var(--text-sm); }
+  .sg-sortable-data-table-table td[data-numeric] ~ td[data-numeric] { order: 2; margin-left: 0; padding-left: 0; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-xs); }
+  /* The sorted value lifts to full contrast, echoing the tinted column on wider screens. */
+  .sg-sortable-data-table-table td[data-sorted]:not([data-primary]) { color: var(--color-foreground); }
+  .sg-sortable-data-table-table td.sg-sortable-data-table-selectCell { position: absolute; top: 0; bottom: 0; left: calc(var(--spacing) * 1); display: flex; width: 36px; align-items: center; padding: 0; }
+  .sg-sortable-data-table-table td.sg-sortable-data-table-selectCell .sg-sortable-data-table-selectHit { justify-content: center; }
+  .sg-sortable-data-table-table .sg-sortable-data-table-empty { flex: 1 0 100%; height: auto !important; padding: calc(var(--spacing) * 6) 0; }
+  .sg-sortable-data-table-table[data-selectable] tbody tr:has(.sg-sortable-data-table-empty) { padding-left: calc(var(--spacing) * 4); }
+}
+@media (max-width: 620px) and (hover: hover) and (pointer: fine) {
+  .sg-sortable-data-table-table tbody tr:hover { --row-fill: color-mix(in oklab, var(--color-foreground) 3%, var(--color-surface)); }
+  .sg-sortable-data-table-table[data-selectable] tbody tr[data-selected]:hover { --row-fill: color-mix(in oklab, var(--color-primary) 11%, var(--color-surface)); }
+  .sg-sortable-data-table-table tbody tr:hover td { background: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-sortable-data-table-table th, .sg-sortable-data-table-table td, .sg-sortable-data-table-table tbody tr, .sg-sortable-data-table-sortInner, .sg-sortable-data-table-sortHint, .sg-sortable-data-table-selectBox, .sg-sortable-data-table-count, .sg-sortable-data-table-clear, .sg-sortable-data-table-table th .sg-sortable-data-table-sortButton { transition: none !important; }
+  .sg-sortable-data-table-selectInput:active + .sg-sortable-data-table-selectBox { transform: none; }
+}
+
+@keyframes sg-sortable-data-table-stripFade { to { opacity: 1; } }

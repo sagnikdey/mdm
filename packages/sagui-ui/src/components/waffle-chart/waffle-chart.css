@@ -1,0 +1,53 @@
+/* waffle-chart: ported from Arc (uiarc.dev). Classes are prefixed sg-waffle-chart-*; see src/lib/css-module.ts. */
+.sg-waffle-chart-figure { position: relative; min-width: 0; margin: 0; color: var(--color-foreground); font-family: var(--font-sans); letter-spacing: -0.01em; container-type: inline-size; }
+
+/* Series colors (--series-1 to --series-4) come from registry/foundation.sg-waffle-chart-css. */
+.sg-waffle-chart-body { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr); align-items: center; gap: calc(var(--spacing) * 6); }
+@container (min-width: 420px) {
+  .sg-waffle-chart-figure[data-legend] .sg-waffle-chart-body { grid-template-columns: minmax(0, 232px) minmax(0, 1fr); gap: calc(var(--spacing) * 6); }
+}
+
+.sg-waffle-chart-board { min-width: 0; }
+.sg-waffle-chart-grid { position: relative; width: 100%; max-width: 300px; margin-inline: auto; outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; cursor: default; }
+
+/* Each cell is one unit. Its colour changes mid-flight with the same stagger as its travel. */
+.sg-waffle-chart-cell { --inner: 0 0 0 0 transparent; --outer: 0 0 0 0 transparent; position: absolute; top: 0; left: 0; border-radius: 22%; background: var(--cell); box-shadow: var(--inner), var(--outer); will-change: transform; transition: background-color var(--duration-considered) var(--ease-out-quint) var(--delay, 0s), border-radius var(--duration-considered) var(--ease-out-quint) var(--delay, 0s), box-shadow var(--duration-considered) var(--ease-out-quint) var(--delay, 0s), opacity var(--duration-quick) var(--ease-out-quint); }
+.sg-waffle-chart-grid[data-active] .sg-waffle-chart-cell:not([data-on]) { opacity: .26 !important; transition: background-color var(--duration-considered) var(--ease-out-quint) var(--delay, 0s), border-radius var(--duration-considered) var(--ease-out-quint) var(--delay, 0s), opacity var(--duration-standard) var(--ease-out-quint); }
+.sg-waffle-chart-cell[data-cursor] { --outer: 0 0 0 2px var(--color-surface), 0 0 0 3.5px color-mix(in oklab, var(--color-foreground) 55%, transparent); }
+
+/* Shape is the colour-free second channel: a cell morphs between these as it changes category. */
+.sg-waffle-chart-cell[data-shape="round"], .sg-waffle-chart-swatch[data-shape="round"], .sg-waffle-chart-tipSwatch[data-shape="round"] { border-radius: 50%; }
+.sg-waffle-chart-cell[data-shape="framed"] { --inner: inset 0 0 0 2.5px var(--cell), inset 0 0 0 3.25px var(--color-surface); }
+.sg-waffle-chart-swatch[data-shape="framed"], .sg-waffle-chart-tipSwatch[data-shape="framed"] { box-shadow: inset 0 0 0 2px var(--cell), inset 0 0 0 3px var(--color-surface); }
+
+.sg-waffle-chart-tooltip { position: absolute; top: 0; left: 0; z-index: 2; display: grid; min-width: 150px; max-width: min(240px, 100%); gap: 2px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: var(--shadow-floating); opacity: 0; pointer-events: none; scale: .96; transition: opacity var(--duration-quick) var(--ease-out-quint), scale var(--duration-quick) var(--ease-out-quint); }
+.sg-waffle-chart-tooltip[data-shown] { opacity: 1; scale: 1; }
+.sg-waffle-chart-tipRow { display: flex; min-width: 0; align-items: center; gap: 8px; margin: 0; font-size: var(--text-sm); line-height: 1.3; }
+.sg-waffle-chart-tipSwatch { width: 10px; height: 10px; flex: none; border-radius: 3px; background: var(--cell); transition: background-color var(--duration-quick) var(--ease-out-quint); }
+.sg-waffle-chart-tipName { min-width: 0; flex: 1; overflow: hidden; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); text-overflow: ellipsis; white-space: nowrap; }
+.sg-waffle-chart-tipValue { flex: none; margin-left: 8px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.sg-waffle-chart-tipMeta { margin: 0 0 0 18px; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1.4; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.sg-waffle-chart-message { display: grid; min-height: 160px; place-items: center; margin: 0; color: var(--color-muted-foreground); font-size: var(--text-sm); }
+
+/* The legend doubles as the reading: each share rolls to its new value. */
+.sg-waffle-chart-legend { display: grid; min-width: 0; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 2px calc(var(--spacing) * 2); margin: 0; padding: 0; list-style: none; }
+@container (min-width: 420px) { .sg-waffle-chart-figure[data-legend] .sg-waffle-chart-legend { grid-template-columns: minmax(0, 1fr); } }
+/* Below the side-by-side layout two columns would clip names like "Wind and solar", so the legend reads as one list. */
+/* Stacked, the legend shares the grid's measure and its row padding hangs outside, so swatches and shares line up with the cell edges. */
+@container (max-width: 419px) { .sg-waffle-chart-legend { grid-template-columns: minmax(0, 1fr); margin-inline: max(-10px, calc((100% - 320px) / 2)); } }
+.sg-waffle-chart-item { display: grid; width: 100%; min-height: 36px; grid-template-columns: 10px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 4px 10px; border: 0; border-radius: 12px; background: transparent; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); cursor: pointer; font: inherit; font-size: var(--text-sm); line-height: 1.4; text-align: left; -webkit-tap-highlight-color: transparent; transition: color var(--duration-quick) var(--ease-out-quint), background-color var(--duration-quick) var(--ease-out-quint), opacity var(--duration-quick) var(--ease-out-quint), transform var(--duration-fast) var(--ease-out-quint); }
+.sg-waffle-chart-item:active { transform: scale(.98); }
+.sg-waffle-chart-item[data-on] { color: var(--color-foreground); background: color-mix(in oklab, var(--color-foreground) 5%, transparent); }
+.sg-waffle-chart-item[data-dim] { opacity: .5; }
+.sg-waffle-chart-item[aria-pressed="true"] { color: var(--color-foreground); }
+@media (hover: hover) and (pointer: fine) { .sg-waffle-chart-item:hover { color: var(--color-foreground); } }
+.sg-waffle-chart-swatch { width: 10px; height: 10px; border-radius: 3px; background: var(--cell); }
+.sg-waffle-chart-itemLabel { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sg-waffle-chart-itemShare { color: var(--color-foreground); font-size: var(--text-base); font-weight: 500; font-variant-numeric: tabular-nums; text-align: right; min-width: 3.2em; }
+
+.sg-waffle-chart-srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-waffle-chart-cell, .sg-waffle-chart-grid[data-active] .sg-waffle-chart-cell:not([data-on]), .sg-waffle-chart-tooltip, .sg-waffle-chart-tipSwatch, .sg-waffle-chart-item { transition: none; }
+}

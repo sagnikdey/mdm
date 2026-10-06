@@ -15,7 +15,7 @@ const root = process.cwd();
 const contentDir = path.join(root, "content");
 const demosDir = path.join(root, "demos");
 
-export type Category = "buttons" | "inputs" | "special-inputs" | "selection" | "cards" | "messages" | "overlays" | "navigation" | "disclosure" | "data-display";
+export type Category = "buttons" | "inputs" | "special-inputs" | "selection" | "cards" | "messages" | "overlays" | "navigation" | "disclosure" | "data-display" | "charts" | "data" | "text";
 export const categories: { id: Category; title: string; blurb: string }[] = [
   { id: "buttons", title: "Buttons", blurb: "Actions, groups, menus and confirmations." },
   { id: "inputs", title: "Inputs", blurb: "Text fields, passwords, search and in-place editing." },
@@ -24,6 +24,9 @@ export const categories: { id: Category; title: string; blurb: string }[] = [
   { id: "navigation", title: "Navigation", blurb: "Tabs and breadcrumbs for moving through content." },
   { id: "disclosure", title: "Disclosure", blurb: "Reveal supporting content in place." },
   { id: "data-display", title: "Data display", blurb: "Avatars and badges that label people and status." },
+  { id: "charts", title: "Charts", blurb: "Lines, bars, rings and maps that morph when the data changes." },
+  { id: "data", title: "Tables and timeline", blurb: "Sortable records and activity feeds." },
+  { id: "text", title: "Text effects", blurb: "Reveals, morphs and shimmers for headings and status text." },
   { id: "cards", title: "Cards", blurb: "Content cards, metrics and empty states." },
   { id: "messages", title: "Messages", blurb: "Persistent alerts and brief confirmations." },
   { id: "overlays", title: "Overlays", blurb: "Dialogs, drawers, sheets and small floating layers." },
@@ -47,6 +50,9 @@ const order: Record<Category, string[]> = {
   navigation: ["tabs", "breadcrumb"],
   disclosure: ["accordion"],
   "data-display": ["avatar", "avatar-group", "badge"],
+  charts: ["line-chart", "bar-chart", "donut-chart", "sparkline", "gauge", "streamgraph", "brush-chart", "waffle-chart", "slope-chart", "activity-heatmap", "ridgeline", "treemap"],
+  data: ["sortable-data-table", "timeline"],
+  text: ["text-reveal", "in-view-title", "text-morph", "text-shimmer"],
   cards: ["card", "metric-card", "empty-state", "animated-counter"],
   messages: ["alert", "toast"],
   overlays: ["dialog", "drawer", "bottom-sheet", "popover", "tooltip"],

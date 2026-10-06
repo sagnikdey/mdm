@@ -1,0 +1,50 @@
+/* bar-chart: ported from Arc (uiarc.dev). Classes are prefixed sg-bar-chart-*; see src/lib/css-module.ts. */
+.sg-bar-chart-figure { display: grid; min-width: 0; gap: calc(var(--spacing) * 5); margin: 0; color: var(--color-foreground); }
+
+/* The headline is the readout: the average at rest, the scrubbed bar while exploring. Each line keeps its height, so swaps never move the plot. */
+.sg-bar-chart-header { display: grid; min-width: 0; gap: 2px; }
+.sg-bar-chart-kind, .sg-bar-chart-when { display: block; min-height: calc(1em * 1.4); font-size: var(--text-sm); line-height: 1.4; }
+.sg-bar-chart-kind { color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); }
+.sg-bar-chart-when { color: var(--color-muted-foreground); }
+.sg-bar-chart-value { display: flex; min-width: 0; align-items: baseline; gap: 6px; font-family: var(--font-sans); font-size: var(--text-3xl); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.sg-bar-chart-unit { color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-family: var(--font-sans); font-size: var(--text-base); font-weight: 400; letter-spacing: -0.01em; }
+.sg-bar-chart-swap { position: relative; display: block; min-width: 0; }
+.sg-bar-chart-swapText { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A rolling number: outgoing digits are popped out of flow and anchored right, and the clip hides a digit still rising into a new place. */
+.sg-bar-chart-roll { position: relative; display: inline-flex; justify-content: flex-end; overflow-x: clip; overflow-y: visible; white-space: pre; }
+.sg-bar-chart-digits { position: relative; display: inline-flex; flex: none; }
+.sg-bar-chart-digit { position: relative; display: inline-block; white-space: pre; }
+.sg-bar-chart-sizer { position: absolute; top: 0; left: 0; visibility: hidden; white-space: pre; pointer-events: none; }
+
+/* Plot, right-hand value axis, and the date axis beneath. */
+.sg-bar-chart-chart { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 52px; grid-template-rows: auto 26px; min-width: 0; }
+.sg-bar-chart-plot { position: relative; grid-area: 1 / 1; min-width: 0; }
+.sg-bar-chart-svg { display: block; overflow: hidden; }
+.sg-bar-chart-grid { stroke: var(--color-border); stroke-width: 1; shape-rendering: crispEdges; }
+.sg-bar-chart-baseline { stroke: var(--color-border-strong); stroke-width: 1; shape-rendering: crispEdges; }
+.sg-bar-chart-cursor { stroke: var(--color-border-strong); stroke-width: 1; shape-rendering: crispEdges; }
+.sg-bar-chart-mean { stroke: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); stroke-width: 1; stroke-dasharray: 3 3; shape-rendering: crispEdges; }
+/* The series is drawn in a soft step of the accent; the scrubbed bar takes the full accent while its neighbours step back. */
+.sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 62%, var(--color-surface)); transition: fill var(--duration-quick) var(--ease-out-quint); }
+.sg-bar-chart-chart[data-scrubbing] .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 24%, var(--color-surface)); }
+/* On a dark surface a lighter mix keeps the hue clear instead of turning muddy. */
+:global([data-theme="dark"]) .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 76%, var(--color-surface)); }
+:global([data-theme="dark"]) .sg-bar-chart-chart[data-scrubbing] .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 34%, var(--color-surface)); }
+:global([data-theme="dark"]) .sg-bar-chart-chart .sg-bar-chart-bar[data-active] { fill: var(--color-primary); }
+.sg-bar-chart-chart .sg-bar-chart-bar[data-active] { fill: var(--color-primary); }
+
+.sg-bar-chart-gutter { position: relative; grid-area: 1 / 2; min-width: 0; }
+.sg-bar-chart-tick, .sg-bar-chart-meanLabel { position: absolute; top: 0; left: 10px; display: block; height: 0; white-space: nowrap; pointer-events: none; }
+.sg-bar-chart-tickText { display: block; transform: translateY(-50%); color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1; font-variant-numeric: tabular-nums; }
+.sg-bar-chart-meanLabel .sg-bar-chart-tickText { color: var(--color-foreground); font-weight: 500; }
+
+.sg-bar-chart-axis { position: relative; grid-area: 2 / 1; min-width: 0; overflow: hidden; }
+.sg-bar-chart-axisLabel { position: absolute; top: 8px; left: 0; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* The scrubber covers the plot and its axes. Horizontal drags scrub, vertical swipes still scroll the page. */
+.sg-bar-chart-scrubber { position: absolute; inset: 0; border-radius: calc(var(--radius-md) / 2); outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+
+.sg-bar-chart-srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .sg-bar-chart-bar { transition: none; } }
+.sg-bar-chart-measure { position: absolute; top: 0; left: 0; display: flex; visibility: hidden; pointer-events: none; }
+.sg-bar-chart-measure > span { flex: none; font-size: var(--text-xs); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }

@@ -1,0 +1,60 @@
+/* treemap: ported from Arc (uiarc.dev). Classes are prefixed sg-treemap-*; see src/lib/css-module.ts. */
+.sg-treemap-figure { display: grid; min-width: 0; gap: calc(var(--spacing) * 3); margin: 0; color: var(--color-foreground); font-family: var(--font-sans); letter-spacing: -0.01em; }
+
+/* Series colors (--series-1 to --series-4) come from registry/foundation.sg-treemap-css. */
+
+/* Breadcrumb on the left, the total of what fills the view on the right. */
+.sg-treemap-bar { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: calc(var(--spacing) * 3); }
+/* Pull the trail back by the crumb padding, so the first label lines up with the tiles and the title. */
+.sg-treemap-crumbs { min-width: 0; margin-left: -4px; }
+.sg-treemap-crumbList { position: relative; display: flex; min-width: 0; min-height: 32px; flex-wrap: wrap; align-items: center; margin: 0; padding: 0; list-style: none; }
+.sg-treemap-crumb { display: inline-flex; align-items: center; min-width: 0; }
+.sg-treemap-crumbSep { padding: 0 4px; color: var(--color-border-strong); font-size: var(--text-sm); }
+.sg-treemap-crumbButton { min-height: 32px; padding: 0 6px; margin: 0 -2px; border: 0; border-radius: 10px; background: transparent; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); cursor: pointer; font: inherit; font-size: var(--text-sm); line-height: 1.4; white-space: nowrap; -webkit-tap-highlight-color: transparent; transition: color var(--duration-quick) var(--ease-out-quint), background-color var(--duration-quick) var(--ease-out-quint), transform var(--duration-fast) var(--ease-out-quint); }
+.sg-treemap-crumbButton:active { transform: scale(.97); }
+.sg-treemap-crumbCurrent { padding: 0 4px; color: var(--color-foreground); font-size: var(--text-sm); font-weight: 500; line-height: 1.4; white-space: nowrap; }
+@media (hover: hover) and (pointer: fine) { .sg-treemap-crumbButton:hover { background: color-mix(in oklab, var(--color-foreground) 5%, transparent); color: var(--color-foreground); } }
+.sg-treemap-total { position: relative; display: inline-grid; flex: none; justify-items: end; overflow: hidden; margin: 0; color: var(--color-foreground); font-size: var(--text-sm); font-weight: 500; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.sg-treemap-totalValue { display: block; }
+
+/* Tiles are absolutely placed and sized each frame, so text never scales while a tile grows or shrinks. */
+.sg-treemap-stage { position: relative; min-width: 0; overflow: hidden; border-radius: 12px; outline: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.sg-treemap-tile { position: absolute; top: 0; left: 0; display: flex; flex-direction: column; gap: 1px; overflow: hidden; padding: 6px 8px; border-radius: 6px; background: var(--fill); color: var(--color-foreground); cursor: pointer; visibility: hidden; will-change: transform, width, height; transition: background-color var(--duration-considered) var(--ease-out-quint), color var(--duration-considered) var(--ease-out-quint), filter var(--duration-quick) var(--ease-out-quint), box-shadow var(--duration-quick) var(--ease-out-quint); }
+.sg-treemap-tile[data-branch][data-level="1"] { padding: 3px 8px; border-radius: 8px; background: color-mix(in oklab, var(--hue) 9%, var(--color-surface)); color: var(--color-foreground); cursor: zoom-in; }
+.sg-treemap-tileLabel, .sg-treemap-tileValue { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-xs); line-height: 16px; opacity: 0; transition: opacity var(--duration-quick) var(--ease-out-quint); }
+.sg-treemap-tileLabel { font-weight: 500; }
+.sg-treemap-tileValue { opacity: 0; font-variant-numeric: tabular-nums; }
+.sg-treemap-tile[data-room="name"] .sg-treemap-tileLabel, .sg-treemap-tile[data-room="full"] .sg-treemap-tileLabel, .sg-treemap-tile[data-room="full"] .sg-treemap-tileValue { opacity: 1; }
+.sg-treemap-tile[data-room="full"] .sg-treemap-tileValue { opacity: .72; }
+/* A branch on the top level prints its name and total on one header line. */
+.sg-treemap-tile[data-branch][data-level="1"] { flex-direction: row; align-items: baseline; justify-content: space-between; gap: 8px; }
+.sg-treemap-tile[data-branch][data-level="1"] .sg-treemap-tileValue { flex: none; opacity: .6; }
+.sg-treemap-tile[data-branch][data-level="1"][data-room="none"] .sg-treemap-tileLabel, .sg-treemap-tile[data-branch][data-level="1"][data-room="none"] .sg-treemap-tileValue { opacity: 0; }
+.sg-treemap-tile[data-branch][data-level="1"][data-room="name"] .sg-treemap-tileValue { opacity: .6; }
+.sg-treemap-tile[data-level="2"] { padding: 5px 7px; }
+
+.sg-treemap-tile[data-active] { box-shadow: inset 0 0 0 2px var(--color-foreground); }
+.sg-treemap-tile[data-lineage] { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hue) 70%, transparent); }
+.sg-treemap-stage[data-active] .sg-treemap-tile[data-dim] { filter: opacity(.5); }
+
+.sg-treemap-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--color-muted-foreground); font-size: var(--text-sm); pointer-events: none; }
+
+.sg-treemap-tooltip { position: absolute; top: 0; left: 0; z-index: 50; display: grid; min-width: 160px; max-width: min(240px, 100%); grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: var(--shadow-floating); opacity: 0; pointer-events: none; scale: .96; transition: opacity var(--duration-quick) var(--ease-out-quint), scale var(--duration-quick) var(--ease-out-quint); }
+.sg-treemap-stage[data-active] .sg-treemap-tooltip { opacity: 1; scale: 1; }
+.sg-treemap-tipTitle { margin: 0; overflow: hidden; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.sg-treemap-tipValue { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; font-size: var(--text-sm); line-height: 1.35; }
+.sg-treemap-tipName { min-width: 0; overflow: hidden; color: var(--color-foreground); text-overflow: ellipsis; white-space: nowrap; }
+.sg-treemap-tipAmount { flex: none; color: var(--color-foreground); font-weight: 500; font-variant-numeric: tabular-nums; }
+.sg-treemap-tipNote { margin: 0; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1.4; font-variant-numeric: tabular-nums; }
+
+/* The color scale: stepped swatches from light to dark, never a gradient. */
+.sg-treemap-scale { display: flex; min-width: 0; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1.4; font-variant-numeric: tabular-nums; }
+.sg-treemap-scaleLabel { margin-right: 4px; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); }
+.sg-treemap-steps { display: inline-flex; gap: 2px; }
+.sg-treemap-step { width: 18px; height: 10px; border-radius: 3px; background: var(--fill); }
+
+.sg-treemap-srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-treemap-tile, .sg-treemap-tileLabel, .sg-treemap-tileValue, .sg-treemap-tooltip, .sg-treemap-crumbButton { transition: none; }
+}

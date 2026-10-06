@@ -1,0 +1,27 @@
+/* sparkline: ported from Arc (uiarc.dev). Classes are prefixed sg-sparkline-*; see src/lib/css-module.ts. */
+.sg-sparkline-figure { display: grid; min-width: 0; gap: calc(var(--spacing) * 3); margin: 0; color: var(--color-foreground); }.sg-sparkline-caption { display: flex; align-items: baseline; gap: calc(var(--spacing) * 2); min-width: 0; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-sm); }.sg-sparkline-label { min-width: 0; overflow: hidden; white-space: nowrap; }.sg-sparkline-caption strong { margin-left: auto; color: var(--color-foreground); font-size: var(--text-lg); font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }.sg-sparkline-caption small { flex: none; font-size: var(--text-xs); font-weight: 500; font-variant-numeric: tabular-nums; transition: color var(--duration-standard) var(--ease-out-quint); }
+.sg-sparkline-accent { color: var(--color-primary); stroke: var(--color-primary); }.sg-sparkline-success { color: var(--color-success); stroke: var(--color-success); }.sg-sparkline-warning { color: var(--color-warning); stroke: var(--color-warning); }.sg-sparkline-danger { color: var(--color-destructive); stroke: var(--color-destructive); }
+/* The scrubbed date is context, not a change, so it stays neutral whatever the tone. */
+.sg-sparkline-point { color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); }
+
+/* Changing text rolls in place. Outgoing pieces are popped out of flow, so the wrapper never holds both widths; numbers stay anchored to their right edge. */
+.sg-sparkline-roll { position: relative; display: inline-flex; max-width: 100%; overflow-x: clip; white-space: pre; vertical-align: top; }
+.sg-sparkline-roll[data-end] { justify-content: flex-end; }
+.sg-sparkline-track, .sg-sparkline-slot, .sg-sparkline-glyph { position: relative; display: inline-block; white-space: pre; }
+.sg-sparkline-roll[data-whole] .sg-sparkline-track, .sg-sparkline-roll[data-whole] .sg-sparkline-slot, .sg-sparkline-roll[data-whole] .sg-sparkline-glyph { max-width: 100%; overflow: hidden; text-overflow: ellipsis; vertical-align: top; }
+.sg-sparkline-sizer { position: absolute; top: 0; left: 0; visibility: hidden; white-space: pre; pointer-events: none; }
+
+/* The plot is the scrubber: hover or drag across it, or focus it and use the arrow keys. Vertical swipes still scroll the page. */
+.sg-sparkline-plot { position: relative; min-width: 0; border-radius: calc(var(--radius-md) / 2); outline: none; -webkit-tap-highlight-color: transparent; }
+.sg-sparkline-plot[data-interactive] { touch-action: pan-y; cursor: default; user-select: none; }
+.sg-sparkline-plot:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 8px; }
+.sg-sparkline-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.sg-sparkline-baseline { stroke: var(--color-border); stroke-width: 1; }
+/* The area under the line carries a faint wash of the line tone. */
+.sg-sparkline-area.sg-sparkline-area { fill: color-mix(in oklab, currentColor 9%, transparent); stroke: none; }
+.sg-sparkline-line, .sg-sparkline-trail { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.sg-sparkline-line { transition: stroke var(--duration-standard) var(--ease-out-quint); }
+.sg-sparkline-trail { stroke: var(--color-border-strong); }
+.sg-sparkline-cursor { stroke: var(--color-border-strong); stroke-width: 1; }
+.sg-sparkline-end { transition: stroke var(--duration-standard) var(--ease-out-quint); }
+@media (prefers-reduced-motion: reduce) { .sg-sparkline-line, .sg-sparkline-end, .sg-sparkline-caption small { transition: none; } }

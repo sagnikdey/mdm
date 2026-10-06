@@ -1,0 +1,56 @@
+/* streamgraph: ported from Arc (uiarc.dev). Classes are prefixed sg-streamgraph-*; see src/lib/css-module.ts. */
+.sg-streamgraph-figure { display: grid; min-width: 0; gap: calc(var(--spacing) * 4); margin: 0; color: var(--color-foreground); font-family: var(--font-sans); letter-spacing: -0.01em; }
+
+/* Series colors (--series-1 to --series-4) come from registry/foundation.sg-streamgraph-css. */
+
+/* Layer toggles: a rect swatch mirrors the area it names. Hover or focus previews that layer in the plot. */
+.sg-streamgraph-legend { display: flex; flex-wrap: wrap; gap: 2px 4px; min-width: 0; margin-inline: -8px; }
+.sg-streamgraph-toggle { display: inline-flex; min-height: 32px; align-items: center; gap: 8px; padding: 0 10px 0 8px; border: 0; border-radius: var(--radius-pill); background: transparent; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); cursor: pointer; font: inherit; font-size: var(--text-sm); line-height: 1.4; -webkit-tap-highlight-color: transparent; transition: color var(--duration-quick) var(--ease-out-quint), background-color var(--duration-quick) var(--ease-out-quint), opacity var(--duration-quick) var(--ease-out-quint), transform var(--duration-fast) var(--ease-out-quint); }
+.sg-streamgraph-toggle:active { transform: scale(.97); }
+.sg-streamgraph-toggle[data-active] { color: var(--color-foreground); background: color-mix(in oklab, var(--color-foreground) 5%, transparent); }
+.sg-streamgraph-toggle[data-dim] { opacity: .56; }
+.sg-streamgraph-toggle[aria-pressed="false"] { color: var(--color-muted-foreground); }
+.sg-streamgraph-toggleLabel { white-space: nowrap; }
+.sg-streamgraph-toggle[aria-pressed="false"] .sg-streamgraph-toggleLabel { opacity: .72; text-decoration: line-through; text-decoration-color: color-mix(in oklab, currentColor 55%, transparent); }
+.sg-streamgraph-swatch { width: 10px; height: 10px; flex: none; border-radius: 3px; background: var(--series); transition: transform var(--duration-standard) var(--ease-spring), opacity var(--duration-quick) var(--ease-out-quint); }
+.sg-streamgraph-toggle[aria-pressed="false"] .sg-streamgraph-swatch { opacity: .35; transform: scale(.6); }
+@media (hover: hover) and (pointer: fine) { .sg-streamgraph-toggle:hover { color: var(--color-foreground); } }
+
+.sg-streamgraph-chart { position: relative; display: grid; grid-template-rows: auto 26px; min-width: 0; }
+.sg-streamgraph-plot { position: relative; min-width: 0; outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; cursor: crosshair; }
+.sg-streamgraph-svg { display: block; overflow: visible; }
+
+/* A 2px surface stroke is the gap between neighbouring layers. */
+.sg-streamgraph-layer { fill: color-mix(in oklab, var(--series) 82%, var(--color-surface)); stroke: var(--color-surface); stroke-width: 2; stroke-linejoin: round; transition: opacity var(--duration-quick) var(--ease-out-quint), fill var(--duration-standard) var(--ease-out-quint); }
+.sg-streamgraph-chart[data-layer] .sg-streamgraph-layer:not([data-active]) { opacity: .34; }
+.sg-streamgraph-layer[data-active] { fill: var(--series); }
+
+.sg-streamgraph-crosshair { stroke: var(--color-foreground); stroke-opacity: .5; stroke-width: 1; shape-rendering: crispEdges; opacity: 0; transition: opacity var(--duration-fast) var(--ease-out-quint); pointer-events: none; }
+.sg-streamgraph-chart[data-active] .sg-streamgraph-crosshair { opacity: 1; }
+
+.sg-streamgraph-label { fill: var(--color-foreground); font-size: var(--text-xs); font-weight: 500; paint-order: stroke; stroke: var(--color-surface); stroke-width: 3px; stroke-opacity: .85; stroke-linejoin: round; pointer-events: none; transition: opacity var(--duration-standard) var(--ease-out-quint), fill var(--duration-quick) var(--ease-out-quint); }
+.sg-streamgraph-label[data-hidden] { opacity: 0 !important; }
+.sg-streamgraph-chart[data-layer] .sg-streamgraph-label[data-dim] { opacity: 0 !important; }
+
+.sg-streamgraph-tooltip { position: absolute; top: 0; left: 0; z-index: 1; display: grid; min-width: 156px; max-width: min(256px, 100%); gap: 4px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: var(--shadow-floating); opacity: 0; pointer-events: none; scale: .96; transition: opacity var(--duration-quick) var(--ease-out-quint), scale var(--duration-quick) var(--ease-out-quint); }
+.sg-streamgraph-chart[data-active] .sg-streamgraph-tooltip { opacity: 1; scale: 1; }
+.sg-streamgraph-tipTitle { margin: 0 0 2px; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-xs); line-height: 1.4; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sg-streamgraph-tipRow { display: flex; min-width: 0; align-items: center; gap: 8px; margin: 0; font-size: var(--text-sm); line-height: 1.4; transition: opacity var(--duration-quick) var(--ease-out-quint); }
+.sg-streamgraph-tipRow[data-dim] { opacity: .5; }
+.sg-streamgraph-tipSwatch { width: 10px; height: 2.5px; flex: none; border-radius: 2px; background: var(--series); }
+.sg-streamgraph-tipName { min-width: 0; flex: 1; overflow: hidden; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); text-overflow: ellipsis; white-space: nowrap; }
+.sg-streamgraph-tipRow[data-active] .sg-streamgraph-tipName { color: var(--color-foreground); }
+.sg-streamgraph-tipValue { flex: none; margin-left: 8px; color: var(--color-foreground); font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.sg-streamgraph-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--color-muted-foreground); font-size: var(--text-sm); pointer-events: none; }
+
+.sg-streamgraph-axis { position: relative; min-width: 0; }
+.sg-streamgraph-axisLabel { position: absolute; top: 8px; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; transition: opacity var(--duration-standard) var(--ease-out-quint); }
+/* New labels fade in while the stream morphs to a new range instead of popping in a single frame. */
+@starting-style { .sg-streamgraph-axisLabel { opacity: 0; } }
+
+.sg-streamgraph-srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-streamgraph-toggle, .sg-streamgraph-swatch, .sg-streamgraph-layer, .sg-streamgraph-crosshair, .sg-streamgraph-label, .sg-streamgraph-tooltip, .sg-streamgraph-tipRow, .sg-streamgraph-axisLabel { transition: none; }
+}

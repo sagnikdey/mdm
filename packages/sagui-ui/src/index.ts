@@ -97,3 +97,23 @@ export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "./compone
 export { Avatar, type AvatarProps } from "./components/avatar/avatar";
 export { AvatarGroup, type AvatarGroupProps, type AvatarGroupMember } from "./components/avatar-group/avatar-group";
 export { Badge, type BadgeProps, type BadgeTone, type BadgeSize } from "./components/badge/badge";
+
+// Charts, tables, timeline and text effects (ported from Arc, styled by prefixed stylesheets).
+export { LineChart, type LineChartSeries, type LineChartDatum, type LineChartProps } from "./components/line-chart/line-chart";
+export { BarChart, type BarChartDatum, type BarChartProps } from "./components/bar-chart/bar-chart";
+export { DonutChart, type DonutChartDatum, type DonutChartProps } from "./components/donut-chart/donut-chart";
+export { Streamgraph, type StreamgraphSeries, type StreamgraphDatum, type StreamgraphProps } from "./components/streamgraph/streamgraph";
+export { BrushChart, type BrushChartDatum, type BrushChartAnnotation, type BrushChartProps } from "./components/brush-chart/brush-chart";
+export { WaffleChart, type WaffleCategory, type WaffleChartProps } from "./components/waffle-chart/waffle-chart";
+export { SlopeChart, type SlopeItem, type SlopeChartProps } from "./components/slope-chart/slope-chart";
+export { Sparkline, type SparklineProps } from "./components/sparkline/sparkline";
+export { Gauge, type GaugeThreshold, type GaugeProps } from "./components/gauge/gauge";
+export { ActivityHeatmap, type ActivityDay, type ActivityHeatmapProps } from "./components/activity-heatmap/activity-heatmap";
+export { Ridgeline, type RidgelineSeries, type RidgelineProps } from "./components/ridgeline/ridgeline";
+export { Treemap, type TreemapNode, type TreemapProps } from "./components/treemap/treemap";
+export { SortableDataTable, type SortDirection, type SortState, type DataColumn, type SortableDataTableProps } from "./components/sortable-data-table/sortable-data-table";
+export { Timeline, type TimelineEvent, type TimelineProps } from "./components/timeline/timeline";
+export { TextReveal, type TextRevealProps } from "./components/text-reveal/text-reveal";
+export { InViewTitle, type InViewTitleVariant, type InViewTitleProps } from "./components/in-view-title/in-view-title";
+export { TextMorph, type TextMorphProps } from "./components/text-morph/text-morph";
+export { TextShimmer, type TextShimmerProps } from "./components/text-shimmer/text-shimmer";

@@ -1,0 +1,70 @@
+/* brush-chart: ported from Arc (uiarc.dev). Classes are prefixed sg-brush-chart-*; see src/lib/css-module.ts. */
+.sg-brush-chart-figure { display: grid; min-width: 0; margin: 0; color: var(--color-foreground); font-family: var(--font-sans); letter-spacing: -0.01em; }
+
+/* Series colors (--series-1 to --series-4) come from registry/foundation.sg-brush-chart-css. */
+
+/* Plot with a right-hand value axis, the date axis beneath, and the overview strip under both. */
+.sg-brush-chart-chart { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 44px; grid-template-rows: auto 28px auto; row-gap: 0; min-width: 0; }
+.sg-brush-chart-plot { position: relative; grid-area: 1 / 1; min-width: 0; outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; cursor: crosshair; }
+.sg-brush-chart-svg { display: block; overflow: visible; }
+.sg-brush-chart-grid { stroke: var(--color-border); stroke-width: 1; shape-rendering: crispEdges; }
+.sg-brush-chart-baseline { stroke: var(--color-border-strong); stroke-width: 1; shape-rendering: crispEdges; }
+.sg-brush-chart-line { fill: none; stroke: var(--color-chart-1); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.sg-brush-chart-area { fill: color-mix(in oklab, var(--color-chart-1) 10%, transparent); stroke: none; }
+.sg-brush-chart-trend { fill: none; stroke: var(--color-chart-1); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.sg-brush-chart-band { fill: color-mix(in oklab, var(--color-chart-1) 14%, transparent); stroke: none; }
+.sg-brush-chart-crosshair { stroke: var(--color-foreground); stroke-opacity: .45; stroke-width: 1; shape-rendering: crispEdges; opacity: 0; transition: opacity var(--duration-fast) var(--ease-out-quint); pointer-events: none; }
+.sg-brush-chart-dot { fill: var(--color-chart-1); stroke: var(--color-surface); stroke-width: 2; opacity: 0; transition: opacity var(--duration-fast) var(--ease-out-quint); pointer-events: none; }
+.sg-brush-chart-chart[data-active] .sg-brush-chart-crosshair, .sg-brush-chart-chart[data-active] .sg-brush-chart-dot { opacity: 1; }
+
+/* Events: a hairline through the plot, a dot in the second chart series on top, and a label when there is room for it. */
+.sg-brush-chart-eventRule { stroke: var(--color-border-strong); stroke-width: 1; shape-rendering: crispEdges; transition: stroke var(--duration-quick) var(--ease-out-quint); }
+.sg-brush-chart-eventRule[data-active] { stroke: var(--color-chart-2); }
+.sg-brush-chart-event { position: absolute; top: 6px; display: flex; box-sizing: border-box; min-height: 24px; align-items: center; gap: 6px; padding: 0 6px 0 0; margin-left: -12px; border: 0; background: transparent; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); cursor: default; font: inherit; font-size: var(--text-xs); line-height: 1; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+.sg-brush-chart-event[data-flip] { flex-direction: row-reverse; padding: 0 0 0 6px; margin-left: 0; translate: calc(-100% + 12px) 0; }
+.sg-brush-chart-eventDot { display: grid; width: 24px; height: 24px; flex: none; place-items: center; }
+.sg-brush-chart-eventDot::before { width: 7px; height: 7px; border-radius: 50%; background: var(--color-chart-2); box-shadow: 0 0 0 2px var(--color-surface); content: ""; transition: transform var(--duration-quick) var(--ease-out-quint); }
+.sg-brush-chart-event[data-active] .sg-brush-chart-eventDot::before { transform: scale(1.3); }
+.sg-brush-chart-eventLabel { opacity: 0; transition: opacity var(--duration-quick) var(--ease-out-quint), color var(--duration-quick) var(--ease-out-quint); }
+.sg-brush-chart-event[data-labelled] .sg-brush-chart-eventLabel { opacity: 1; }
+.sg-brush-chart-event[data-active] .sg-brush-chart-eventLabel { color: var(--color-foreground); }
+
+.sg-brush-chart-tooltip { position: absolute; top: 0; left: 0; z-index: 2; display: grid; min-width: 132px; max-width: min(220px, 100%); gap: 2px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: var(--shadow-floating); opacity: 0; pointer-events: none; scale: .96; transition: opacity var(--duration-quick) var(--ease-out-quint), scale var(--duration-quick) var(--ease-out-quint); }
+.sg-brush-chart-chart[data-active] .sg-brush-chart-tooltip { opacity: 1; scale: 1; }
+.sg-brush-chart-tipTitle { margin: 0 0 2px; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-xs); line-height: 1.4; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sg-brush-chart-tipValue { margin: 0; color: var(--color-foreground); font-size: var(--text-base); font-weight: 500; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.sg-brush-chart-tipNote { margin: 0; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1.4; font-variant-numeric: tabular-nums; }
+.sg-brush-chart-tipEvent { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; color: var(--color-foreground); font-size: var(--text-xs); line-height: 1.4; }
+.sg-brush-chart-tipEventDot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--color-chart-2); }
+
+.sg-brush-chart-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--color-muted-foreground); font-size: var(--text-sm); pointer-events: none; }
+
+.sg-brush-chart-gutter { position: relative; grid-area: 1 / 2; min-width: 0; }
+.sg-brush-chart-tick { position: absolute; left: 10px; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; translate: 0 -50%; pointer-events: none; }
+.sg-brush-chart-axis { position: relative; grid-area: 2 / 1; min-width: 0; }
+.sg-brush-chart-axisLabel { position: absolute; top: 9px; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Overview: the whole history, with everything outside the window stepped back. */
+.sg-brush-chart-strip { --strip-radius: 10px; position: relative; grid-area: 3 / 1; min-width: 0; margin-top: 8px; border-radius: var(--strip-radius); background: color-mix(in oklab, var(--color-foreground) 2.5%, transparent); cursor: crosshair; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+/* The overview drawing is clipped to the strip's corners; the handles stay outside the clip so they can overhang the ends. */
+.sg-brush-chart-strip > .sg-brush-chart-svg { clip-path: inset(0 round var(--strip-radius)); }
+.sg-brush-chart-overviewLine { fill: none; stroke: color-mix(in oklab, var(--color-foreground) 28%, var(--color-surface)); stroke-width: 1; stroke-linejoin: round; }
+.sg-brush-chart-overviewArea { fill: color-mix(in oklab, var(--color-foreground) 4%, transparent); }
+.sg-brush-chart-overviewLineIn { fill: none; stroke: var(--color-chart-1); stroke-width: 1; stroke-linejoin: round; }
+.sg-brush-chart-overviewAreaIn { fill: color-mix(in oklab, var(--color-chart-1) 12%, transparent); }
+.sg-brush-chart-overviewEvent { fill: var(--color-chart-2); stroke: var(--color-surface); stroke-width: 1.5; }
+.sg-brush-chart-shade { position: absolute; top: 0; bottom: 0; background: color-mix(in oklab, var(--color-surface) 45%, transparent); pointer-events: none; }
+.sg-brush-chart-shade[data-edge="start"] { border-radius: var(--strip-radius) 0 0 var(--strip-radius); }
+.sg-brush-chart-shade[data-edge="end"] { border-radius: 0 var(--strip-radius) var(--strip-radius) 0; }
+.sg-brush-chart-window { position: absolute; top: 0; bottom: 0; border-radius: var(--strip-radius); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-chart-1) 45%, transparent); cursor: grab; outline: none; transition: box-shadow var(--duration-quick) var(--ease-out-quint); }
+.sg-brush-chart-window:active { cursor: grabbing; }
+.sg-brush-chart-handle { position: absolute; top: 50%; display: grid; width: 28px; height: 44px; place-items: center; margin-left: -14px; translate: 0 -50%; cursor: ew-resize; outline: none; touch-action: none; }
+.sg-brush-chart-grip { width: 6px; height: 22px; border-radius: 3px; background: var(--color-surface); box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-foreground) 26%, transparent), var(--shadow-resting); transition: transform var(--duration-fast) var(--ease-out-quint), background-color var(--duration-quick) var(--ease-out-quint); }
+.sg-brush-chart-handle:active .sg-brush-chart-grip { transform: scaleY(1.12); }
+@media (hover: hover) and (pointer: fine) { .sg-brush-chart-handle:hover .sg-brush-chart-grip { transform: scaleY(1.12); } }
+
+.sg-brush-chart-srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-brush-chart-crosshair, .sg-brush-chart-dot, .sg-brush-chart-tooltip, .sg-brush-chart-eventRule, .sg-brush-chart-eventLabel, .sg-brush-chart-eventDot::before, .sg-brush-chart-grip, .sg-brush-chart-window { transition: none; }
+}

@@ -3,6 +3,25 @@
    @import "@sagui/ui/styles.css";
    @source "../node_modules/@sagui/ui/dist"; */
 @import "@sagui/tokens/tokens.css";
+/* Data and text components ship a prefixed stylesheet each (sg-<component>-*). */
+@import "./components/line-chart/line-chart.css";
+@import "./components/bar-chart/bar-chart.css";
+@import "./components/donut-chart/donut-chart.css";
+@import "./components/streamgraph/streamgraph.css";
+@import "./components/brush-chart/brush-chart.css";
+@import "./components/waffle-chart/waffle-chart.css";
+@import "./components/slope-chart/slope-chart.css";
+@import "./components/sparkline/sparkline.css";
+@import "./components/gauge/gauge.css";
+@import "./components/activity-heatmap/activity-heatmap.css";
+@import "./components/ridgeline/ridgeline.css";
+@import "./components/treemap/treemap.css";
+@import "./components/sortable-data-table/sortable-data-table.css";
+@import "./components/timeline/timeline.css";
+@import "./components/text-reveal/text-reveal.css";
+@import "./components/in-view-title/in-view-title.css";
+@import "./components/text-morph/text-morph.css";
+@import "./components/text-shimmer/text-shimmer.css";
 
 /* Theme switching follows data-theme="dark" on an ancestor, matching the token layer. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

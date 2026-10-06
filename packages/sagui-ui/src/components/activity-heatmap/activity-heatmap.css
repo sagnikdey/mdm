@@ -1,0 +1,84 @@
+/* activity-heatmap: ported from Arc (uiarc.dev). Classes are prefixed sg-activity-heatmap-*; see src/lib/css-module.ts. */
+/* Levels are tints of the accent over a neutral empty square, so the grid follows the selected accent and both themes. */
+.sg-activity-heatmap-root { --level-0: color-mix(in oklab, var(--color-foreground) 6.5%, var(--color-surface)); --level-1: color-mix(in oklab, var(--color-primary) 26%, var(--level-0)); --level-2: color-mix(in oklab, var(--color-primary) 50%, var(--level-0)); --level-3: color-mix(in oklab, var(--color-primary) 76%, var(--level-0)); --level-4: var(--color-primary); container-type: inline-size; position: relative; display: grid; min-width: 0; gap: calc(var(--spacing) * 4); color: var(--color-foreground); }
+.sg-activity-heatmap-header { display: flex; min-width: 0; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--spacing) * 3) calc(var(--spacing) * 4); }
+.sg-activity-heatmap-summary { display: flex; min-width: 0; flex-wrap: wrap; align-items: baseline; column-gap: .3em; margin: 0; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: var(--text-sm); line-height: 1.4; font-variant-numeric: tabular-nums; }
+.sg-activity-heatmap-total { color: var(--color-foreground); font-weight: 500; white-space: nowrap; }
+.sg-activity-heatmap-period { white-space: nowrap; }
+.sg-activity-heatmap-actions { display: flex; flex: none; align-items: center; }
+.sg-activity-heatmap-rollingFrame { display: inline-flex; justify-content: flex-end; overflow: clip; overflow-clip-margin: .2em; }
+.sg-activity-heatmap-rolling { display: inline-flex; flex: none; }
+/* Each place is its own window, so a turning digit clips at the line instead of brushing the next line of text. */
+.sg-activity-heatmap-place { position: relative; display: inline-flex; overflow: clip; overflow-clip-margin: .15em; }
+.sg-activity-heatmap-placeChar, .sg-activity-heatmap-riseLine { display: inline-block; }
+.sg-activity-heatmap-rise { position: relative; display: inline-flex; }
+
+/* The scroller starts at its right edge on narrow screens (the most recent weeks) without script, through its writing direction. */
+.sg-activity-heatmap-scroller { direction: rtl; overflow-x: auto; overflow-y: hidden; margin: -6px; padding: 6px; overscroll-behavior-x: contain; scrollbar-color: var(--color-border-strong) transparent; scrollbar-width: thin; }
+.sg-activity-heatmap-canvas { --gap: 3px; --label: 30px; --cell: clamp(9px, calc((100cqi - var(--label) - var(--gap) * 53) / 53), 15px); --step: calc(var(--cell) + var(--gap)); direction: ltr; display: grid; width: max-content; grid-template-columns: var(--label) auto; grid-template-rows: auto auto; column-gap: var(--gap); row-gap: calc(var(--spacing) * 2); }
+.sg-activity-heatmap-months { position: relative; grid-row: 1; grid-column: 2; height: 1rem; color: var(--color-muted-foreground); font-size: var(--text-xs); line-height: 1rem; }
+/* Month labels glide to their new week when a range starts on a different weekday. */
+.sg-activity-heatmap-month { position: absolute; top: 0; left: 0; white-space: nowrap; transform: translateX(calc(var(--col) * var(--step))); transition: transform var(--duration-spring) var(--ease-spring); }
+/* Weekday labels stay pinned while a narrow grid scrolls under them. Set --heatmap-surface when the heatmap sits on another surface. */
+.sg-activity-heatmap-weekdays { position: sticky; z-index: 1; left: -6px; display: grid; grid-row: 1 / 3; grid-column: 1; grid-template-rows: repeat(7, var(--cell)); align-content: end; row-gap: var(--gap); margin: 0 calc(var(--gap) * -1) 0 -6px; padding: 0 var(--gap) 0 6px; background: var(--heatmap-surface, var(--color-surface)); color: var(--color-muted-foreground); font-size: var(--text-xs); }
+.sg-activity-heatmap-weekday { display: flex; height: var(--cell); align-items: center; white-space: nowrap; line-height: 1; }
+.sg-activity-heatmap-plot { position: relative; grid-row: 2; grid-column: 2; }
+.sg-activity-heatmap-grid { display: grid; gap: var(--gap); outline: none; }
+.sg-activity-heatmap-row { display: flex; gap: var(--gap); }
+
+/* One square per day. The wave delay rides a custom property so a reveal and a recolor sweep the same diagonal. */
+.sg-activity-heatmap-cell { --delay: var(--wave); display: block; width: var(--cell); height: var(--cell); flex: none; border-radius: calc(var(--cell) * .28); background: var(--level-0); outline: 1.5px solid transparent; outline-offset: 1px; cursor: default; -webkit-tap-highlight-color: transparent; transition: background-color 320ms var(--ease-out-quint) var(--delay), transform var(--duration-spring) var(--ease-spring) var(--delay), opacity var(--duration-quick) var(--ease-out-quint); }
+.sg-activity-heatmap-grid[data-direction="back"] .sg-activity-heatmap-cell { --delay: var(--wave-back); }
+.sg-activity-heatmap-cell[data-level="1"] { background: var(--level-1); }
+.sg-activity-heatmap-cell[data-level="2"] { background: var(--level-2); }
+.sg-activity-heatmap-cell[data-level="3"] { background: var(--level-3); }
+.sg-activity-heatmap-cell[data-level="4"] { background: var(--level-4); }
+/* Days outside the range shrink away in the sweep and grow back when a range needs them. */
+.sg-activity-heatmap-cell[data-empty] { transform: scale(0); background: var(--level-0); }
+.sg-activity-heatmap-grid[data-reveal="hidden"] .sg-activity-heatmap-cell { opacity: 0; transform: scale(.5); transition: none; }
+.sg-activity-heatmap-grid[data-reveal="hidden"] .sg-activity-heatmap-cell[data-empty] { transform: scale(0); }
+.sg-activity-heatmap-grid[data-reveal="revealing"] .sg-activity-heatmap-cell { transition: background-color 320ms var(--ease-out-quint) var(--delay), transform var(--duration-spring) var(--ease-spring) var(--delay), opacity 360ms var(--ease-enter) var(--delay); }
+.sg-activity-heatmap-grid[data-highlight] .sg-activity-heatmap-cell:not([data-empty]) { opacity: .2; }
+.sg-activity-heatmap-grid[data-highlight="0"] .sg-activity-heatmap-cell[data-level="0"], .sg-activity-heatmap-grid[data-highlight="1"] .sg-activity-heatmap-cell[data-level="1"], .sg-activity-heatmap-grid[data-highlight="2"] .sg-activity-heatmap-cell[data-level="2"], .sg-activity-heatmap-grid[data-highlight="3"] .sg-activity-heatmap-cell[data-level="3"], .sg-activity-heatmap-grid[data-highlight="4"] .sg-activity-heatmap-cell[data-level="4"] { opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .sg-activity-heatmap-cell:not([data-empty]):hover { outline-color: color-mix(in oklab, var(--color-foreground) 45%, transparent); } }
+
+/* The selection ring glides between days, and follows its day when the range changes. */
+.sg-activity-heatmap-ring { position: absolute; top: -3px; left: -3px; width: calc(var(--cell) + 6px); height: calc(var(--cell) + 6px); border: 1.5px solid var(--color-foreground); border-radius: calc(var(--cell) * .28 + 3px); opacity: 0; pointer-events: none; transform: translate(calc(var(--col) * var(--step)), calc(var(--row) * var(--step))); transition: transform var(--duration-spring) var(--ease-spring), opacity var(--duration-quick) var(--ease-out-quint); }
+.sg-activity-heatmap-ring[data-shown] { opacity: 1; }
+
+.sg-activity-heatmap-legend { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: calc(var(--spacing) * 3); color: var(--color-muted-foreground); font-size: var(--text-xs); }
+/* The caption names the previewed level; it sits apart from the scale so its changing width never nudges the swatches. */
+.sg-activity-heatmap-caption { position: relative; min-width: 0; overflow: hidden; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-variant-numeric: tabular-nums; white-space: nowrap; text-overflow: ellipsis; }
+.sg-activity-heatmap-scale { display: flex; flex: none; align-items: center; gap: calc(var(--spacing) * 2); }
+.sg-activity-heatmap-captionShort { display: none; }
+/* Narrow cards keep the day count and let the highlighted squares say which level it is. */
+@container (max-width: 440px) { .sg-activity-heatmap-captionLong { display: none; } .sg-activity-heatmap-captionShort { display: inline; } }
+.sg-activity-heatmap-legendText { line-height: 1; }
+.sg-activity-heatmap-swatches { display: flex; }
+/* The visible square stays the size of a day while the button keeps a comfortable target around it. */
+.sg-activity-heatmap-swatch { position: relative; display: grid; width: 15px; height: 20px; place-items: center; padding: 0; border: 0; border-radius: 4px; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.sg-activity-heatmap-swatch::before { content: ""; width: 11px; height: 11px; border-radius: 3px; background: var(--level-0); }
+.sg-activity-heatmap-swatch[data-level="1"]::before { background: var(--level-1); }
+.sg-activity-heatmap-swatch[data-level="2"]::before { background: var(--level-2); }
+.sg-activity-heatmap-swatch[data-level="3"]::before { background: var(--level-3); }
+.sg-activity-heatmap-swatch[data-level="4"]::before { background: var(--level-4); }
+.sg-activity-heatmap-swatch[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px var(--color-foreground); }
+
+/* One bubble for the whole grid. The outer layer glides between cells; the bubble fades and scales from its tail. */
+.sg-activity-heatmap-tip { position: absolute; z-index: 5; top: 0; left: 0; width: 0; height: 0; pointer-events: none; }
+.sg-activity-heatmap-bubble { position: absolute; bottom: 8px; left: 0; display: block; padding: 7px 12px 8px; border: 1px solid color-mix(in oklab, var(--color-background) 14%, var(--color-foreground)); border-radius: var(--radius-md); background: var(--color-foreground); color: var(--color-background); box-shadow: var(--shadow-raised); transform-origin: 50% 100%; will-change: transform, opacity; }
+.sg-activity-heatmap-tipBody { position: relative; display: block; overflow: clip; overflow-clip-margin: 8px; }
+.sg-activity-heatmap-tipMeasure { position: absolute; top: 0; left: 0; display: grid; width: max-content; visibility: hidden; }
+.sg-activity-heatmap-tipLines { display: grid; width: max-content; }
+.sg-activity-heatmap-tipMeasure > span, .sg-activity-heatmap-tipLines > span { white-space: nowrap; }
+.sg-activity-heatmap-tipPrimary { font-size: var(--text-sm); font-weight: 500; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.sg-activity-heatmap-tipSecondary { color: color-mix(in oklab, var(--color-background) 68%, var(--color-foreground)); font-size: var(--text-xs); line-height: 1.35; }
+
+.sg-activity-heatmap-srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-activity-heatmap-cell, .sg-activity-heatmap-grid[data-reveal="revealing"] .sg-activity-heatmap-cell { transition: background-color var(--duration-quick) var(--ease-out-quint), opacity var(--duration-quick) var(--ease-out-quint); }
+  .sg-activity-heatmap-grid[data-reveal="hidden"] .sg-activity-heatmap-cell { transform: none; }
+  .sg-activity-heatmap-cell[data-empty], .sg-activity-heatmap-grid[data-reveal="hidden"] .sg-activity-heatmap-cell[data-empty] { opacity: 0; transform: none; }
+  .sg-activity-heatmap-month, .sg-activity-heatmap-ring { transition: opacity var(--duration-quick) var(--ease-out-quint); }
+}
