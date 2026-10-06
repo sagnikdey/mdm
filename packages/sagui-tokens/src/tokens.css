@@ -3,11 +3,41 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px;
+  /* Type scale. Each step pairs a size with its line height; large steps tighten their tracking.
+     Utilities: text-xs … text-6xl. For headings and body copy prefer the type-* roles below. */
+  --text-xs: 0.75rem;   --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;    --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;   --text-xl--line-height: 1.75rem;  --text-xl--letter-spacing: -0.01em;
+  --text-2xl: 1.5rem;   --text-2xl--line-height: 2rem;    --text-2xl--letter-spacing: -0.02em;
+  --text-3xl: 1.875rem; --text-3xl--line-height: 2.25rem; --text-3xl--letter-spacing: -0.025em;
+  --text-4xl: 2.25rem;  --text-4xl--line-height: 2.5rem;  --text-4xl--letter-spacing: -0.03em;
+  --text-5xl: 3rem;     --text-5xl--line-height: 1.1;     --text-5xl--letter-spacing: -0.035em;
+  --text-6xl: 3.75rem;  --text-6xl--line-height: 1.05;    --text-6xl--letter-spacing: -0.04em;
+
+  --font-weight-normal: 400; --font-weight-medium: 500; --font-weight-semibold: 600; --font-weight-bold: 700;
+
+  /* Radius scale, then the roles components use. Nested corners stay concentric: inner = outer - padding. */
+  --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px; --radius-2xl: 28px;
+  --radius-control: var(--radius-md);
+  --radius-container: var(--radius-lg);
+  --radius-overlay: var(--radius-xl);
+  --radius-pill: 9999px;
 
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Spring with a gentle settle. Pair with --duration-spring for transform transitions. */
+  --ease-spring: linear(0, 0.0258, 0.09, 0.1763, 0.2732, 0.3724, 0.4683, 0.5573, 0.6376, 0.7082, 0.7689, 0.8202, 0.8628, 0.8976, 0.9256, 0.9476, 0.9648, 0.9778, 0.9875, 0.9945, 0.9994, 1.0026, 1.0047, 1.0058, 1.0062, 1.0062, 1.0059, 1.0055, 1.0049, 1.0043, 1.0036, 1.0031, 1.0025, 1.002, 1.0016, 1.0013, 1);
   --duration-fast: 120ms; --duration-base: 200ms; --duration-slow: 360ms;
+  --duration-quick: 160ms; --duration-standard: 240ms; --duration-spring: 580ms;
+
+  /* Elevation, lowest to highest. Values switch with the theme (dark shadows need more density to read). */
+  --shadow-resting: var(--sg-shadow-resting);
+  --shadow-raised: var(--sg-shadow-raised);
+  --shadow-floating: var(--sg-shadow-floating);
+  --shadow-overlay: var(--sg-shadow-overlay);
 
   --color-background: var(--sg-background);
   --color-foreground: var(--sg-foreground);
@@ -15,6 +45,9 @@
   --color-muted-foreground: var(--sg-muted-foreground);
   --color-surface: var(--sg-surface);
   --color-border: var(--sg-border);
+  --color-border-strong: var(--sg-border-strong);
+  --color-success: var(--sg-success);
+  --color-warning: var(--sg-warning);
   --color-ring: var(--sg-ring);
   --color-primary: var(--sg-primary);
   --color-primary-foreground: var(--sg-primary-foreground);
@@ -31,6 +64,9 @@
   --sg-muted: oklch(0.96 0.005 85);
   --sg-muted-foreground: oklch(0.52 0.01 260);
   --sg-border: oklch(0.91 0.006 85);
+  --sg-border-strong: oklch(0.82 0.008 85);
+  --sg-success: oklch(0.49 0.19 150);
+  --sg-warning: oklch(0.58 0.18 75);
   --sg-ring: oklch(0.62 0.17 255);
   --sg-primary: oklch(0.55 0.19 255);
   --sg-primary-foreground: oklch(0.99 0 0);
@@ -38,6 +74,11 @@
   --sg-secondary-foreground: oklch(0.3 0.05 255);
   --sg-destructive: oklch(0.58 0.21 27);
   --sg-destructive-foreground: oklch(0.99 0 0);
+
+  --sg-shadow-resting: 0 1px 2px oklch(0% 0 0 / 0.035);
+  --sg-shadow-raised: 0 6px 18px oklch(0% 0 0 / 0.065), 0 1px 3px oklch(0% 0 0 / 0.035);
+  --sg-shadow-floating: 0 20px 48px oklch(0% 0 0 / 0.105), 0 3px 10px oklch(0% 0 0 / 0.045);
+  --sg-shadow-overlay: 0 32px 80px oklch(0% 0 0 / 0.16), 0 8px 24px oklch(0% 0 0 / 0.07);
 }
 
 [data-theme="dark"] {
@@ -47,6 +88,9 @@
   --sg-muted: oklch(0.25 0.01 260);
   --sg-muted-foreground: oklch(0.7 0.01 260);
   --sg-border: oklch(0.3 0.01 260);
+  --sg-border-strong: oklch(0.4 0.01 260);
+  --sg-success: oklch(0.72 0.17 150);
+  --sg-warning: oklch(0.78 0.15 80);
   --sg-ring: oklch(0.7 0.15 255);
   --sg-primary: oklch(0.68 0.16 255);
   --sg-primary-foreground: oklch(0.15 0.02 255);
@@ -54,8 +98,42 @@
   --sg-secondary-foreground: oklch(0.92 0.02 255);
   --sg-destructive: oklch(0.65 0.2 27);
   --sg-destructive-foreground: oklch(0.99 0 0);
+
+  --sg-shadow-resting: 0 1px 2px oklch(0% 0 0 / 0.3);
+  --sg-shadow-raised: 0 6px 18px oklch(0% 0 0 / 0.36), 0 1px 3px oklch(0% 0 0 / 0.26);
+  --sg-shadow-floating: 0 20px 48px oklch(0% 0 0 / 0.46), 0 3px 10px oklch(0% 0 0 / 0.3);
+  --sg-shadow-overlay: 0 32px 80px oklch(0% 0 0 / 0.56), 0 8px 24px oklch(0% 0 0 / 0.34);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root { --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
+  :root { --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; --duration-quick: 0ms; --duration-standard: 0ms; --duration-spring: 0ms; }
 }
+
+/* Type roles: size, line height, weight and tracking set together. Display and h1 scale with the viewport. */
+:root {
+  --type-display: 600 clamp(2.5rem, 1.75rem + 3vw, 3.75rem) / 1.05 var(--font-sans);
+  --type-h1: 600 clamp(2rem, 1.6rem + 1.6vw, 2.5rem) / 1.1 var(--font-sans);
+  --type-h2: 600 1.5rem / 1.25 var(--font-sans);
+  --type-h3: 600 1.125rem / 1.4 var(--font-sans);
+  --type-title: 500 1rem / 1.4 var(--font-sans);
+  --type-body-lg: 400 1.125rem / 1.6 var(--font-sans);
+  --type-body: 400 1rem / 1.6 var(--font-sans);
+  --type-body-sm: 400 0.875rem / 1.5 var(--font-sans);
+  --type-label: 500 0.875rem / 1.25 var(--font-sans);
+  --type-caption: 400 0.75rem / 1.35 var(--font-sans);
+  --type-overline: 500 0.6875rem / 1.2 var(--font-sans);
+  --type-code: 400 0.8125rem / 1.6 var(--font-mono);
+}
+
+@utility type-display { font: var(--type-display); letter-spacing: -0.035em; text-wrap: balance; }
+@utility type-h1 { font: var(--type-h1); letter-spacing: -0.03em; text-wrap: balance; }
+@utility type-h2 { font: var(--type-h2); letter-spacing: -0.02em; text-wrap: balance; }
+@utility type-h3 { font: var(--type-h3); letter-spacing: -0.01em; }
+@utility type-title { font: var(--type-title); letter-spacing: -0.01em; }
+@utility type-body-lg { font: var(--type-body-lg); letter-spacing: -0.005em; text-wrap: pretty; }
+@utility type-body { font: var(--type-body); text-wrap: pretty; }
+@utility type-body-sm { font: var(--type-body-sm); text-wrap: pretty; }
+@utility type-label { font: var(--type-label); }
+@utility type-caption { font: var(--type-caption); letter-spacing: 0.005em; }
+@utility type-overline { font: var(--type-overline); letter-spacing: 0.08em; text-transform: uppercase; }
+@utility type-code { font: var(--type-code); font-variant-ligatures: none; }

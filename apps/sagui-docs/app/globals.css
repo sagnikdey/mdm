@@ -1,4 +1,61 @@
 @import "tailwindcss";
 @import "@sagui/ui/styles.css";
 @source "../../../packages/ui/src";
+@source "../components";
+@source "../demos";
+
+html { scroll-padding-top: 5rem; }
 body { background: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
+
+/* Rendered markdown. Elements come from the markdown pipeline, so they are styled here by tag. */
+.prose { color: var(--color-foreground); font-size: 0.9375rem; line-height: 1.7; }
+.prose > *:first-child { margin-top: 0; }
+.prose h2 { margin: 3rem 0 1rem; padding-top: 0.25rem; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; scroll-margin-top: 5rem; }
+.prose h3 { margin: 2rem 0 0.75rem; font-size: 1.125rem; font-weight: 600; letter-spacing: -0.01em; scroll-margin-top: 5rem; }
+.prose p { margin: 0 0 1rem; color: color-mix(in oklab, var(--color-foreground) 88%, transparent); }
+.prose ul, .prose ol { margin: 0 0 1.25rem; padding-left: 1.25rem; }
+.prose ul { list-style: disc; } .prose ol { list-style: decimal; }
+.prose li { margin: 0.25rem 0; padding-left: 0.25rem; }
+.prose li::marker { color: var(--color-muted-foreground); }
+.prose a { color: var(--color-primary); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--color-primary) 40%, transparent); text-underline-offset: 3px; }
+.prose a:hover { text-decoration-color: currentColor; }
+.prose strong { font-weight: 600; }
+.prose code:not(pre code) { padding: 0.15em 0.4em; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-muted); font-family: var(--font-mono); font-size: 0.85em; }
+.prose blockquote { margin: 1.5rem 0; padding-left: 1rem; border-left: 2px solid var(--color-border-strong); color: var(--color-muted-foreground); }
+.prose hr { margin: 2.5rem 0; border: 0; border-top: 1px solid var(--color-border); }
+.prose table { display: block; width: 100%; max-width: 100%; margin: 1.25rem 0 1.75rem; overflow-x: auto; border-collapse: collapse; font-size: 0.8125rem; line-height: 1.5; }
+.prose th { padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--color-border-strong); color: var(--color-muted-foreground); font-weight: 500; text-align: left; white-space: nowrap; }
+.prose td { padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--color-border); vertical-align: top; min-width: 7rem; }
+.prose td:first-child { white-space: nowrap; }
+.prose td:nth-child(2) { min-width: 12rem; }
+.prose td code { white-space: normal; word-break: break-word; }
+
+/* Shiki emits both theme colors as variables; the active theme picks one. */
+pre.shiki { margin: 1.25rem 0; padding: 1rem 1.25rem; overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-muted) !important; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.65; }
+.shiki, .shiki span { color: var(--shiki-light); }
+[data-theme="dark"] .shiki, [data-theme="dark"] .shiki span { color: var(--shiki-dark); }
+.code pre.shiki { margin: 0; border: 0; border-radius: 0; background: transparent !important; }
+.code .prose, .code > div { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Code blocks: line numbers from CSS counters on Shiki's line spans. */
+.code.numbered pre.shiki code { counter-reset: line; }
+.code.numbered pre.shiki .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 1.75rem; margin-right: 1rem; color: var(--color-muted-foreground); opacity: 0.55; text-align: right; user-select: none; }
+
+/* Keyboard table: keys render as keycaps. */
+.prose .keys-table td:first-child { white-space: normal; }
+.prose kbd { display: inline-flex; min-width: 1.6rem; height: 1.5rem; align-items: center; justify-content: center; margin: 0.1rem 0; padding: 0 0.4rem; border: 1px solid var(--color-border-strong); border-bottom-width: 2px; border-radius: 6px; background: var(--color-surface); color: var(--color-foreground); font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; line-height: 1; white-space: nowrap; }
+.prose .kbd-sep { margin: 0 0.35rem; color: var(--color-muted-foreground); font-size: 0.75rem; }
+.prose .kbd-note { display: block; margin-top: 0.25rem; color: var(--color-muted-foreground); font-size: 0.75rem; }
+
+/* Related components as cards. */
+.related-grid { display: grid; gap: 0.75rem; margin: 1.25rem 0 1.75rem; padding: 0; list-style: none; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
+.prose ul.related-grid { padding-left: 0; list-style: none; }
+.prose ul.related-grid li { margin: 0; padding: 0; }
+.related-card { display: grid; gap: 0.25rem; height: 100%; padding: 0.9rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); color: var(--color-foreground); text-decoration: none !important; transition: border-color var(--duration-quick) var(--ease-out-quint), box-shadow var(--duration-quick) var(--ease-out-quint); }
+.prose a.related-card { color: var(--color-foreground); }
+.related-card:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-raised); }
+.related-card:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+.related-title { font-size: 0.875rem; font-weight: 500; }
+.related-text { color: var(--color-muted-foreground); font-size: 0.8125rem; line-height: 1.45; }

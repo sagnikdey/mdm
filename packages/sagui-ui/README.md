@@ -38,3 +38,9 @@ Dark mode: set `data-theme="dark"` on `<html>`. All motion respects `prefers-red
 
 ## Component checklist
 Each component ships with CVA variants, focus/disabled/loading states, reduced-motion behavior, stories (default, variants, sizes, states) and passes the a11y addon in both themes.
+
+## Docs content
+Component pages live in `apps/docs/content/components/*.md`. Live examples are marked in the markdown with `<!-- demo: Name -->` and defined in `apps/docs/demos/<slug>.demos.tsx` between `// #region Name` and `// #endregion`. The Code tab shows that same source, so examples cannot drift from what is running.
+
+## Credits
+The button, input and special input components are ports of the free, open source components from [Arc](https://uiarc.dev), rebuilt on SagUI's Tailwind and token layer. Their docs text is adapted from Arc's component pages.

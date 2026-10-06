@@ -1,0 +1,58 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Typography" />
+
+# Typography
+
+Inter for the interface, JetBrains Mono for code. Use the `type-*` roles for headings and copy; they set size, line height, weight and tracking together.
+
+## Roles
+
+export const roles = [
+  ["type-display", "40–60 fluid / 1.05 · 600", "Ship calmer interfaces"],
+  ["type-h1", "32–40 fluid / 1.1 · 600", "Workspace settings"],
+  ["type-h2", "24 / 1.25 · 600", "Billing and invoices"],
+  ["type-h3", "18 / 1.4 · 600", "Payment method"],
+  ["type-title", "16 / 1.4 · 500", "Atlas redesign"],
+  ["type-body-lg", "18 / 1.6 · 400", "A lead paragraph that introduces the page."],
+  ["type-body", "16 / 1.6 · 400", "Body copy for reading: descriptions, articles, help."],
+  ["type-body-sm", "14 / 1.5 · 400", "Dense UI copy in tables, cards and menus."],
+  ["type-label", "14 / 1.25 · 500", "Email address"],
+  ["type-caption", "12 / 1.35 · 400", "Updated 2 hours ago"],
+  ["type-overline", "11 / 1.2 · 500 · uppercase", "Section label"],
+  ["type-code", "13 / 1.6 · 400 mono", "npm install @sagui/ui"],
+];
+
+<div className="sb-unstyled grid divide-y divide-border text-foreground">
+  {roles.map(([role, spec, sample]) => (
+    <div key={role} className="grid grid-cols-[12rem_1fr] items-baseline gap-6 py-3">
+      <div>
+        <code className="type-code">{role}</code>
+        <div className="type-caption text-muted-foreground">{spec}</div>
+      </div>
+      <div className={role}>{sample}</div>
+    </div>
+  ))}
+</div>
+
+## Scale
+
+export const steps = ["text-xs", "text-sm", "text-base", "text-lg", "text-xl", "text-2xl", "text-3xl", "text-4xl", "text-5xl", "text-6xl"];
+
+<div className="sb-unstyled grid gap-2 text-foreground">
+  {steps.map((step) => (
+    <div key={step} className="flex items-baseline gap-4">
+      <code className="type-caption w-24 flex-none text-muted-foreground">{step}</code>
+      <span className={`${step} font-medium`}>Aa Quiet type</span>
+    </div>
+  ))}
+</div>
+
+## Weights
+
+<div className="sb-unstyled flex gap-8 text-3xl text-foreground">
+  <span className="font-normal">Ag 400</span>
+  <span className="font-medium">Ag 500</span>
+  <span className="font-semibold">Ag 600</span>
+  <span className="font-bold">Ag 700</span>
+</div>

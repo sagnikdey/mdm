@@ -1,0 +1,39 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Elevation" />
+
+# Shadow and elevation
+
+Five levels. Every elevated surface keeps a 1px border so its edge stays crisp, especially in dark mode, where the shadow values are denser. Switch the theme in the toolbar to compare.
+
+export const levels = [
+  [0, "", "none", "Page and inline content"],
+  [1, "shadow-resting", "shadow-resting", "Controls and cards at rest"],
+  [2, "shadow-raised", "shadow-raised", "Hovered cards, tooltips"],
+  [3, "shadow-floating", "shadow-floating", "Menus, popovers, toasts"],
+  [4, "shadow-overlay", "shadow-overlay", "Dialogs and drawers"],
+];
+
+<div className="sb-unstyled grid grid-cols-5 gap-6 bg-background p-6 text-foreground">
+  {levels.map(([level, cls, token, use]) => (
+    <div key={level} className={`grid min-h-32 content-between rounded-[var(--radius-lg)] border border-border bg-surface p-4 ${cls}`}>
+      <span className="type-h2 text-muted-foreground">{level}</span>
+      <div>
+        <code className="type-code block text-xs">{token}</code>
+        <span className="type-caption text-muted-foreground">{use}</span>
+      </div>
+    </div>
+  ))}
+</div>
+
+## Stacking order
+
+| Layer | z-index |
+| --- | --- |
+| Inline popups (field pickers, expanding search) | 30–40 |
+| Modal scrim | 50 |
+| Modal panel | 51 |
+| Menus | 60 |
+| Popovers, combobox and multi-select lists | 80 |
+| Tooltips | 90 |
+| Select lists | 1000 |
