@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, Bot, Layers, Sparkles, SquareRoundCorner, Type } from "lucide-react";
-import { Accordion, Button } from "@sagui/ui";
+import { Accordion, Button, CopyButton } from "@sagui/ui";
 import { Showcase } from "../components/home/showcase";
 import { MotionDemo } from "../components/home/motion-demo";
 import { InstallTabs } from "../components/install-tabs";
@@ -8,10 +8,11 @@ import { componentsByCategory, getAllComponents } from "../lib/content";
 
 const github = "https://github.com/sagnikdey/sagui";
 const storybook = "https://sagnikdey.github.io/sagui/";
+const mcpUrl = "https://sagui-docs.vercel.app/api/mcp";
 
 const faq = [
   { title: "How do I add a component?", content: <p>Install <code className="type-code">@sagui/ui</code>, import its styles in your Tailwind v4 entry, and import components by name. The installation guide covers the Tailwind setup in three lines.</p> },
-  { title: "Can my AI tool use SagUI?", content: <p>Yes. Every component page has a Markdown version with the demos inlined as code, and <code className="type-code">/llms.txt</code> indexes all of them. Point your assistant at those instead of screenshots.</p> },
+  { title: "Can my AI tool use SagUI?", content: <p>Yes. Connect it to the SagUI MCP server and it can search for the right component, read its full docs and check the tokens before it writes code. Every page is also plain Markdown, and <code className="type-code">/llms.txt</code> indexes them all.</p> },
   { title: "Can I change how it looks?", content: <p>Components only read semantic tokens. Override the color, radius, type and shadow tokens once and every component follows, in light and dark.</p> },
   { title: "Does motion respect device settings?", content: <p>Yes. Every animation checks prefers-reduced-motion: springs become short fades and nothing moves across the screen.</p> },
   { title: "Is it accessible?", content: <p>Components are built on native elements and Radix primitives, with visible focus rings, full keyboard support and labels on every control. Storybook runs axe checks on every story.</p> },
@@ -45,7 +46,7 @@ export default function Home() {
           </p>
           <div className="home-rise mt-8 flex flex-wrap justify-center gap-3" style={{ animationDelay: "240ms" }}>
             <Button asChild size="lg"><Link href="/components">Explore components <ArrowRight aria-hidden="true" /></Link></Button>
-            <Button asChild size="lg" variant="outline"><a href="/llms.txt"><Bot aria-hidden="true" /> Give SagUI to your AI</a></Button>
+            <Button asChild size="lg" variant="outline"><Link href="/docs/ai"><Bot aria-hidden="true" /> Give SagUI to your AI</Link></Button>
           </div>
         </div>
       </section>
@@ -121,11 +122,15 @@ export default function Home() {
           <div>
             <h2 id="docs" className="type-h1">Docs for people, and for their AI</h2>
             <p className="type-body mt-3 max-w-md text-muted-foreground">
-              Every component has when to use it, when not to, the full API, keyboard and accessibility notes. Each page is also plain Markdown, and <code className="type-code">llms.txt</code> indexes the lot.
+              Every component has when to use it, when not to, the full API, keyboard and accessibility notes. Connect your assistant to the MCP server and it reads them before it writes code.
             </p>
+            <div className="mt-5 flex min-w-0 items-center gap-1 rounded-[var(--radius-md)] border border-border bg-surface py-1 pr-1 pl-3">
+              <code className="type-code min-w-0 flex-1 truncate">claude mcp add --transport http sagui {mcpUrl}</code>
+              <CopyButton value={`claude mcp add --transport http sagui ${mcpUrl}`} label="Copy command" variant="plain" iconOnly />
+            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button asChild variant="secondary"><Link href="/docs/installation"><BookOpen aria-hidden="true" /> Read the docs</Link></Button>
-              <Button asChild variant="ghost"><a href="/components/button/markdown">See a Markdown page</a></Button>
+              <Button asChild variant="ghost"><Link href="/docs/ai">Connect your AI tool</Link></Button>
             </div>
           </div>
           <div className="min-w-0">

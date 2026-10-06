@@ -85,7 +85,7 @@ export function getPage(slug: string): PageDoc | null {
   const { data, content } = read(file);
   return { slug, title: data.title, description: data.description, body: content };
 }
-export const pageSlugs = ["installation", "theming", "motion", "accessibility"];
+export const pageSlugs = ["installation", "ai", "theming", "motion", "accessibility"];
 export const pages = () => pageSlugs.map((slug) => getPage(slug)).filter((page): page is PageDoc => !!page);
 export const foundationSlugs = ["typography", "radius", "elevation"];
 export const foundations = () => foundationSlugs.map((slug) => getPage(slug)).filter((page): page is PageDoc => !!page);
