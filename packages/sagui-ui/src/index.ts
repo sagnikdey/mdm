@@ -117,3 +117,10 @@ export { TextReveal, type TextRevealProps } from "./components/text-reveal/text-
 export { InViewTitle, type InViewTitleVariant, type InViewTitleProps } from "./components/in-view-title/in-view-title";
 export { TextMorph, type TextMorphProps } from "./components/text-morph/text-morph";
 export { TextShimmer, type TextShimmerProps } from "./components/text-shimmer/text-shimmer";
+
+// App shell and the pieces that live in it.
+export { AppShell, type AppShellProps, type AppShellNavItem, type AppShellNavSection } from "./components/app-shell/app-shell";
+export { UserMenu, PresenceDot, userStatuses, type UserMenuProps, type UserMenuUser, type UserMenuItem, type UserStatus, type ThemePreference } from "./components/user-menu/user-menu";
+export { CommandPalette, type CommandPaletteProps, type CommandItem } from "./components/command-palette/command-palette";
+export { NotificationCenter, type NotificationCenterProps, type NotificationItem } from "./components/notification-center/notification-center";
+export { Skeleton, type SkeletonProps } from "./components/skeleton/skeleton";

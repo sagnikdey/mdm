@@ -1,0 +1,98 @@
+/* command-palette: ported from Arc (uiarc.dev). Classes are prefixed sg-command-palette-*; see src/lib/css-module.ts. */
+.sg-command-palette-palette {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-floating);
+  transform-origin: top center;
+}
+
+.sg-command-palette-searchRow {
+  position: relative;
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-border) 55%, transparent);
+  transition: background var(--duration-quick) var(--ease-out-quint);
+}
+
+.sg-command-palette-searchRow:focus-within { background: var(--color-muted); }
+.sg-command-palette-searchIcon, .sg-command-palette-itemIcon { display: grid; flex: none; place-items: center; color: var(--color-muted-foreground); }
+.sg-command-palette-searchIcon { width: 22px; height: 22px; }
+.sg-command-palette-searchRow input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--color-foreground); font: inherit; font-size: var(--text-sm); }
+.sg-command-palette-searchRow input::placeholder { color: var(--color-muted-foreground); }
+.sg-command-palette-searchRow input:focus-visible { outline: none; }
+
+.sg-command-palette-commandKey, .sg-command-palette-shortcut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-muted);
+  color: var(--color-muted-foreground);
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.sg-command-palette-commandKey { min-width: 38px; height: 24px; padding: 0 6px; gap: 2px; }
+.sg-command-palette-clearButton { display: grid; width: 24px; height: 24px; flex: none; place-items: center; border: 0; border-radius: 7px; background: transparent; color: var(--color-muted-foreground); cursor: pointer; transition: color var(--duration-quick) var(--ease-out-quint), background-color var(--duration-quick) var(--ease-out-quint); }
+@media (hover: hover) and (pointer: fine) { .sg-command-palette-clearButton:hover, .sg-command-palette-closeButton:hover { background: var(--color-surface); color: var(--color-foreground); } }
+.sg-command-palette-clearButton:active, .sg-command-palette-closeButton:active { background: var(--color-surface); color: var(--color-foreground); }
+.sg-command-palette-clearButton:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+.sg-command-palette-closeButton { display: grid; min-width: 27px; height: 24px; flex: none; place-items: center; border: 1px solid color-mix(in oklab, var(--color-border) 55%, transparent); border-radius: 7px; background: transparent; color: var(--color-muted-foreground); padding: 0 6px; font: inherit; font-size: var(--text-xs); font-weight: 500; line-height: 1; cursor: pointer; transition: color var(--duration-quick) var(--ease-out-quint), background-color var(--duration-quick) var(--ease-out-quint); }
+.sg-command-palette-closeButton:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+
+/* The frame animates to the list height; the list keeps its own scroll. */
+.sg-command-palette-resultsFrame { overflow: hidden; }
+.sg-command-palette-results { position: relative; max-height: 342px; overflow: auto; padding: 6px 8px; }
+.sg-command-palette-highlight { position: absolute; top: 0; right: 8px; left: 8px; border-radius: 8px; background: var(--color-muted); opacity: 0; pointer-events: none; }
+/* Groups are positioned so a row that pops out of the flow is placed against the same box it was measured in, even mid-glide. */
+.sg-command-palette-group { position: relative; }
+.sg-command-palette-group + .sg-command-palette-group { margin-top: 6px; }
+.sg-command-palette-groupHeading { display: block; padding: 6px 8px 3px; color: var(--color-muted-foreground); font-size: var(--text-xs); font-weight: 500; line-height: 1.4; }
+
+/* One line per result: the title, then its description in muted text, so the list stays short and scannable. */
+.sg-command-palette-result { position: relative; display: flex; width: 100%; min-height: 34px; align-items: center; gap: 10px; border: 0; border-radius: 8px; padding: 0 8px; background: transparent; color: var(--color-foreground); text-align: left; cursor: pointer; }
+/* The active row is drawn by the shared highlight; the row itself only tints its icon and arrow. */
+.sg-command-palette-itemIcon { transition: color var(--duration-quick) var(--ease-out-quint); }
+.sg-command-palette-activeResult .sg-command-palette-itemIcon, .sg-command-palette-activeResult .sg-command-palette-result:focus-visible { outline: 2px solid var(--color-ring); outline-offset: -2px; }
+.sg-command-palette-itemIcon { display: grid; width: 16px; height: 16px; flex: none; place-items: center; color: var(--color-muted-foreground); }
+.sg-command-palette-itemIcon svg { width: 16px; height: 16px; }
+.sg-command-palette-resultCopy { display: flex; min-width: 0; flex: 1; align-items: baseline; gap: 8px; }
+.sg-command-palette-resultCopy strong, .sg-command-palette-resultCopy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sg-command-palette-resultCopy strong { flex: none; max-width: 100%; }
+.sg-command-palette-resultCopy small { min-width: 0; }
+.sg-command-palette-resultCopy strong { font-size: var(--text-sm); font-weight: 500; }
+.sg-command-palette-resultCopy small { color: var(--color-muted-foreground); font-size: var(--text-xs); }
+.sg-command-palette-shortcut { min-width: 18px; height: 18px; padding: 0 4px; border-color: transparent; border-radius: 5px; font-size: 11px; }
+.sg-command-palette-activeResult 
+.sg-command-palette-empty { display: grid; justify-items: center; gap: 4px; padding: 26px 12px 28px; text-align: center; }
+.sg-command-palette-empty > span { display: grid; width: 32px; height: 32px; place-items: center; margin-bottom: 5px; color: var(--color-muted-foreground); }
+.sg-command-palette-empty strong { font-size: var(--text-sm); font-weight: 500; }
+.sg-command-palette-empty small { color: var(--color-muted-foreground); font-size: var(--text-xs); }
+.sg-command-palette-visuallyHidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 480px) {
+  .sg-command-palette-searchRow { gap: 8px; padding: 8px 11px; }
+  .sg-command-palette-results { padding: 6px; }
+  .sg-command-palette-highlight { right: 6px; left: 6px; }
+  .sg-command-palette-result { gap: 8px; }
+  .sg-command-palette-shortcut, .sg-command-palette-commandKey { display: none; }
+  }
+
+@media (max-width: 340px) {
+    .sg-command-palette-result { padding-inline: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-command-palette-searchRow, .sg-command-palette-itemIcon, .sg-command-palette-clearButton, .sg-command-palette-closeButton { transition: none; }
+}

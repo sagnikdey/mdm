@@ -1,0 +1,98 @@
+/* user-menu: ported from Arc (uiarc.dev). Classes are prefixed sg-user-menu-*; see src/lib/css-module.ts. */
+.sg-user-menu-root { position: relative; display: inline-flex; flex: none; vertical-align: middle; }
+
+/* The trigger anchors the menu, so it answers hover and press with color, never with scale. */
+.sg-user-menu-trigger { --presence-surface: var(--user-menu-surface, var(--color-surface)); position: relative; display: inline-flex; height: 40px; flex: none; align-items: center; gap: calc(var(--spacing) * 2); margin: 0; padding: 4px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--color-foreground); font: inherit; font-family: var(--font-sans); font-size: var(--text-sm); letter-spacing: -0.01em; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color var(--duration-quick) var(--ease-out-quint); }
+.sg-user-menu-trigger[data-name] { padding-right: 10px; }
+@media (hover: hover) and (pointer: fine) { .sg-user-menu-trigger:hover { --presence-surface: var(--color-muted); background: var(--color-muted); } }
+.sg-user-menu-trigger[data-state="open"] { --presence-surface: var(--color-muted); background: var(--color-muted); }
+.sg-user-menu-trigger:active { --presence-surface: color-mix(in oklab, var(--color-muted), var(--color-foreground) 8%); background: color-mix(in oklab, var(--color-muted), var(--color-foreground) 8%); }
+.sg-user-menu-triggerName { max-width: 11rem; overflow: hidden; font-weight: 500; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
+.sg-user-menu-chevron { flex: none; margin-left: -2px; color: var(--color-muted-foreground); transition: transform var(--duration-spring) var(--ease-spring), color var(--duration-quick) var(--ease-out-quint); }
+.sg-user-menu-trigger:hover .sg-user-menu-chevron, .sg-user-menu-trigger[data-state="open"] .sg-user-menu-chevron { color: var(--color-foreground); }
+.sg-user-menu-trigger[data-state="open"] .sg-user-menu-chevron { transform: rotate(180deg); }
+@media (max-width: 639px) {
+  .sg-user-menu-trigger[data-name] { padding-right: 4px; }
+  .sg-user-menu-triggerName, .sg-user-menu-chevron { display: none; }
+}
+
+.sg-user-menu-face { position: relative; display: inline-grid; width: var(--face-size); height: var(--face-size); flex: none; }
+.sg-user-menu-face[data-size="sm"] { --face-size: 32px; --dot-size: 11px; }
+.sg-user-menu-face[data-size="md"] { --face-size: 40px; --dot-size: 12px; }
+.sg-user-menu-portrait { display: block; width: 100%; height: 100%; border-radius: var(--radius-pill); background: var(--color-muted); object-fit: cover; object-position: 50% 15%; outline: 1px solid color-mix(in oklab, var(--color-foreground) 9%, transparent); outline-offset: -1px; user-select: none; }
+.sg-user-menu-initials { display: grid; place-items: center; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); font-size: calc(var(--face-size) * .36); font-weight: 500; line-height: 1; }
+.sg-user-menu-face .sg-user-menu-dot { position: absolute; right: -1px; bottom: -1px; box-shadow: 0 0 0 2px var(--presence-surface, var(--color-surface)); }
+
+/* One mark, three shapes: solid for available, a bar for busy, a ring for away. Color and shape change together, so status never rests on color alone. */
+.sg-user-menu-dot { --dot-color: var(--color-success); position: relative; display: inline-block; width: var(--dot-size, 10px); height: var(--dot-size, 10px); flex: none; border-radius: var(--radius-pill); background: var(--dot-color); transition: background-color var(--duration-standard) var(--ease-out-quint), box-shadow var(--duration-quick) var(--ease-out-quint); }
+.sg-user-menu-dot::before, .sg-user-menu-dot::after { content: ""; position: absolute; inset: 0; margin: auto; background: var(--presence-surface, var(--color-surface)); transition: transform var(--duration-spring) var(--ease-spring), background-color var(--duration-quick) var(--ease-out-quint); }
+.sg-user-menu-dot::before { width: 46%; height: 46%; border-radius: var(--radius-pill); transform: scale(0); }
+.sg-user-menu-dot::after { width: 58%; height: 22%; min-height: 1.5px; border-radius: 1px; transform: scaleX(0); }
+.sg-user-menu-dot[data-status="busy"] { --dot-color: var(--color-destructive); }
+.sg-user-menu-dot[data-status="busy"]::after { transform: scaleX(1); }
+.sg-user-menu-dot[data-status="away"] { --dot-color: var(--color-warning); }
+.sg-user-menu-dot[data-status="away"]::before, .sg-user-menu-dot[data-status="offline"]::before { transform: scale(1); }
+.sg-user-menu-dot[data-status="offline"] { --dot-color: var(--color-muted-foreground); }
+
+/* The panel scales out of the avatar it belongs to; the component sets the origin once it is placed. */
+.sg-user-menu-panel { --presence-surface: var(--color-surface); --row: 40px; --inset: 6px; position: fixed; top: 0; left: 0; z-index: 60; box-sizing: border-box; width: 17rem; max-width: calc(100vw - 24px); padding: var(--inset); border: 1px solid var(--color-border); border-radius: var(--radius-xl); background: var(--color-surface); box-shadow: var(--shadow-floating); color: var(--color-foreground); font-family: var(--font-sans); letter-spacing: -0.01em; line-height: 1.4; text-align: left; outline: none; transform-origin: var(--origin-x, 100%) var(--origin-y, 0px); }
+.sg-user-menu-panel[data-inline] { position: absolute; top: calc(100% + 8px); left: auto; }
+.sg-user-menu-panel[data-inline][data-align="end"] { right: 0; }
+.sg-user-menu-panel[data-inline][data-align="start"] { left: 0; }
+.sg-user-menu-panel[data-inline][data-align="center"] { left: 50%; margin-left: -8.5rem; }
+
+.sg-user-menu-header { display: flex; align-items: center; gap: calc(var(--spacing) * 3); padding: 8px 8px 10px; }
+.sg-user-menu-identity { display: grid; min-width: 0; flex: 1; gap: 1px; }
+.sg-user-menu-nameRow { display: flex; min-width: 0; align-items: center; gap: calc(var(--spacing) * 2); }
+.sg-user-menu-name { overflow: hidden; color: var(--color-foreground); font-size: var(--text-sm); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.sg-user-menu-plan { display: inline-flex; flex: none; align-items: center; height: 18px; padding: 0 7px; border-radius: var(--radius-pill); background: var(--color-secondary); color: var(--color-primary); font-size: var(--text-xs); font-weight: 500; line-height: 1; }
+.sg-user-menu-email { overflow: hidden; color: var(--color-muted-foreground); font-size: var(--text-xs); text-overflow: ellipsis; white-space: nowrap; }
+
+.sg-user-menu-list { position: relative; }
+.sg-user-menu-separator { height: 1px; margin: var(--inset) calc(var(--inset) * -1); background: color-mix(in oklab, var(--color-border) 55%, transparent); }
+
+/* One highlight follows the pointer and the keyboard. It is the only hover treatment in the menu. */
+.sg-user-menu-highlight { position: absolute; top: 0; right: 0; left: 0; border-radius: calc(var(--radius-xl) - var(--inset)); background: var(--color-secondary); opacity: 0; pointer-events: none; }
+.sg-user-menu-highlight[data-tone="danger"] { background: color-mix(in oklab, var(--color-destructive) 11%, transparent); }
+
+.sg-user-menu-item { position: relative; display: flex; width: 100%; height: var(--row); box-sizing: border-box; align-items: center; gap: calc(var(--spacing) * 3); margin: 0; padding: 0 12px; border: 0; border-radius: calc(var(--radius-xl) - var(--inset)); background: transparent; color: var(--color-foreground); font: inherit; font-size: var(--text-sm); text-align: left; cursor: pointer; outline: none; user-select: none; -webkit-tap-highlight-color: transparent; transition: color var(--duration-quick) var(--ease-out-quint); }
+.sg-user-menu-icon { display: inline-grid; width: 16px; flex: none; place-items: center; color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); transition: color var(--duration-quick) var(--ease-out-quint); }
+.sg-user-menu-item:focus .sg-user-menu-icon { color: var(--color-primary); }
+.sg-user-menu-itemLabel { position: relative; display: inline-flex; min-width: 0; flex: 1; }
+.sg-user-menu-rise { display: inline-block; white-space: nowrap; }
+.sg-user-menu-item[data-tone="danger"], .sg-user-menu-item[data-tone="danger"] .sg-user-menu-icon { color: color-mix(in oklab, var(--color-destructive) 58%, color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground))); }
+.sg-user-menu-item[data-tone="danger"]:focus, .sg-user-menu-item[data-tone="danger"]:focus .sg-user-menu-icon { color: var(--color-destructive); }
+@media (hover: none) { .sg-user-menu-item:active { background: var(--color-muted); } }
+
+.sg-user-menu-keys { display: inline-flex; flex: none; align-items: center; gap: 1px; margin-left: auto; color: var(--color-muted-foreground); font-family: var(--font-sans); font-size: var(--text-xs); letter-spacing: 0; opacity: .8; font-variant-numeric: tabular-nums; }
+.sg-user-menu-key { display: inline-block; min-width: 1.05em; font: inherit; text-align: center; }
+
+.sg-user-menu-row { position: relative; display: flex; height: 44px; align-items: center; gap: calc(var(--spacing) * 3); padding: 0 6px 0 12px; }
+.sg-user-menu-rowLabel { flex: 1; color: var(--color-foreground); font-size: var(--text-sm); }
+.sg-user-menu-row .sg-user-menu-icon .sg-user-menu-dot { --dot-size: 10px; }
+/* The thumb slides under the icons; the group owns the stacking context. */
+.sg-user-menu-segments { --segment: 32px; position: relative; isolation: isolate; display: inline-grid; height: 30px; flex: none; grid-auto-columns: var(--segment); grid-auto-flow: column; padding: 2px; border-radius: var(--radius-pill); background: color-mix(in oklab, var(--color-foreground) 6%, transparent); }
+.sg-user-menu-thumb { position: absolute; z-index: -1; top: 2px; bottom: 2px; left: 2px; width: var(--segment); border-radius: var(--radius-pill); background: var(--color-surface); box-shadow: 0 1px 2px oklch(0% 0 0 / .1), 0 0 0 1px color-mix(in oklab, var(--color-border) 55%, transparent); transform: translateX(calc(var(--index) * 100%)); transition: transform var(--duration-spring) var(--ease-spring); }
+:global([data-theme="dark"]) .sg-user-menu-thumb { background: color-mix(in oklab, var(--color-foreground) 20%, var(--color-surface)); box-shadow: none; }
+.sg-user-menu-segment { display: grid; place-items: center; margin: 0; padding: 0; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--color-muted-foreground); cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; transition: color var(--duration-quick) var(--ease-out-quint); }
+.sg-user-menu-segment .sg-user-menu-dot { --dot-size: 9px; --presence-surface: var(--color-surface); }
+@media (hover: hover) and (pointer: fine) { .sg-user-menu-segment:hover { color: color-mix(in oklab, var(--color-foreground) 74%, var(--color-muted-foreground)); } }
+.sg-user-menu-segment[aria-checked="true"] { color: var(--color-foreground); }
+
+.sg-user-menu-spinner { animation: sg-user-menu-user-menu-spin .8s linear infinite; }
+@keyframes sg-user-menu-user-menu-spin { to { transform: rotate(360deg); } }
+
+/* Below 640px the same content rises as a bottom sheet with larger rows. */
+.sg-user-menu-scrim { position: fixed; inset: 0; z-index: 70; background: oklch(0% 0 0 / .32); -webkit-tap-highlight-color: transparent; }
+.sg-user-menu-sheet { --row: 48px; --inset: 10px; position: fixed; top: auto; right: 0; bottom: 0; left: 0; z-index: 71; width: auto; max-width: none; max-height: 88dvh; overflow-y: auto; overscroll-behavior: contain; padding: 8px var(--inset) calc(12px + env(safe-area-inset-bottom)); border-bottom: 0; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+.sg-user-menu-handle { display: block; width: 36px; height: 5px; margin: 0 auto 10px; border-radius: var(--radius-pill); background: var(--color-border-strong); cursor: grab; }
+.sg-user-menu-sheet .sg-user-menu-header { padding: 4px 8px 12px; }
+.sg-user-menu-sheet .sg-user-menu-item, .sg-user-menu-sheet .sg-user-menu-rowLabel { font-size: var(--text-base); }
+.sg-user-menu-sheet .sg-user-menu-row { height: 56px; }
+.sg-user-menu-sheet .sg-user-menu-segments { --segment: 44px; height: 38px; }
+.sg-user-menu-sheet .sg-user-menu-keys { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-user-menu-trigger, .sg-user-menu-chevron, .sg-user-menu-dot, .sg-user-menu-dot::before, .sg-user-menu-dot::after, .sg-user-menu-segment, .sg-user-menu-thumb, .sg-user-menu-item, .sg-user-menu-icon { transition: none; }
+  .sg-user-menu-spinner { animation-duration: 2.4s; }
+}

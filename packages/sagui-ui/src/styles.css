@@ -22,6 +22,10 @@
 @import "./components/in-view-title/in-view-title.css";
 @import "./components/text-morph/text-morph.css";
 @import "./components/text-shimmer/text-shimmer.css";
+@import "./components/user-menu/user-menu.css";
+@import "./components/command-palette/command-palette.css";
+@import "./components/notification-center/notification-center.css";
+@import "./components/skeleton/skeleton.css";
 
 /* Theme switching follows data-theme="dark" on an ancestor, matching the token layer. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

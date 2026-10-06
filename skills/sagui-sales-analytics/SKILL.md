@@ -113,7 +113,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 }
 ```
 
-A theme toggle is a SagUI `Button` with `size="icon"`, an `aria-label` and a lucide `Sun` or `Moon` icon. It sets `document.documentElement.dataset.theme` and saves the choice to `localStorage` under `theme`.
+People switch themes from the `UserMenu` in the app shell (Step 7). It applies the choice to `data-theme` and saves it under the same `theme` key this script reads.
 
 ## Step 5. Look components up before using them
 
@@ -149,7 +149,7 @@ app/
     accounts/page.tsx
 components/
   dashboard/                 client wrappers around SagUI charts and tables
-  shell/                     header, nav, theme toggle
+  shell/app-frame.tsx        AppShell with search, notifications and the user menu
 lib/
   sales.ts                   data access (server only)
   format.ts                  number, currency, date formatting
@@ -159,12 +159,120 @@ lib/
 - **Charts and tables live in small client wrappers.** SagUI components are client components. Importing one into a server component is fine, but a server component cannot pass functions such as `formatValue`, `formatTick` or a column `render` across the boundary. Put any SagUI component that needs a function prop in a `"use client"` file under `components/`, and pass it data only.
 - **Filters live in the URL** (`?range=30d&owner=maya`), so views survive reloads and can be shared. Client controls update the URL with `router.replace`; the server page reads `searchParams` and refetches.
 - **Row types are `type` aliases, not `interface`s.** `SortableDataTable` needs rows assignable to `Record<string, unknown>`, which interfaces are not.
+- **One `<main>` per page.** `AppShell` renders the page's `<main>` landmark, so pages, `loading.tsx` and `error.tsx` inside it wrap their content in a `<div>`.
 - **Data must be deterministic during render.** No `Math.random()` or `Date.now()` in render paths; it causes hydration mismatches. Pass a fixed `now` where a component asks for one (for example `Timeline`).
 
-## Step 7. Pick the component for each analytics job
+## Step 7. Build the app shell
+
+`AppShell` is the frame of every signed-in page. It has a sticky sidebar that folds into an icon rail (the toggle, or Cmd/Ctrl + B) and becomes a drawer below 1024px. Its top bar has slots for the page title and the actions. Fill the actions with a search button that opens `CommandPalette` (Cmd/Ctrl + K), `NotificationCenter` and `UserMenu`.
+
+Put the interactive frame in a client component, and load the user and notifications in the server layout.
+
+```tsx title="components/shell/app-frame.tsx"
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { BarChart3, Building2, Handshake, LayoutDashboard, Search, Settings, Target } from "lucide-react";
+import { AppShell, Button, CommandPalette, Dialog, DialogContent, NotificationCenter, UserMenu, type AppShellNavSection, type NotificationItem, type ThemePreference } from "@sagui/ui";
+
+const nav: AppShellNavSection[] = [
+  { items: [
+    { label: "Overview", href: "/", icon: <LayoutDashboard /> },
+    { label: "Pipeline", href: "/pipeline", icon: <Target /> },
+    { label: "Deals", href: "/deals", icon: <Handshake /> },
+    { label: "Accounts", href: "/accounts", icon: <Building2 /> },
+  ] },
+  { label: "Insights", items: [{ label: "Reports", href: "/reports", icon: <BarChart3 /> }] },
+  { label: "Workspace", items: [{ label: "Settings", href: "/settings", icon: <Settings /> }] },
+];
+const pages = nav.flatMap((section) => section.items);
+
+/** Applies a theme preference the same way the inline script in app/layout.tsx does on load. */
+function applyTheme(preference: ThemePreference) {
+  const dark = preference === "dark" || (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  try { if (preference === "system") localStorage.removeItem("theme"); else localStorage.setItem("theme", preference); } catch { /* storage can be blocked */ }
+}
+
+export function AppFrame({ user, notifications, children }: { user: { name: string; email: string; avatarSrc?: string }; notifications: NotificationItem[]; children: React.ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [searching, setSearching] = useState(false);
+  const [theme, setTheme] = useState<ThemePreference>("system");
+
+  useEffect(() => {
+    try { setTheme((localStorage.getItem("theme") as ThemePreference | null) ?? "system"); } catch { /* storage can be blocked */ }
+    function onKey(event: KeyboardEvent) {
+      if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) { event.preventDefault(); setSearching(true); }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const title = pages.find((page) => page.href === pathname)?.label ?? "Sales";
+
+  return (
+    <AppShell
+      nav={nav}
+      currentHref={pathname}
+      linkComponent={Link}
+      brand={<span className="type-title">Sales Analytics</span>}
+      brandMark={<span className="type-title">S</span>}
+      header={<span className="type-title">{title}</span>}
+      actions={
+        <>
+          <Button variant="ghost" size="sm" leadingIcon={<Search />} onClick={() => setSearching(true)} aria-label="Search">
+            <span className="hidden sm:inline">Search</span>
+          </Button>
+          <NotificationCenter notifications={notifications} />
+          <UserMenu user={user} theme={theme} onThemeChange={(next) => { setTheme(next); applyTheme(next); }} onSignOut={() => router.push("/sign-in")} />
+        </>
+      }
+    >
+      {children}
+      <Dialog open={searching} onOpenChange={setSearching}>
+        <DialogContent title="Search" className="p-0">
+          <CommandPalette
+            autoFocus
+            placeholder="Search pages and actions"
+            items={pages.map((page) => ({ id: page.href, label: page.label, group: "Pages", icon: page.icon }))}
+            onSelect={(item) => { setSearching(false); router.push(item.id); }}
+            onClose={() => setSearching(false)}
+          />
+        </DialogContent>
+      </Dialog>
+    </AppShell>
+  );
+}
+```
+
+```tsx title="app/(app)/layout.tsx"
+import { AppFrame } from "@/components/shell/app-frame";
+
+/** Server layout: load the signed-in user and their notifications here, then hand them to the client frame. */
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const user = { name: "Sagnik Dey", email: "sagnik@example.com" };
+  const notifications = [{ id: "n1", title: "Acme closed", description: "$42,000", time: "8m", tone: "success" as const }];
+  return <AppFrame user={user} notifications={notifications}>{children}</AppFrame>;
+}
+```
+
+- Pass `currentHref` from `usePathname()` and `linkComponent={Link}`. A nested path such as `/deals/42` marks Deals as current.
+- Give every nav item an icon; the rail shows icons only, with each label in a tooltip.
+- Keep the top-level destinations to between five and fifteen. More than that belongs in pages.
+- To remember a folded sidebar, control `collapsed` and save it in a cookie; see the App shell docs.
+
+## Step 8. Pick the component for each analytics job
 
 | Need | Use | Notes |
 | --- | --- | --- |
+| App frame, sidebar, top bar | `AppShell` | One per app, in the signed-in layout |
+| Global search and actions | `CommandPalette` | In a `Dialog`, opened with Cmd/Ctrl + K |
+| Account, theme, sign out | `UserMenu` | In the shell's `actions` |
+| Notifications | `NotificationCenter` | In the shell's `actions` |
+| Loading placeholder | `Skeleton` | Wrap content and set `loading` to crossfade into it |
 | Headline KPI with change | `MetricCard` | `value` is a number; `prefix`, `suffix`, `decimals`, `change` (string) and `context` (required) |
 | KPI with a small trend | `Sparkline` | `value`, `change`, `tone` (`accent`, `success`, `warning`, `danger`) |
 | Number that animates when it changes | `AnimatedCounter` | Inside your own layouts |
@@ -202,9 +310,9 @@ lib/
 | Section disclosure | `Accordion` | |
 | Text effects | `TextShimmer` for "Generating report", `TextMorph` for changing labels | Use sparingly |
 
-There is **no** date picker, sidebar, navigation menu, pagination, funnel chart or skeleton component. See "When SagUI has no component" below.
+There is **no** date picker, pagination or funnel chart component. See "When SagUI has no component" below.
 
-## Step 8. Build the Overview dashboard
+## Step 9. Build the Overview dashboard
 
 This recipe is the reference pattern for every analytics page. It compiles and runs as written on Next.js 16.
 
@@ -367,7 +475,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
   const data = await getDashboard(range);
   const compared = `vs previous ${range.replace("d", " days")}`;
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6">
+    <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="type-overline text-muted-foreground">Sales</p>
@@ -402,7 +510,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
         <h2 id="deals-title" className="type-h2">Deals</h2>
         <DealsTable deals={data.deals} />
       </section>
-    </main>
+    </div>
   );
 }
 ```
@@ -415,21 +523,23 @@ Page layout rules:
 - Widths come from `max-w-7xl` for dashboards and `max-w-3xl` for forms and settings.
 - Use `gap-4` inside a group and `gap-8` between groups.
 
-## Step 9. Loading, empty and error states
+## Step 10. Loading, empty and error states
 
 Every data view handles all three.
 
 ```tsx title="app/(app)/loading.tsx"
-/** SagUI has no skeleton component, so placeholders are built from tokens and pulse only when motion is allowed. */
+import { Skeleton } from "@sagui/ui";
+
+/** Shown while a page's server data loads. */
 export default function Loading() {
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6" aria-busy="true" aria-label="Loading">
-      <div className="h-12 w-48 rounded-control bg-muted motion-safe:animate-pulse" />
+    <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6" aria-busy="true">
+      <Skeleton lines={1} label="Loading page" />
       <div className="grid gap-4 sm:grid-cols-3">
-        {[0, 1, 2].map((index) => <div key={index} className="h-32 rounded-container border border-border bg-surface motion-safe:animate-pulse" />)}
+        {[0, 1, 2].map((index) => <div key={index} className="rounded-container border border-border bg-surface p-5"><Skeleton lines={2} label="Loading metric" /></div>)}
       </div>
-      <div className="h-80 rounded-container border border-border bg-surface motion-safe:animate-pulse" />
-    </main>
+      <div className="rounded-container border border-border bg-surface p-5"><Skeleton lines={6} label="Loading chart" /></div>
+    </div>
   );
 }
 ```
@@ -441,10 +551,10 @@ import { Alert, Button } from "@sagui/ui";
 
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
-    <main className="mx-auto grid max-w-xl gap-4 px-4 py-16">
+    <div className="mx-auto grid max-w-xl gap-4 px-4 py-16">
       <Alert tone="danger" title="This report didn't load">Check your connection, then try again.</Alert>
       <Button variant="outline" className="w-fit" onClick={reset}>Try again</Button>
-    </main>
+    </div>
   );
 }
 ```
@@ -453,7 +563,7 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
 - **No data:** `EmptyState` with a `title`, a `description` that says why, and an `action` that leads somewhere. Charts also accept an `emptyLabel`. Tables accept an `emptyMessage`.
 - **Action results:** `Toast` for brief confirmations ("Report exported"), `Alert` for anything that must stay visible.
 
-## Step 10. Styling with tokens
+## Step 11. Styling with tokens
 
 Use these and nothing else for visual styling.
 
@@ -479,7 +589,7 @@ Use these and nothing else for visual styling.
 - **Radius and shadows** must come from the roles above, never `rounded-[13px]` or `shadow-[0_4px_...]`.
 - **To change the brand** (for example a green primary or sharper corners), override the `--sg-*` source tokens once, in `globals.css` after the SagUI import. Do this only when the product decides it, and never per component. `get_tokens` with `overview` explains the layering.
 
-## Step 11. Accessibility and motion
+## Step 12. Accessibility and motion
 
 - Every input has a visible `label`. Every chart has a `label` naming what it measures. Every table has a `caption`.
 - Icon-only buttons have an `aria-label`. Icons next to text are decorative; SagUI hides them.
@@ -493,11 +603,9 @@ Use these and nothing else for visual styling.
 
 Compose one from SagUI pieces and tokens. Don't import a component library.
 
-- **App shell and navigation:** a header with `bg-background/85 backdrop-blur border-b border-border`, and nav built from `next/link` `Link`s styled `rounded-control px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground`. Set `aria-current="page"` on the active link.
 - **Date picker:** offer presets with `SegmentedControl`, and a custom range with two `Input type="date"` fields until SagUI ships a date picker.
 - **Pagination:** prefer `SortableDataTable` with server-side filtering and a "Load more" `Button`.
 - **Funnel:** a `BarChart` of stage totals, or a `SlopeChart` for stage-to-stage conversion.
-- **Skeletons:** `bg-muted` blocks with `motion-safe:animate-pulse`, as in Step 9.
 
 Anything composed this way still follows the rules above. If a composition repeats in three places, propose it as a SagUI component instead of copying it.
 
@@ -523,13 +631,14 @@ Then confirm:
 - [ ] Every SagUI component was looked up (`get_component` or its docs page) and uses only documented props.
 - [ ] Charts and tables that take function props are in `"use client"` wrappers; pages stay server components.
 - [ ] Loading, empty and error states exist for each data view.
+- [ ] Each page has exactly one `<main>`, the one `AppShell` renders.
 - [ ] Light and dark both checked, plus a 375px viewport.
 - [ ] Keyboard only: every control is reachable, and focus is visible.
 - [ ] `npm run build` passes with no type errors.
 
 ## Component catalog
 
-All of these import from `@sagui/ui`. Call `get_component` with the name for props and examples.
+All 69 import from `@sagui/ui`. Call `get_component` with the name for props and examples.
 
 #### Buttons
 
@@ -584,8 +693,11 @@ All of these import from `@sagui/ui`. Call `get_component` with the name for pro
 
 | Component | Use it for |
 | --- | --- |
+| `AppShell` | The frame of an application: a sidebar of navigation that folds into a rail, and a top bar for the page title, search and account. |
 | `Tabs` | Switch between related content in the same context. |
 | `Breadcrumb` | Show where a page sits in a hierarchy. |
+| `CommandPalette` | A complete keyboard driven action surface with search, grouped results, and shortcuts. |
+| `UserMenu` | Your account, settings, theme, and sign out behind the avatar. Opens as a bottom sheet on phones. |
 
 #### Disclosure
 
@@ -642,6 +754,7 @@ All of these import from `@sagui/ui`. Call `get_component` with the name for pro
 | `MetricCard` | A compact summary for a number that needs context. |
 | `EmptyState` | A useful next step when there is nothing to show yet. |
 | `AnimatedCounter` | Give changing totals a clear sense of movement. |
+| `Skeleton` | Reserve space while content is still loading. |
 
 #### Messages
 
@@ -649,6 +762,7 @@ All of these import from `@sagui/ui`. Call `get_component` with the name for pro
 | --- | --- |
 | `Alert` | A persistent message that helps people recover or continue. |
 | `Toast` | Brief confirmation for a completed background action. |
+| `NotificationCenter` | A home for updates with read state, grouped information, and animated disclosure. |
 
 #### Overlays
 
