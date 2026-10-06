@@ -45,3 +45,5 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 export const Rail: Story = { args: { defaultCollapsed: true } };
 export const NestedPage: Story = { args: { currentHref: "#deals/42" } };
+export const Inset: Story = { args: { variant: "inset" } };
+export const InsetRail: Story = { args: { variant: "inset", defaultCollapsed: true } };

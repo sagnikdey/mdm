@@ -20,6 +20,8 @@ export interface AppShellNavSection {
   label?: string;
   items: AppShellNavItem[];
 }
+export type AppShellVariant = "sidebar" | "inset";
+
 export interface AppShellProps {
   /** Navigation, in sections. */
   nav: AppShellNavSection[];
@@ -44,12 +46,19 @@ export interface AppShellProps {
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Accessible name of the navigation landmark. */
   label?: string;
+  /**
+   * "sidebar" sits flush against the edge with a dividing border. "inset" floats the sidebar as a rounded panel
+   * with a gap around it, drops the top bar's border, and moves the collapse toggle into the top bar.
+   */
+  variant?: AppShellVariant;
   children: React.ReactNode;
   className?: string;
 }
 
 const EXPANDED = 248;
 const RAIL = 68;
+/** Gap around the inset sidebar panel, on its outer edges. */
+const INSET_GAP = 8;
 
 /** The longest href that the current path starts with wins, so /deals/42 marks Deals rather than Overview. */
 function currentItem(nav: AppShellNavSection[], currentHref?: string) {
@@ -123,6 +132,7 @@ function NavList({ nav, current, rail, Link, label, layoutId, onNavigate }: {
 /**
  * The frame of an application: a sticky sidebar of navigation beside a scrolling main column with a top bar.
  * On wide screens the sidebar folds into an icon rail (the toggle, or Cmd/Ctrl + B); below 1024px it becomes a drawer.
+ * The `inset` variant floats the sidebar as a rounded panel and puts the collapse toggle in the top bar.
  */
 export function AppShell({
   nav,
@@ -137,6 +147,7 @@ export function AppShell({
   defaultCollapsed = false,
   onCollapsedChange,
   label = "Main",
+  variant = "sidebar",
   children,
   className,
 }: AppShellProps) {
@@ -172,6 +183,26 @@ export function AppShell({
 
   const toggleLabel = collapsed ? "Expand sidebar" : "Collapse sidebar";
   const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
+  const inset = variant === "inset";
+  const railWidth = collapsed ? RAIL : EXPANDED;
+
+  const toggle = (
+    <Tooltip content={`${toggleLabel} (⌘B)`} side={inset ? "bottom" : "right"}>
+      <button
+        type="button"
+        onClick={() => setCollapsed(!collapsed)}
+        aria-label={toggleLabel}
+        aria-controls={sidebarId}
+        aria-expanded={!collapsed}
+        className={cn(
+          "grid size-9 cursor-pointer place-items-center rounded-control text-muted-foreground transition-colors duration-[var(--duration-fast)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          inset && "-ml-1.5 hidden flex-none lg:grid"
+        )}
+      >
+        <ToggleIcon size={18} aria-hidden="true" />
+      </button>
+    </Tooltip>
+  );
 
   return (
     <div className={cn("grid min-h-[var(--app-shell-height,100dvh)] bg-background text-foreground lg:grid-cols-[auto_minmax(0,1fr)]", className)}>
@@ -185,12 +216,17 @@ export function AppShell({
       {/* Wide screens: the sidebar keeps its column and folds to a rail on a spring, so the main column reflows smoothly. */}
       <motion.aside
         id={sidebarId}
-        className="sticky top-0 hidden h-[var(--app-shell-height,100dvh)] flex-col overflow-hidden border-r border-border bg-background lg:flex"
+        className={cn(
+          "sticky top-0 hidden h-[var(--app-shell-height,100dvh)] overflow-hidden lg:flex",
+          inset ? "py-2 pl-2" : "flex-col border-r border-border bg-background"
+        )}
         initial={false}
-        animate={{ width: collapsed ? RAIL : EXPANDED }}
+        animate={{ width: inset ? railWidth + INSET_GAP : railWidth }}
         transition={reduced ? { duration: 0 } : (spring.smooth as never)}
         data-collapsed={collapsed || undefined}
+        data-variant={variant}
       >
+        <div className={cn("flex min-w-0 flex-1 flex-col", inset && "overflow-hidden rounded-container border border-border bg-surface shadow-resting")}>
         <div className={cn("flex h-14 flex-none items-center gap-2 px-4", collapsed && "justify-center px-0")}>
           {collapsed ? brandMark ?? brand : brand}
         </div>
@@ -199,25 +235,18 @@ export function AppShell({
             <NavList nav={nav} current={current} rail={collapsed} Link={Link} label={label} layoutId="current" />
           </div>
         </LayoutGroup>
-        <div className={cn("grid flex-none gap-2 border-t border-border p-3", collapsed && "justify-items-center")}>
-          {sidebarFooter && <div className={cn(collapsed && "hidden")}>{sidebarFooter}</div>}
-          <Tooltip content={`${toggleLabel} (⌘B)`} side="right">
-            <button
-              type="button"
-              onClick={() => setCollapsed(!collapsed)}
-              aria-label={toggleLabel}
-              aria-controls={sidebarId}
-              aria-expanded={!collapsed}
-              className="grid size-9 cursor-pointer place-items-center rounded-control text-muted-foreground transition-colors duration-[var(--duration-fast)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <ToggleIcon size={18} aria-hidden="true" />
-            </button>
-          </Tooltip>
+        {/* The inset variant keeps the toggle in the top bar, so its footer only exists when there is footer content. */}
+        {(!inset || sidebarFooter) && (
+          <div className={cn("grid flex-none gap-2 border-t border-border p-3", collapsed && "justify-items-center", inset && collapsed && "hidden")}>
+            {sidebarFooter && <div className={cn(collapsed && "hidden")}>{sidebarFooter}</div>}
+            {!inset && toggle}
+          </div>
+        )}
         </div>
       </motion.aside>
 
       <div className="flex min-w-0 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 flex-none items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur sm:px-6">
+        <header className={cn("sticky top-0 z-30 flex h-14 flex-none items-center gap-3 bg-background/85 px-4 backdrop-blur sm:px-6", !inset && "border-b border-border")}>
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
@@ -227,6 +256,7 @@ export function AppShell({
           >
             <Menu size={18} aria-hidden="true" />
           </button>
+          {inset && toggle}
           <div className="min-w-0 flex-1">{header}</div>
           {actions && <div className="flex flex-none items-center gap-2">{actions}</div>}
         </header>

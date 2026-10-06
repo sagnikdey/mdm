@@ -122,3 +122,23 @@ export function StartFolded() {
   );
 }
 // #endregion
+
+// #region Inset
+export function Inset() {
+  return (
+    <div className="h-[360px] w-full overflow-hidden rounded-[var(--radius-lg)] border border-border" style={{ "--app-shell-height": "358px" } as CSSProperties}>
+      <AppShell
+        nav={nav}
+        variant="inset"
+        currentHref="/app/deals"
+        brand={<span className="font-semibold">Sales</span>}
+        brandMark={<span className="font-semibold">S</span>}
+        header={<span className="type-title">Deals</span>}
+        sidebarFooter={<span className="type-body-sm text-muted-foreground">Acme workspace</span>}
+      >
+        <p className="p-6 text-sm text-muted-foreground">The toggle beside the title folds the floating sidebar into a rail.</p>
+      </AppShell>
+    </div>
+  );
+}
+// #endregion

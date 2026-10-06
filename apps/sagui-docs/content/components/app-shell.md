@@ -77,6 +77,12 @@ The shell gives you the frame; you fill its slots. Put the page title or a [brea
 
 <!-- demo: StartFolded -->
 
+### Inset sidebar
+
+`variant="inset"` floats the sidebar as a rounded panel with a small gap around it, and drops the border under the top bar. The fold toggle moves into the top bar, before the `header`, so the sidebar footer holds only `sidebarFooter`. Use it for dashboards and tools where the content sits in panels of its own.
+
+<!-- demo: Inset -->
+
 ### Remembering the choice
 
 The shell does not store whether the sidebar is folded. Control it with `collapsed` and `onCollapsedChange`, and save the choice where it suits your app, for example a cookie, so the server renders the right width on the next visit.
@@ -101,7 +107,8 @@ const [collapsed, setCollapsed] = useState(initialFromCookie);
 | `brandMark` | `ReactNode` | – | A compact mark shown instead of `brand` while the sidebar is a rail. |
 | `header` | `ReactNode` | – | Start of the top bar: the page title or a Breadcrumb. |
 | `actions` | `ReactNode` | – | End of the top bar: search, notifications and the user menu. |
-| `sidebarFooter` | `ReactNode` | – | Pinned to the bottom of the sidebar above the fold toggle. Hidden while the sidebar is a rail. |
+| `sidebarFooter` | `ReactNode` | – | Pinned to the bottom of the sidebar, above the fold toggle in the `sidebar` variant. Hidden while the sidebar is a rail. |
+| `variant` | `"sidebar" \| "inset"` | `"sidebar"` | `sidebar` sits flush with a dividing border. `inset` floats the sidebar as a rounded panel and puts the fold toggle in the top bar. |
 | `collapsed` | `boolean` | – | Controlled rail state on wide screens. |
 | `defaultCollapsed` | `boolean` | `false` | Rail state on first render when uncontrolled. |
 | `onCollapsedChange` | `(collapsed: boolean) => void` | – | Called when the toggle or Cmd/Ctrl + B folds or opens the sidebar. |

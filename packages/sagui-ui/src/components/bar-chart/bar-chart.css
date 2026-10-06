@@ -28,9 +28,9 @@
 .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 62%, var(--color-surface)); transition: fill var(--duration-quick) var(--ease-out-quint); }
 .sg-bar-chart-chart[data-scrubbing] .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 24%, var(--color-surface)); }
 /* On a dark surface a lighter mix keeps the hue clear instead of turning muddy. */
-:global([data-theme="dark"]) .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 76%, var(--color-surface)); }
-:global([data-theme="dark"]) .sg-bar-chart-chart[data-scrubbing] .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 34%, var(--color-surface)); }
-:global([data-theme="dark"]) .sg-bar-chart-chart .sg-bar-chart-bar[data-active] { fill: var(--color-primary); }
+[data-theme="dark"] .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 76%, var(--color-surface)); }
+[data-theme="dark"] .sg-bar-chart-chart[data-scrubbing] .sg-bar-chart-bar { fill: color-mix(in oklab, var(--color-primary) 34%, var(--color-surface)); }
+[data-theme="dark"] .sg-bar-chart-chart .sg-bar-chart-bar[data-active] { fill: var(--color-primary); }
 .sg-bar-chart-chart .sg-bar-chart-bar[data-active] { fill: var(--color-primary); }
 
 .sg-bar-chart-gutter { position: relative; grid-area: 1 / 2; min-width: 0; }
