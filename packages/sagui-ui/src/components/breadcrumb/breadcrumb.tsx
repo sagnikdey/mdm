@@ -21,7 +21,7 @@ export interface BreadcrumbProps {
 
 /** Each crumb reserves the width of its medium weight label, so becoming the current page never shifts the path. */
 const crumb = "inline-flex flex-col rounded-[7px] px-0.5 py-1 after:invisible after:pointer-events-none after:h-0 after:overflow-hidden after:font-medium after:select-none after:content-[attr(data-label)]";
-const interactive = "text-muted-foreground underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-fast ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-primary [@media(hover:hover)_and_(pointer:fine)]:hover:decoration-[color-mix(in_oklab,currentColor_45%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring";
+const interactive = "text-muted-foreground underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-primary [@media(hover:hover)_and_(pointer:fine)]:hover:decoration-[color-mix(in_oklab,currentColor_45%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring";
 
 /** Crumbs present on first render stay still; crumbs added later slide in from the path before them. */
 export function Breadcrumb({ items, ariaLabel = "Breadcrumb", className, linkComponent: Link = "a" }: BreadcrumbProps) {

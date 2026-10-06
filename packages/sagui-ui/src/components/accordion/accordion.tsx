@@ -50,13 +50,13 @@ export function Accordion({ items, defaultOpen = 0, size = "md", className }: Ac
             <AccordionPrimitive.Header className="m-0">
               <AccordionPrimitive.Trigger
                 className={cn(
-                  "flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-2 text-left font-medium leading-relaxed text-foreground [-webkit-tap-highlight-color:transparent] transition-colors duration-fast ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-muted-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:[&_.sg-acc-icon]:text-foreground focus-visible:rounded-[var(--radius-md)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  "flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-2 text-left font-medium leading-relaxed text-foreground [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-muted-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:[&_.sg-acc-icon]:text-foreground focus-visible:rounded-[var(--radius-md)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                   lg ? "min-h-[68px] gap-8 py-5 text-base tracking-tight sm:min-h-[76px] sm:text-lg" : "min-h-12 gap-5 text-sm"
                 )}
               >
                 <span>{item.title}</span>
                 <motion.span
-                  className="sg-acc-icon inline-flex flex-none text-muted-foreground transition-colors duration-fast ease-out-quint group-data-[state=open]/acc:text-foreground"
+                  className="sg-acc-icon inline-flex flex-none text-muted-foreground transition-colors duration-[var(--duration-fast)] ease-out-quint group-data-[state=open]/acc:text-foreground"
                   initial={false}
                   animate={{ rotate: open ? 180 : 0 }}
                   transition={reduced ? { duration: 0 } : spring.snappy}

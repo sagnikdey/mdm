@@ -34,7 +34,7 @@ const slot = { initial: { width: 0, opacity: 0, scale: 0.9 }, animate: { width: 
 
 const heights = { sm: "h-7", md: "h-9", lg: "h-12" };
 const overflowSizes = { sm: "size-7 text-[10px]", md: "size-9 text-xs", lg: "size-12 text-sm" };
-const ring = "border-2 border-surface shadow-[0_0_0_1px_var(--color-border)] transition-shadow duration-fast ease-out-quint";
+const ring = "border-2 border-surface shadow-[0_0_0_1px_var(--color-border)] transition-shadow duration-[var(--duration-fast)] ease-out-quint";
 
 /** Overlapping avatars with a "+N" overflow. Pointing at the stack fans it out, and the person under the pointer names themselves. */
 export function AvatarGroup({ members, max = 4, size = "md", label = "Team members", className }: AvatarGroupProps) {
@@ -47,8 +47,8 @@ export function AvatarGroup({ members, max = 4, size = "md", label = "Team membe
   const total = visible.length + (overflow > 0 ? 1 : 0);
   // Each slot is the avatar's visible width. One wrapper per person carries every hover move as a single translate, so the stack never changes size.
   const slotClass = cn("group/slot relative inline-flex flex-none items-center [@media(hover:hover)_and_(pointer:fine)]:hover:z-[1]", heights[size]);
-  const lift = "relative -ml-1.5 inline-flex rounded-full [--fan:0px] [--aside:0px] [--rise:0px] [transform:translate(calc(var(--fan)+var(--aside)),var(--rise))] transition-[transform,box-shadow] duration-standard ease-out-quint motion-reduce:!transform-none motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover/group:[--fan:calc((var(--index)-(var(--count)-1)/2)*4px)] [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:[--rise:-2px] [@media(hover:hover)_and_(pointer:fine)]:[[data-slot]:hover~[data-slot]_&]:[--aside:3px] [@media(hover:hover)_and_(pointer:fine)]:[[data-slot]:has(~[data-slot]:hover)_&]:[--aside:-3px]";
-  const tip = "pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-[2] -translate-x-1/2 translate-y-[3px] whitespace-nowrap rounded-full bg-foreground px-2 py-1 text-xs font-medium leading-relaxed text-background opacity-0 transition-[opacity,translate] duration-fast ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:translate-y-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:delay-[60ms] motion-reduce:translate-y-0 motion-reduce:transition-none";
+  const lift = "relative -ml-1.5 inline-flex rounded-full [--fan:0px] [--aside:0px] [--rise:0px] [transform:translate(calc(var(--fan)+var(--aside)),var(--rise))] transition-[transform,box-shadow] duration-[var(--duration-standard)] ease-out-quint motion-reduce:!transform-none motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover/group:[--fan:calc((var(--index)-(var(--count)-1)/2)*4px)] [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:[--rise:-2px] [@media(hover:hover)_and_(pointer:fine)]:[[data-slot]:hover~[data-slot]_&]:[--aside:3px] [@media(hover:hover)_and_(pointer:fine)]:[[data-slot]:has(~[data-slot]:hover)_&]:[--aside:-3px]";
+  const tip = "pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-[2] -translate-x-1/2 translate-y-[3px] whitespace-nowrap rounded-full bg-foreground px-2 py-1 text-xs font-medium leading-relaxed text-background opacity-0 transition-[opacity,translate] duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:translate-y-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/slot:delay-[60ms] motion-reduce:translate-y-0 motion-reduce:transition-none";
   return (
     <div
       className={cn("group/group inline-flex items-center pl-1.5", heights[size], className)}

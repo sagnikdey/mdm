@@ -52,7 +52,7 @@ export function Avatar({ name, src, size = "md", status, className, ...props }: 
           draggable={false}
           onLoad={(event) => { delete event.currentTarget.dataset.loading; }}
           onError={() => setFailedSrc(src)}
-          className="pointer-events-none absolute inset-0 size-full rounded-[inherit] object-cover transition-[opacity,filter] duration-standard ease-enter data-[loading]:opacity-0 data-[loading]:blur-[4px] data-[loading]:transition-none motion-reduce:transition-none motion-reduce:data-[loading]:blur-none"
+          className="pointer-events-none absolute inset-0 size-full rounded-[inherit] object-cover transition-[opacity,filter] duration-[var(--duration-standard)] ease-enter data-[loading]:opacity-0 data-[loading]:blur-[4px] data-[loading]:transition-none motion-reduce:transition-none motion-reduce:data-[loading]:blur-none"
         />
       ) : (
         <span className={cn(src && "animate-[sg-resolve_var(--duration-standard)_var(--ease-enter)_both] motion-reduce:animate-none")} aria-hidden="true">{initials}</span>

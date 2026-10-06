@@ -122,7 +122,7 @@ export function TabsTrigger({ className, children, value, ...props }: React.Comp
       value={value}
       data-value={value}
       className={cn(
-        "relative inline-grid min-h-8 min-w-[5.5rem] flex-none cursor-pointer place-items-center whitespace-nowrap rounded-[calc(var(--radius-lg)-3px)] border-0 bg-transparent px-3 text-sm font-medium text-muted-foreground [-webkit-tap-highlight-color:transparent] transition-colors duration-fast ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground active:text-foreground data-[state=active]:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50",
+        "relative inline-grid min-h-8 min-w-[5.5rem] flex-none cursor-pointer place-items-center whitespace-nowrap rounded-[calc(var(--radius-lg)-3px)] border-0 bg-transparent px-3 text-sm font-medium text-muted-foreground [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground active:text-foreground data-[state=active]:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
     >

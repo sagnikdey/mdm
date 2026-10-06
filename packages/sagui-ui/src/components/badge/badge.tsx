@@ -72,7 +72,7 @@ export function Badge({ tone = "neutral", size = "md", icon, className, children
     <span
       {...props}
       className={cn(
-        "inline-flex items-center overflow-clip whitespace-nowrap rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] font-medium leading-none tracking-[-0.01em] text-[var(--badge-fg)] transition-[border-color,background-color,color] duration-standard ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:border-[color-mix(in_oklab,var(--badge-color)_32%,var(--color-border))] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--badge-color)_10%,var(--color-surface))]",
+        "inline-flex items-center overflow-clip whitespace-nowrap rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] font-medium leading-none tracking-[-0.01em] text-[var(--badge-fg)] transition-[border-color,background-color,color] duration-[var(--duration-standard)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:border-[color-mix(in_oklab,var(--badge-color)_32%,var(--color-border))] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--badge-color)_10%,var(--color-surface))]",
         tones[tone], sizes[size], className
       )}
     >
