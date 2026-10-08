@@ -111,7 +111,7 @@ export { Gauge, type GaugeThreshold, type GaugeProps } from "./components/gauge/
 export { ActivityHeatmap, type ActivityDay, type ActivityHeatmapProps } from "./components/activity-heatmap/activity-heatmap";
 export { Ridgeline, type RidgelineSeries, type RidgelineProps } from "./components/ridgeline/ridgeline";
 export { Treemap, type TreemapNode, type TreemapProps } from "./components/treemap/treemap";
-export { SortableDataTable, type SortDirection, type SortState, type DataColumn, type SortableDataTableProps } from "./components/sortable-data-table/sortable-data-table";
+export { SortableDataTable, type SortDirection, type SortState, type DataColumn, type ColumnFilters, type SortableDataTableProps } from "./components/sortable-data-table/sortable-data-table";
 export { Timeline, type TimelineEvent, type TimelineProps } from "./components/timeline/timeline";
 export { TextReveal, type TextRevealProps } from "./components/text-reveal/text-reveal";
 export { InViewTitle, type InViewTitleVariant, type InViewTitleProps } from "./components/in-view-title/in-view-title";

@@ -74,6 +74,12 @@ export function Projects() {
 
 <!-- demo: Selectable -->
 
+### Search, filter and view options
+
+`searchable` adds a search field that matches across visible columns. Columns marked `filterable` list their distinct values, with counts, in a Filter menu. `viewOptions` adds a View menu for showing and hiding columns; the first column always stays.
+
+<!-- demo: Toolbar -->
+
 ### Empty
 
 <!-- demo: Empty -->
@@ -89,7 +95,7 @@ A generic table with sortable columns, optional row selection, and rows that gli
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `rows` (required) | `T[]` | – | Row objects. |
-| `columns` (required) | `{ key: string; label: string; sortable?: boolean; render?: (value: unknown, row: T) => ReactNode; numeric?: boolean; width?: number \| string }[]` | – | Column definitions. Columns are sortable unless sortable is false; numeric is detected when every value is a number. |
+| `columns` (required) | `{ key: string; label: string; sortable?: boolean; render?: (value: unknown, row: T) => ReactNode; numeric?: boolean; width?: number \| string; filterable?: boolean; hideable?: boolean; searchable?: boolean }[]` | – | Column definitions. Columns are sortable and searchable unless set false; numeric is detected when every value is a number; filterable adds the column to the Filter menu; hideable false keeps it out of the View menu. |
 | `rowKey` (required) | `keyof T \| ((row: T) => string)` | – | Stable key per row. |
 | `caption` | `string` | `"Data table"` | Table caption, used as its accessible name. |
 | `emptyMessage` | `string` | `"No rows to show"` | Shown when rows is empty. |
@@ -99,6 +105,16 @@ A generic table with sortable columns, optional row selection, and rows that gli
 | `selectedKeys` | `string[]` | – | Controlled selection. |
 | `defaultSelectedKeys` | `string[]` | – | Initial selection when uncontrolled. |
 | `onSelectionChange` | `(keys: string[]) => void` | – | Called with the new selection. |
+| `searchable` | `boolean` | `false` | Adds a search field that matches rows across visible columns. |
+| `searchPlaceholder` | `string` | `"Search"` | Placeholder for the search field. |
+| `search` / `defaultSearch` | `string` | `""` | Controlled or initial search text. |
+| `onSearchChange` | `(search: string) => void` | – | Called as the search text changes. |
+| `filters` / `defaultFilters` | `Record<string, string[]>` | `{}` | Controlled or initial filters, keyed by column, listing accepted values. |
+| `onFiltersChange` | `(filters: ColumnFilters) => void` | – | Called when a filter value is toggled or filters are cleared. |
+| `viewOptions` | `boolean` | `false` | Adds a View menu for showing and hiding columns. |
+| `hiddenColumns` / `defaultHiddenColumns` | `string[]` | `[]` | Controlled or initial hidden column keys. |
+| `onHiddenColumnsChange` | `(keys: string[]) => void` | – | Called with the new hidden column keys. |
+| `noResultsMessage` | `string` | `"No matching rows"` | Shown, with a Clear action, when search or filters match nothing. |
 | `itemName` | `{ one: string; other: string }` | `{ one: "row", other: "rows" }` | Noun for the count line, as in "6 projects". |
 
 ## Keyboard interactions
@@ -111,13 +127,15 @@ A generic table with sortable columns, optional row selection, and rows that gli
 | Home / End | Jumps to the first or last header or row checkbox. |
 | Enter / Space | Sorts by a header or toggles a checkbox. |
 | Shift + click | Selects a range of rows. |
-| Escape | Clears the selection. |
+| Escape | Clears the selection; in the search field, clears the search. |
 
 ## Accessibility
 
 
 - A native table with caption, scoped headers, and aria-sort on sortable columns.
 - Sort buttons are labelled like "Sort by Budget, currently ascending"; the select all checkbox shows a mixed state.
+- The toolbar is a labelled role="toolbar"; filter and column options are toggle buttons with aria-pressed, grouped by column.
+- Result counts after a search or filter are announced, as in "3 of 8 projects shown".
 - Sort and selection changes are announced through a role="status" region.
 
 ## Motion
@@ -132,13 +150,14 @@ A generic table with sortable columns, optional row selection, and rows that gli
 
 - Wider layouts scroll horizontally inside the table instead of the page.
 - Below 620px each row folds into two lines, and the header becomes a scrolling strip of sort buttons with Select all pinned.
+- Below 620px the Filter and View buttons collapse to icons and search takes the remaining width.
 - Hover row fills apply only on hover-capable fine pointers.
 
 ## Performance
 
 
 - Rows are not virtualized and each uses position layout animation for re-sorts; paginate long lists with pagination.
-- Sorting runs client side over the rows you pass.
+- Sorting, search and filtering run client side over the rows you pass; for server-side search, control search and filters and pass the fetched rows.
 
 ## Notes
 

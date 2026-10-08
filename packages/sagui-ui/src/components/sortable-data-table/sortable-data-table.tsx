@@ -1,9 +1,10 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Check, ListFilter, Search, Settings2, X } from "lucide-react";
 import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, type Transition, type Variants } from "motion/react";
 import { motionTokens } from "../../lib/motion-tokens";
 import { cssModule } from "../../lib/css-module";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover/popover";
 
 const styles = cssModule("sg-sortable-data-table");
 
@@ -19,7 +20,15 @@ export type DataColumn<T> = {
   numeric?: boolean;
   /** Fixed width such as 120 or "20%". Other columns are measured once and held, so sorting never reflows them. */
   width?: number | string;
+  /** Lists the column's distinct values in the Filter menu. */
+  filterable?: boolean;
+  /** Set false to keep the column out of the View menu. The first column is always shown. */
+  hideable?: boolean;
+  /** Set false to leave the column out of search. Searchable by default. */
+  searchable?: boolean;
 };
+
+export type ColumnFilters = Record<string, string[]>;
 
 export type SortableDataTableProps<T extends Record<string, unknown>> = {
   rows: T[];
@@ -37,11 +46,29 @@ export type SortableDataTableProps<T extends Record<string, unknown>> = {
   onSelectionChange?: (keys: string[]) => void;
   /** Noun for the count line, as in "6 projects". */
   itemName?: { one: string; other: string };
+  /** Adds a search field to the toolbar that matches rows across visible columns. */
+  searchable?: boolean;
+  searchPlaceholder?: string;
+  search?: string;
+  defaultSearch?: string;
+  onSearchChange?: (search: string) => void;
+  /** Initial filters when uncontrolled, keyed by column with the accepted values. Columns opt in with filterable. */
+  filters?: ColumnFilters;
+  defaultFilters?: ColumnFilters;
+  onFiltersChange?: (filters: ColumnFilters) => void;
+  /** Adds a View menu to the toolbar for showing and hiding columns. */
+  viewOptions?: boolean;
+  hiddenColumns?: string[];
+  defaultHiddenColumns?: string[];
+  onHiddenColumnsChange?: (keys: string[]) => void;
+  /** Shown when search or filters match nothing. */
+  noResultsMessage?: string;
 };
 
 const collator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
 const isEmpty = (value: unknown) => value == null || value === "";
 const comparable = (value: unknown) => value instanceof Date ? value.getTime() : value;
+const text = (value: unknown) => value instanceof Date ? value.toLocaleDateString("en-US") : isEmpty(value) ? "" : String(value);
 const blur = (px: number) => `blur(${px}px)`;
 const enter: Transition = { duration: motionTokens.duration.standard, ease: [...motionTokens.ease.enter] };
 const leave: Transition = { duration: motionTokens.duration.fast, ease: [...motionTokens.ease.standard] };
@@ -123,7 +150,16 @@ function SelectBox({ checked, mixed = false, label, nav, reduced, onToggle, inpu
   </label>;
 }
 
-export function SortableDataTable<T extends Record<string, unknown>>({ rows, columns, rowKey, caption = "Data table", emptyMessage = "No rows to show", defaultSort, onSortChange, selectable = false, selectedKeys, defaultSelectedKeys, onSelectionChange, itemName = { one: "row", other: "rows" } }: SortableDataTableProps<T>) {
+/** A checkbox row inside a toolbar menu. */
+function MenuOption({ checked, label, count, onToggle }: { checked: boolean; label: string; count?: number; onToggle: () => void }) {
+  return <button type="button" aria-pressed={checked} className={styles.option} onClick={onToggle}>
+    <span className={styles.optionBox} data-on={checked || undefined} aria-hidden="true">{checked ? <Check size={12} strokeWidth={2.5} /> : null}</span>
+    <span className={styles.optionLabel}>{label}</span>
+    {count !== undefined ? <span className={styles.optionCount}>{count}</span> : null}
+  </button>;
+}
+
+export function SortableDataTable<T extends Record<string, unknown>>({ rows, columns: allColumns, rowKey, caption = "Data table", emptyMessage = "No rows to show", defaultSort, onSortChange, selectable = false, selectedKeys, defaultSelectedKeys, onSelectionChange, itemName = { one: "row", other: "rows" }, searchable = false, searchPlaceholder = "Search", search: searchProp, defaultSearch = "", onSearchChange, filters: filtersProp, defaultFilters, onFiltersChange, viewOptions = false, hiddenColumns: hiddenProp, defaultHiddenColumns, onHiddenColumnsChange, noResultsMessage = "No matching rows" }: SortableDataTableProps<T>) {
   const reduced = useReducedMotion() ?? false;
   const tableRef = useRef<HTMLTableElement>(null);
   const selectAllRef = useRef<HTMLInputElement>(null);
@@ -132,10 +168,55 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
   const [announcement, setAnnouncement] = useState("");
   const [internalSelection, setInternalSelection] = useState<string[]>(defaultSelectedKeys ?? []);
   const selection = useMemo(() => new Set(selectedKeys ?? internalSelection), [internalSelection, selectedKeys]);
+  const [internalSearch, setInternalSearch] = useState(defaultSearch);
+  const search = searchProp ?? internalSearch;
+  const [internalFilters, setInternalFilters] = useState<ColumnFilters>(defaultFilters ?? {});
+  const filters = filtersProp ?? internalFilters;
+  const [internalHidden, setInternalHidden] = useState<string[]>(defaultHiddenColumns ?? []);
+  const hidden = useMemo(() => new Set(hiddenProp ?? internalHidden), [hiddenProp, internalHidden]);
+  const columns = useMemo(() => allColumns.filter((column, index) => index === 0 || !hidden.has(column.key)), [allColumns, hidden]);
+  const filterColumns = allColumns.filter(column => column.filterable);
+  const facets = useMemo(() => Object.fromEntries(filterColumns.map(column => {
+    const counts = new Map<string, number>();
+    rows.forEach(row => { const value = text(row[column.key]); if (value) counts.set(value, (counts.get(value) ?? 0) + 1); });
+    return [column.key, [...counts].sort((a, b) => collator.compare(a[0], b[0]))];
+  })) as Record<string, [string, number][]>, [filterColumns.map(column => column.key).join("\u0000"), rows]);
+  const activeFilters = Object.entries(filters).filter(([key, values]) => values.length && filterColumns.some(column => column.key === key));
+  const filterCount = activeFilters.reduce((total, [, values]) => total + values.length, 0);
+  const query = search.trim().toLocaleLowerCase();
+  const filtering = query !== "" || filterCount > 0;
+
+  const visibleRows = useMemo(() => !filtering ? rows : rows.filter(row =>
+    activeFilters.every(([key, values]) => values.includes(text(row[key]))) &&
+    (!query || columns.some(column => column.searchable !== false && text(row[column.key]).toLocaleLowerCase().includes(query)))
+  ), [rows, filtering, query, columns, JSON.stringify(activeFilters)]);
+
+  function changeSearch(next: string) {
+    if (searchProp === undefined) setInternalSearch(next);
+    onSearchChange?.(next);
+  }
+  function changeFilters(next: ColumnFilters) {
+    if (filtersProp === undefined) setInternalFilters(next);
+    onFiltersChange?.(next);
+  }
+  function toggleFilter(key: string, value: string) {
+    const current = filters[key] ?? [];
+    changeFilters({ ...filters, [key]: current.includes(value) ? current.filter(item => item !== value) : [...current, value] });
+  }
+  function toggleColumn(key: string) {
+    const next = hidden.has(key) ? [...hidden].filter(item => item !== key) : [...hidden, key];
+    if (hiddenProp === undefined) setInternalHidden(next);
+    onHiddenColumnsChange?.(next);
+  }
+  function resetAll() {
+    changeSearch("");
+    changeFilters({});
+  }
+  const toolbar = searchable || filterColumns.length > 0 || viewOptions;
 
   const sortedRows = useMemo(() => {
-    if (!sort) return rows;
-    return rows.map((row, index) => ({ row, index })).sort((a, b) => {
+    if (!sort) return visibleRows;
+    return visibleRows.map((row, index) => ({ row, index })).sort((a, b) => {
       const left = comparable(a.row[sort.key]);
       const right = comparable(b.row[sort.key]);
       // Empty values stay at the bottom in both directions.
@@ -143,7 +224,7 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
       const result = typeof left === "number" && typeof right === "number" ? left - right : collator.compare(String(left), String(right));
       return (sort.direction === "asc" ? result : -result) || a.index - b.index;
     }).map(entry => entry.row);
-  }, [rows, sort]);
+  }, [visibleRows, sort]);
 
   const numeric = useMemo(() => new Set(columns.filter(column => column.numeric ?? (rows.some(row => typeof row[column.key] === "number") && rows.every(row => typeof row[column.key] === "number" || isEmpty(row[column.key])))).map(column => column.key)), [columns, rows]);
   const getRowKey = (row: T) => String(typeof rowKey === "function" ? rowKey(row) : row[rowKey]);
@@ -206,6 +287,10 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
   const [countDirection, setCountDirection] = useState(1);
   if (shownCount !== lastCount) { setLastCount(shownCount); setCountDirection(shownCount > lastCount ? 1 : -1); }
 
+  const resultKey = filtering ? `${query}\u0000${filterCount}\u0000${keys.length}` : "";
+  const [lastResult, setLastResult] = useState(resultKey);
+  if (resultKey !== lastResult) { setLastResult(resultKey); if (filtering) setAnnouncement(`${keys.length} of ${rows.length} ${rows.length === 1 ? itemName.one : itemName.other} shown`); }
+
   function sortBy(column: DataColumn<T>) {
     const next: SortState = { key: column.key, direction: sort?.key === column.key && sort.direction === "asc" ? "desc" : "asc" };
     setSort(next);
@@ -267,6 +352,38 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
   }
 
   return <div className={styles.wrapper} onKeyDown={onKeyDown}>
+    {toolbar ? <div className={styles.toolbar} role="toolbar" aria-label={`${caption} tools`}>
+      {searchable ? <label className={styles.search}>
+        <Search className={styles.searchIcon} size={16} strokeWidth={1.75} aria-hidden="true" />
+        <input type="search" className={styles.searchInput} value={search} placeholder={searchPlaceholder} aria-label={`Search ${caption}`} onChange={event => changeSearch(event.target.value)} onKeyDown={event => { if (event.key === "Escape" && search) { event.preventDefault(); event.stopPropagation(); changeSearch(""); } }} />
+        {search ? <button type="button" className={styles.searchClear} aria-label="Clear search" onClick={() => changeSearch("")}><X size={14} strokeWidth={2} /></button> : null}
+      </label> : null}
+      <div className={styles.toolbarActions}>
+        {filterColumns.length ? <Popover>
+          <PopoverTrigger className={styles.toolButton} data-active={filterCount > 0 || undefined}>
+            <ListFilter size={16} strokeWidth={1.75} aria-hidden="true" /><span>Filter</span>{filterCount ? <span className={styles.toolBadge} aria-label={`${filterCount} active`}>{filterCount}</span> : null}
+          </PopoverTrigger>
+          <PopoverContent align="end" className={styles.menu}>
+            {filterColumns.map(column => <div key={column.key} role="group" aria-label={column.label} className={styles.menuGroup}>
+              <p className={styles.menuHeading}>{column.label}</p>
+              {facets[column.key]?.map(([value, count]) => <MenuOption key={value} label={value} count={count} checked={(filters[column.key] ?? []).includes(value)} onToggle={() => toggleFilter(column.key, value)} />)}
+            </div>)}
+            {filterCount ? <button type="button" className={styles.menuReset} onClick={() => changeFilters({})}>Clear filters</button> : null}
+          </PopoverContent>
+        </Popover> : null}
+        {viewOptions ? <Popover>
+          <PopoverTrigger className={styles.toolButton} data-active={allColumns.some((column, index) => index > 0 && hidden.has(column.key)) || undefined}>
+            <Settings2 size={16} strokeWidth={1.75} aria-hidden="true" /><span>View</span>
+          </PopoverTrigger>
+          <PopoverContent align="end" className={styles.menu}>
+            <div role="group" aria-label="Columns" className={styles.menuGroup}>
+              <p className={styles.menuHeading}>Columns</p>
+              {allColumns.map((column, index) => index === 0 || column.hideable === false ? null : <MenuOption key={column.key} label={column.label} checked={!hidden.has(column.key)} onToggle={() => toggleColumn(column.key)} />)}
+            </div>
+          </PopoverContent>
+        </Popover> : null}
+      </div>
+    </div> : null}
     <div className={styles.scroller}>
       {band ? <span className={styles.band} style={{ left: band.left, width: band.width }} aria-hidden="true" /> : null}
       <table ref={tableRef} role="table" className={styles.table} data-fixed={widths ? "" : undefined} data-selectable={selectable || undefined}>
@@ -294,7 +411,7 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
             {selectable ? <td role="cell" className={styles.selectCell}><SelectBox checked={selected} label={`Select ${String(row[columns[0]?.key] ?? key)}`} nav="row" reduced={reduced} onToggle={extend => toggleRow(key, extend)} /></td> : null}
             {columns.map((column, columnIndex) => <td key={column.key} role="cell" data-label={column.label} data-primary={columnIndex === 0 || undefined} data-sorted={sort?.key === column.key || undefined} data-numeric={numeric.has(column.key) || undefined}>{column.render ? column.render(row[column.key], row) : String(row[column.key] ?? "–")}</td>)}
           </motion.tr>;
-        }) : <tr role="row"><td role="cell" className={styles.empty} colSpan={columns.length + (selectable ? 1 : 0)}>{emptyMessage}</td></tr>}</tbody>
+        }) : <tr role="row"><td role="cell" className={styles.empty} colSpan={columns.length + (selectable ? 1 : 0)}>{rows.length && filtering ? <>{noResultsMessage} <button type="button" className={styles.reset} onClick={resetAll}>Clear search and filters</button></> : emptyMessage}</td></tr>}</tbody>
       </table>
     </div>
     {selectable ? <div className={styles.footer}>
