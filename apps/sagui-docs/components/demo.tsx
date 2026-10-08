@@ -18,6 +18,7 @@ const loaders: Record<string, () => Promise<DemoModule>> = {
   "expanding-button-group": () => import("../demos/expanding-button-group.demos"),
   "copy-button": () => import("../demos/copy-button.demos"),
   "confirm-morph": () => import("../demos/confirm-morph.demos"),
+  "approval-card": () => import("../demos/approval-card.demos"),
   "input": () => import("../demos/input.demos"),
   "textarea": () => import("../demos/textarea.demos"),
   "password-field": () => import("../demos/password-field.demos"),

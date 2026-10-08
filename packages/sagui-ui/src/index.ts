@@ -32,6 +32,7 @@ export {
   type ExpandingButtonGroupTone,
 } from "./components/expanding-button-group/expanding-button-group";
 export { CopyButton, type CopyButtonProps } from "./components/copy-button/copy-button";
+export { ApprovalCard, type ApprovalCardProps, type ApprovalQuestion, type ApprovalOption, type ApprovalAnswer, type ApprovalAnswers } from "./components/approval-card/approval-card";
 export { ConfirmMorph, type ConfirmMorphProps, type ConfirmMorphState } from "./components/confirm-morph/confirm-morph";
 export { Tooltip, type TooltipProps } from "./components/tooltip/tooltip";
 

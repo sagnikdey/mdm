@@ -53,7 +53,7 @@ const order: Record<Category, string[]> = {
   charts: ["line-chart", "bar-chart", "donut-chart", "sparkline", "gauge", "streamgraph", "brush-chart", "waffle-chart", "slope-chart", "activity-heatmap", "ridgeline", "treemap"],
   data: ["sortable-data-table", "timeline"],
   text: ["text-reveal", "in-view-title", "text-morph", "text-shimmer"],
-  cards: ["card", "metric-card", "empty-state", "animated-counter", "skeleton"],
+  cards: ["card", "approval-card", "metric-card", "empty-state", "animated-counter", "skeleton"],
   messages: ["alert", "toast", "notification-center"],
   overlays: ["dialog", "drawer", "bottom-sheet", "popover", "tooltip"],
 };
