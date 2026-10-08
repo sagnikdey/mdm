@@ -159,3 +159,21 @@
 @media (prefers-reduced-motion: reduce) {
   .sg-sortable-data-table-toolButton, .sg-sortable-data-table-searchInput, .sg-sortable-data-table-optionBox { transition: none !important; }
 }
+
+/* Column resizing: a thin hit area on each header's right edge with a line that shows on hover, focus and drag. */
+.sg-sortable-data-table-table[data-resizable] th { position: relative; }
+.sg-sortable-data-table-resizer { position: absolute; top: 0; right: -6px; bottom: 0; z-index: 2; width: 12px; cursor: col-resize; touch-action: none; }
+.sg-sortable-data-table-resizer::after { position: absolute; top: 10px; bottom: 10px; left: 50%; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--color-border-strong); content: ""; opacity: 0; transition: opacity var(--duration-quick) var(--ease-out-quint), background-color var(--duration-quick) var(--ease-out-quint); }
+.sg-sortable-data-table-resizer:focus-visible { outline: none; }
+.sg-sortable-data-table-resizer:focus-visible::after, .sg-sortable-data-table-resizer:active::after { top: 0; bottom: 0; background: var(--color-ring); opacity: 1; }
+:root[data-sg-resizing], :root[data-sg-resizing] * { cursor: col-resize !important; user-select: none !important; }
+@media (hover: hover) and (pointer: fine) {
+  .sg-sortable-data-table-resizer:hover::after { opacity: 1; }
+}
+@media (max-width: 620px) {
+  .sg-sortable-data-table-resizer { display: none; }
+  .sg-sortable-data-table-table[style] { width: 100% !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sg-sortable-data-table-resizer::after { transition: none !important; }
+}

@@ -1,4 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import type { KeyboardEvent, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from "react";
 import { ArrowUp, Check, ListFilter, Search, Settings2, X } from "lucide-react";
 import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, type Transition, type Variants } from "motion/react";
@@ -26,6 +27,10 @@ export type DataColumn<T> = {
   hideable?: boolean;
   /** Set false to leave the column out of search. Searchable by default. */
   searchable?: boolean;
+  /** Set false to keep a column at its width when resizableColumns is on. */
+  resizable?: boolean;
+  /** Smallest width in pixels a resize can reach. Defaults to 64. */
+  minWidth?: number;
 };
 
 export type ColumnFilters = Record<string, string[]>;
@@ -61,6 +66,10 @@ export type SortableDataTableProps<T extends Record<string, unknown>> = {
   hiddenColumns?: string[];
   defaultHiddenColumns?: string[];
   onHiddenColumnsChange?: (keys: string[]) => void;
+  /** Adds a drag handle to each header edge. Arrow keys resize a focused handle; double-click resets the column. */
+  resizableColumns?: boolean;
+  /** Called with the pixel widths of resized columns when a resize ends. */
+  onColumnResize?: (widths: Record<string, number>) => void;
   /** Shown when search or filters match nothing. */
   noResultsMessage?: string;
 };
@@ -159,7 +168,7 @@ function MenuOption({ checked, label, count, onToggle }: { checked: boolean; lab
   </button>;
 }
 
-export function SortableDataTable<T extends Record<string, unknown>>({ rows, columns: allColumns, rowKey, caption = "Data table", emptyMessage = "No rows to show", defaultSort, onSortChange, selectable = false, selectedKeys, defaultSelectedKeys, onSelectionChange, itemName = { one: "row", other: "rows" }, searchable = false, searchPlaceholder = "Search", search: searchProp, defaultSearch = "", onSearchChange, filters: filtersProp, defaultFilters, onFiltersChange, viewOptions = false, hiddenColumns: hiddenProp, defaultHiddenColumns, onHiddenColumnsChange, noResultsMessage = "No matching rows" }: SortableDataTableProps<T>) {
+export function SortableDataTable<T extends Record<string, unknown>>({ rows, columns: allColumns, rowKey, caption = "Data table", emptyMessage = "No rows to show", defaultSort, onSortChange, selectable = false, selectedKeys, defaultSelectedKeys, onSelectionChange, itemName = { one: "row", other: "rows" }, searchable = false, searchPlaceholder = "Search", search: searchProp, defaultSearch = "", onSearchChange, filters: filtersProp, defaultFilters, onFiltersChange, viewOptions = false, hiddenColumns: hiddenProp, defaultHiddenColumns, onHiddenColumnsChange, noResultsMessage = "No matching rows", resizableColumns = false, onColumnResize }: SortableDataTableProps<T>) {
   const reduced = useReducedMotion() ?? false;
   const tableRef = useRef<HTMLTableElement>(null);
   const selectAllRef = useRef<HTMLInputElement>(null);
@@ -213,6 +222,65 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
     changeFilters({});
   }
   const toolbar = searchable || filterColumns.length > 0 || viewOptions;
+
+  // Resized columns hold pixel widths. The last visible column keeps its width as a floor and takes up what is left.
+  const [resized, setResized] = useState<Record<string, number>>({});
+  const natural = useRef<Record<string, number>>({});
+  const resizeStart = useRef<{ key: string; x: number; width: number; widths: Record<string, number> } | null>(null);
+  const lastKey = columns[columns.length - 1]?.key;
+  const pixelMode = Object.keys(resized).length > 0;
+  const minFor = (key: string) => columns.find(column => column.key === key)?.minWidth ?? 64;
+  /** Freezes every column at its current pixel width, so moving one edge leaves the others in place. */
+  function snapshot() {
+    const next: Record<string, number> = {};
+    tableRef.current?.querySelectorAll<HTMLElement>("thead th[data-key]").forEach(cell => { const key = cell.dataset.key ?? ""; next[key] = resized[key] ?? Math.round(cell.getBoundingClientRect().width); });
+    // The widths before the first resize are what double-click goes back to.
+    if (!pixelMode) natural.current = { ...next };
+    return next;
+  }
+  function resizeTo(key: string, width: number, base = resized) {
+    const next = { ...base, [key]: Math.round(Math.max(minFor(key), width)) };
+    setResized(next);
+    return next;
+  }
+  function onResizeDown(event: ReactPointerEvent<HTMLSpanElement>, key: string) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const widths = snapshot();
+    resizeStart.current = { key, x: event.clientX, width: widths[key] ?? 0, widths };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    document.documentElement.dataset.sgResizing = "";
+  }
+  function onResizeMove(event: ReactPointerEvent<HTMLSpanElement>) {
+    const start = resizeStart.current;
+    if (start) resizeTo(start.key, start.width + event.clientX - start.x, start.widths);
+  }
+  function onResizeEnd() {
+    if (!resizeStart.current) return;
+    resizeStart.current = null;
+    delete document.documentElement.dataset.sgResizing;
+    setResized(current => { onColumnResize?.(current); return current; });
+  }
+  function onResizeKey(event: KeyboardEvent<HTMLSpanElement>, key: string, label: string) {
+    const step = event.shiftKey ? 48 : 16;
+    const delta = event.key === "ArrowRight" ? step : event.key === "ArrowLeft" ? -step : 0;
+    if (!delta) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const widths = pixelMode ? resized : snapshot();
+    const next = resizeTo(key, (widths[key] ?? 0) + delta, widths);
+    onColumnResize?.(next);
+    setAnnouncement(`${label} column ${next[key]} pixels`);
+  }
+  function resetColumn(key: string) {
+    if (!pixelMode || natural.current[key] === undefined) return;
+    const restored = { ...resized, [key]: natural.current[key] };
+    // Once every column is back where it started, return to the measured percentage layout.
+    const next = Object.entries(restored).every(([name, width]) => natural.current[name] === width) ? {} : restored;
+    setResized(next);
+    onColumnResize?.(next);
+  }
 
   const sortedRows = useMemo(() => {
     if (!sort) return visibleRows;
@@ -279,7 +347,7 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
     const observer = new ResizeObserver(update);
     observer.observe(table);
     return () => observer.disconnect();
-  }, [reduced, sort?.key, widths]);
+  }, [reduced, sort?.key, widths, resized]);
 
   const shownCount = selectedCount || keys.length;
   const noun = selectedCount ? "selected" : keys.length === 1 ? itemName.one : itemName.other;
@@ -386,11 +454,11 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
     </div> : null}
     <div className={styles.scroller}>
       {band ? <span className={styles.band} style={{ left: band.left, width: band.width }} aria-hidden="true" /> : null}
-      <table ref={tableRef} role="table" className={styles.table} data-fixed={widths ? "" : undefined} data-selectable={selectable || undefined}>
+      <table ref={tableRef} role="table" className={styles.table} style={pixelMode ? { width: `max(100%, ${columns.reduce((total, column) => total + (resized[column.key] ?? minFor(column.key)), selectable ? 44 : 0)}px)` } : undefined} data-fixed={widths || pixelMode ? "" : undefined} data-resizable={resizableColumns || undefined} data-selectable={selectable || undefined}>
         <caption>{caption}</caption>
         <colgroup>
           {selectable ? <col className={styles.selectCol} /> : null}
-          {columns.map((column, index) => <col key={column.key} style={{ width: column.width !== undefined ? (typeof column.width === "number" ? `${column.width}px` : column.width) : widths && index > 0 ? `${widths[column.key]}%` : undefined }} />)}
+          {columns.map((column, index) => <col key={column.key} style={{ width: pixelMode ? (column.key === lastKey || resized[column.key] === undefined ? undefined : `${resized[column.key]}px`) : column.width !== undefined ? (typeof column.width === "number" ? `${column.width}px` : column.width) : widths && index > 0 ? `${widths[column.key]}%` : undefined }} />)}
         </colgroup>
         <thead role="rowgroup"><tr role="row">
           {selectable ? <th scope="col" role="columnheader" className={styles.selectCell}><SelectBox inputRef={selectAllRef} checked={allSelected} mixed={selectedCount > 0 && !allSelected} label="Select all rows" nav="head" reduced={reduced} onToggle={() => commit(allSelected ? new Set() : new Set(keys))} /></th> : null}
@@ -401,6 +469,7 @@ export function SortableDataTable<T extends Record<string, unknown>>({ rows, col
               {sortable ? <button className={styles.sortButton} type="button" data-nav="head" onClick={() => sortBy(column)} aria-label={`Sort by ${column.label}${active ? `, currently ${sort.direction === "asc" ? "ascending" : "descending"}` : ""}`}>
                 <span className={styles.sortInner}><span>{column.label}</span><SortGlyph active={active} descending={active && sort.direction === "desc"} reduced={reduced} /></span>
               </button> : column.label}
+              {resizableColumns && column.resizable !== false && column.key !== lastKey ? <span role="separator" aria-orientation="vertical" aria-label={`Resize ${column.label}`} aria-valuenow={resized[column.key]} aria-valuemin={minFor(column.key)} tabIndex={0} className={styles.resizer} onPointerDown={event => onResizeDown(event, column.key)} onPointerMove={onResizeMove} onPointerUp={onResizeEnd} onPointerCancel={onResizeEnd} onLostPointerCapture={onResizeEnd} onKeyDown={event => onResizeKey(event, column.key, column.label)} onDoubleClick={() => resetColumn(column.key)} onClick={event => event.stopPropagation()} /> : null}
             </th>;
           })}
         </tr></thead>

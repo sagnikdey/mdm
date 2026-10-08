@@ -80,6 +80,10 @@ export function Projects() {
 
 <!-- demo: Toolbar -->
 
+### Resizable columns
+
+`resizableColumns` adds a drag handle to the right edge of each header. Columns stay at least `minWidth` (64px by default), the last column fills the remaining space, and the table scrolls sideways once the columns are wider than it. Double-click a handle to reset that column, or set `resizable: false` on a column to fix its width.
+
 ### Empty
 
 <!-- demo: Empty -->
@@ -95,7 +99,7 @@ A generic table with sortable columns, optional row selection, and rows that gli
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `rows` (required) | `T[]` | – | Row objects. |
-| `columns` (required) | `{ key: string; label: string; sortable?: boolean; render?: (value: unknown, row: T) => ReactNode; numeric?: boolean; width?: number \| string; filterable?: boolean; hideable?: boolean; searchable?: boolean }[]` | – | Column definitions. Columns are sortable and searchable unless set false; numeric is detected when every value is a number; filterable adds the column to the Filter menu; hideable false keeps it out of the View menu. |
+| `columns` (required) | `{ key: string; label: string; sortable?: boolean; render?: (value: unknown, row: T) => ReactNode; numeric?: boolean; width?: number \| string; filterable?: boolean; hideable?: boolean; searchable?: boolean; resizable?: boolean; minWidth?: number }[]` | – | Column definitions. Columns are sortable and searchable unless set false; numeric is detected when every value is a number; filterable adds the column to the Filter menu; hideable false keeps it out of the View menu. |
 | `rowKey` (required) | `keyof T \| ((row: T) => string)` | – | Stable key per row. |
 | `caption` | `string` | `"Data table"` | Table caption, used as its accessible name. |
 | `emptyMessage` | `string` | `"No rows to show"` | Shown when rows is empty. |
@@ -114,6 +118,8 @@ A generic table with sortable columns, optional row selection, and rows that gli
 | `viewOptions` | `boolean` | `false` | Adds a View menu for showing and hiding columns. |
 | `hiddenColumns` / `defaultHiddenColumns` | `string[]` | `[]` | Controlled or initial hidden column keys. |
 | `onHiddenColumnsChange` | `(keys: string[]) => void` | – | Called with the new hidden column keys. |
+| `resizableColumns` | `boolean` | `false` | Adds drag handles on header edges. Arrow keys resize a focused handle; double-click resets. |
+| `onColumnResize` | `(widths: Record<string, number>) => void` | – | Called with the pixel widths of resized columns when a resize ends. |
 | `noResultsMessage` | `string` | `"No matching rows"` | Shown, with a Clear action, when search or filters match nothing. |
 | `itemName` | `{ one: string; other: string }` | `{ one: "row", other: "rows" }` | Noun for the count line, as in "6 projects". |
 
@@ -127,6 +133,7 @@ A generic table with sortable columns, optional row selection, and rows that gli
 | Home / End | Jumps to the first or last header or row checkbox. |
 | Enter / Space | Sorts by a header or toggles a checkbox. |
 | Shift + click | Selects a range of rows. |
+| ArrowLeft / ArrowRight on a resize handle | Narrows or widens the column by 16px; with Shift, 48px. |
 | Escape | Clears the selection; in the search field, clears the search. |
 
 ## Accessibility
@@ -135,6 +142,7 @@ A generic table with sortable columns, optional row selection, and rows that gli
 - A native table with caption, scoped headers, and aria-sort on sortable columns.
 - Sort buttons are labelled like "Sort by Budget, currently ascending"; the select all checkbox shows a mixed state.
 - The toolbar is a labelled role="toolbar"; filter and column options are toggle buttons with aria-pressed, grouped by column.
+- Resize handles are focusable separators labelled like "Resize Owner", and keyboard resizes announce the new width.
 - Result counts after a search or filter are announced, as in "3 of 8 projects shown".
 - Sort and selection changes are announced through a role="status" region.
 
@@ -150,6 +158,7 @@ A generic table with sortable columns, optional row selection, and rows that gli
 
 - Wider layouts scroll horizontally inside the table instead of the page.
 - Below 620px each row folds into two lines, and the header becomes a scrolling strip of sort buttons with Select all pinned.
+- Below 620px resize handles are hidden, since rows fold into cards.
 - Below 620px the Filter and View buttons collapse to icons and search takes the remaining width.
 - Hover row fills apply only on hover-capable fine pointers.
 

@@ -65,6 +65,7 @@ export function Toolbar() {
         searchable
         searchPlaceholder="Search projects"
         viewOptions
+        resizableColumns
         defaultHiddenColumns={["updated"]}
         selectable
         itemName={{ one: "project", other: "projects" }}
