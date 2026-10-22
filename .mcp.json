@@ -3,6 +3,13 @@
     "storybook": {
       "type": "http",
       "url": "http://localhost:6006/mcp"
+    },
+    "sagui": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "packages/mcp/src/server.mjs"
+      ]
     }
   }
 }
