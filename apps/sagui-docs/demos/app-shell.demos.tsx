@@ -24,10 +24,10 @@ const nav: AppShellNavSection[] = [
   },
   { label: "Workspace", items: [{ label: "Settings", href: "/app/settings", icon: <Settings /> }] },
 ];
-const titles: Record<string, string> = Object.fromEntries(nav.flatMap((section) => section.items).map((item) => [item.href, item.label]));
+const titles: Record<string, string> = Object.fromEntries(nav.flatMap((section) => section.items).map((item) => [item.href ?? item.label, item.label]));
 
 const commands = [
-  ...nav.flatMap((section) => section.items).map((item) => ({ id: item.href, label: `Go to ${item.label}`, group: "Navigate", icon: item.icon })),
+  ...nav.flatMap((section) => section.items).map((item) => ({ id: item.href ?? item.label, label: `Go to ${item.label}`, group: "Navigate", icon: item.icon })),
   { id: "new-deal", label: "Create deal", group: "Actions", shortcut: "N" },
   { id: "export", label: "Export report", group: "Actions" },
 ];

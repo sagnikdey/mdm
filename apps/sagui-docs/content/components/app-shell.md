@@ -79,7 +79,7 @@ The shell gives you the frame; you fill its slots. Put the page title or a [brea
 
 ### Inset sidebar
 
-`variant="inset"` floats the sidebar as a rounded panel with a small gap around it, and drops the border under the top bar. The fold toggle moves into the top bar, before the `header`, so the sidebar footer holds only `sidebarFooter`. Use it for dashboards and tools where the content sits in panels of its own.
+`variant="inset"` floats the sidebar as a rounded panel 12px in from the edges, on a muted canvas, and drops the border under the top bar. The current page is an accent pill, the fold toggle sits in the sidebar header beside `brand` (stacked under `brandMark` on the rail), and a group that holds the current page tints in the accent color. Use it for dashboards and tools where the content sits in panels of its own.
 
 <!-- demo: Inset -->
 
@@ -99,7 +99,7 @@ const [collapsed, setCollapsed] = useState(initialFromCookie);
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `nav` (required) | `{ label?: string; items: { label: string; href: string; icon?: ReactNode; badge?: ReactNode; current?: boolean }[] }[]` | – | Navigation in sections. A section label is a small heading; `badge` is a count or a Badge after the label. |
+| `nav` (required) | `{ label?: string; items: AppShellNavItem[] }[]` | – | Navigation in sections. A section label is a small heading. Each item is `{ label, href?, icon?, badge?, badgeTone?, current?, items?, defaultOpen? }`. |
 | `children` (required) | `ReactNode` | – | The page. It renders in the main column under the top bar. |
 | `currentHref` | `string` | – | The current path. The item whose href matches it, or is its closest parent, is marked current, so `/deals/42` marks Deals. |
 | `linkComponent` | `ElementType` | `"a"` | Element for nav links. Pass your router's Link, such as next/link. It must forward its ref. |
@@ -107,13 +107,27 @@ const [collapsed, setCollapsed] = useState(initialFromCookie);
 | `brandMark` | `ReactNode` | – | A compact mark shown instead of `brand` while the sidebar is a rail. |
 | `header` | `ReactNode` | – | Start of the top bar: the page title or a Breadcrumb. |
 | `actions` | `ReactNode` | – | End of the top bar: search, notifications and the user menu. |
-| `sidebarFooter` | `ReactNode` | – | Pinned to the bottom of the sidebar, above the fold toggle in the `sidebar` variant. Hidden while the sidebar is a rail. |
-| `variant` | `"sidebar" \| "inset"` | `"sidebar"` | `sidebar` sits flush with a dividing border. `inset` floats the sidebar as a rounded panel and puts the fold toggle in the top bar. |
+| `sidebarFooter` | `ReactNode` | – | Pinned to the bottom of the sidebar, above the fold toggle in the `sidebar` variant, such as a promo card and the signed-in user. |
+| `sidebarFooterRail` | `ReactNode` | – | Compact footer shown while the sidebar is a rail, such as the user's avatar alone. Without it the footer hides on the rail. |
+| `variant` | `"sidebar" \| "inset"` | `"sidebar"` | `sidebar` sits flush with a dividing border. `inset` floats the sidebar as a rounded panel 12px in from the edges on a muted canvas, marks the current page with an accent pill and keeps the fold toggle in the sidebar header. |
 | `collapsed` | `boolean` | – | Controlled rail state on wide screens. |
 | `defaultCollapsed` | `boolean` | `false` | Rail state on first render when uncontrolled. |
 | `onCollapsedChange` | `(collapsed: boolean) => void` | – | Called when the toggle or Cmd/Ctrl + B folds or opens the sidebar. |
 | `label` | `string` | `"Main"` | Accessible name of the navigation landmark. |
 | `className` | `string` | – | Class on the outer grid. |
+
+### Nav items
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `label` | `string` | Visible name; the tooltip on the rail. |
+| `href` | `string` | Destination. Optional on a group, which links to its first page while the sidebar is a rail. |
+| `icon` | `ReactNode` | 18px icon. |
+| `badge` | `ReactNode` | A number or short string renders as a small Badge and shrinks to a dot on the rail. Any other node renders as given. |
+| `badgeTone` | `"neutral" \| "success" \| "info" \| "warning" \| "danger"` | Tone of a number or string badge. Use danger for work that needs attention. |
+| `current` | `boolean` | Marks the item current, overriding `currentHref`. |
+| `items` | `AppShellNavItem[]` | Pages inside a collapsible group, drawn with a dot and a guide line. One level only. |
+| `defaultOpen` | `boolean` | Whether a group starts open. Defaults to open when it holds the current page. |
 
 The shell fills the viewport. To place it inside a fixed-height panel, set `--app-shell-height` on an ancestor, for example `style={{ "--app-shell-height": "560px" }}`.
 
@@ -143,7 +157,7 @@ The shell fills the viewport. To place it inside a fixed-height panel, set `--ap
 
 ## Responsive behavior
 
-- From 1024px the sidebar is a sticky column beside the page, 248px open or 68px as a rail.
+- From 1024px the sidebar is a sticky column beside the page, 272px open or 76px as a rail.
 - Below 1024px the sidebar hides and a menu button in the top bar opens the same navigation in a drawer from the start edge. Choosing a page closes the drawer.
 - The main column has `min-width: 0`, so wide tables scroll inside it instead of widening the page.
 

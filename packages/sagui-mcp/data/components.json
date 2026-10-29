@@ -558,7 +558,7 @@
       "collapsible sidebar",
       "top bar"
     ],
-    "import": "import { AppShell } from \"@sagui/ui\";",
+    "import": "import { AppShell, Nav items } from \"@sagui/ui\";",
     "whenToUse": [
       "The outer layout of a product: a dashboard, an admin tool, a workspace with several sections.",
       "Apps with five to fifteen destinations that people move between all day.",
@@ -572,13 +572,12 @@
     "api": [
       {
         "name": "AppShell",
-        "description": "The shell fills the viewport. To place it inside a fixed-height panel, set `--app-shell-height` on an ancestor, for example `style={{ \"--app-shell-height\": \"560px\" }}`.",
         "props": [
           {
             "name": "nav",
-            "type": "{ label?: string; items: { label: string; href: string; icon?: ReactNode; badge?: ReactNode; current?: boolean }[] }[]",
+            "type": "{ label?: string; items: AppShellNavItem[] }[]",
             "required": true,
-            "description": "Navigation in sections. A section label is a small heading; `badge` is a count or a Badge after the label."
+            "description": "Navigation in sections. A section label is a small heading. Each item is `{ label, href?, icon?, badge?, badgeTone?, current?, items?, defaultOpen? }`."
           },
           {
             "name": "children",
@@ -620,13 +619,18 @@
           {
             "name": "sidebarFooter",
             "type": "ReactNode",
-            "description": "Pinned to the bottom of the sidebar, above the fold toggle in the `sidebar` variant. Hidden while the sidebar is a rail."
+            "description": "Pinned to the bottom of the sidebar, above the fold toggle in the `sidebar` variant, such as a promo card and the signed-in user."
+          },
+          {
+            "name": "sidebarFooterRail",
+            "type": "ReactNode",
+            "description": "Compact footer shown while the sidebar is a rail, such as the user's avatar alone. Without it the footer hides on the rail."
           },
           {
             "name": "variant",
             "type": "\"sidebar\" | \"inset\"",
             "default": "\"sidebar\"",
-            "description": "sidebar` sits flush with a dividing border. `inset` floats the sidebar as a rounded panel and puts the fold toggle in the top bar."
+            "description": "sidebar` sits flush with a dividing border. `inset` floats the sidebar as a rounded panel 12px in from the edges on a muted canvas, marks the current page with an accent pill and keeps the fold toggle in the sidebar header."
           },
           {
             "name": "collapsed",
@@ -654,6 +658,52 @@
             "name": "className",
             "type": "string",
             "description": "Class on the outer grid."
+          }
+        ]
+      },
+      {
+        "name": "Nav items",
+        "description": "The shell fills the viewport. To place it inside a fixed-height panel, set `--app-shell-height` on an ancestor, for example `style={{ \"--app-shell-height\": \"560px\" }}`.",
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "default": "Visible name; the tooltip on the rail."
+          },
+          {
+            "name": "href",
+            "type": "string",
+            "default": "Destination. Optional on a group, which links to its first page while the sidebar is a rail."
+          },
+          {
+            "name": "icon",
+            "type": "ReactNode",
+            "default": "18px icon."
+          },
+          {
+            "name": "badge",
+            "type": "ReactNode",
+            "default": "A number or short string renders as a small Badge and shrinks to a dot on the rail. Any other node renders as given."
+          },
+          {
+            "name": "badgeTone",
+            "type": "\"neutral\" | \"success\" | \"info\" | \"warning\" | \"danger\"",
+            "default": "Tone of a number or string badge. Use danger for work that needs attention."
+          },
+          {
+            "name": "current",
+            "type": "boolean",
+            "default": "Marks the item current, overriding `currentHref`."
+          },
+          {
+            "name": "items",
+            "type": "AppShellNavItem[]",
+            "default": "Pages inside a collapsible group, drawn with a dot and a guide line. One level only."
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "default": "Whether a group starts open. Defaults to open when it holds the current page."
           }
         ]
       }
@@ -690,7 +740,7 @@
       "With reduced motion the width and highlight change in one step."
     ],
     "responsive": [
-      "From 1024px the sidebar is a sticky column beside the page, 248px open or 68px as a rail.",
+      "From 1024px the sidebar is a sticky column beside the page, 272px open or 76px as a rail.",
       "Below 1024px the sidebar hides and a menu button in the top bar opens the same navigation in a drawer from the start edge. Choosing a page closes the drawer.",
       "The main column has `min-width: 0`, so wide tables scroll inside it instead of widening the page."
     ],
