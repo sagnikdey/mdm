@@ -88,3 +88,26 @@ export const ProductPerformanceSelected: Story = {
   args: { ...ProductPerformance.args, selectable: true, defaultSelectedKeys: ["2", "3", "5"] },
   decorators: wide,
 };
+
+/* ---------- Mobile: below 620px rows fold into two lines ---------- */
+
+/**
+ * The phone layout of Product performance. Rank and the row action are hidden, so the product leads line one with
+ * revenue on the right, and category, units, change, margin and cover sit on line two. Tap the strip to sort.
+ */
+export const ProductPerformanceMobile: Story = {
+  name: "Product performance · mobile",
+  args: { ...ProductPerformance.args, columns: productColumns.filter((c) => c.key !== "rank" && c.key !== "action") as never, defaultSort: { key: "revenue", direction: "desc" } },
+  globals: { viewport: { value: "mobile1", isRotated: false } },
+  parameters: { layout: "fullscreen", design: figma("130:8576") },
+  decorators: [(Story) => <div className="p-3"><Story /></div>],
+};
+
+/** Mobile with selection: the checkbox sits at the start of each row and Select all stays pinned in the sort strip. */
+export const ProductPerformanceMobileSelected: Story = {
+  name: "Product performance · mobile, selected rows",
+  args: { ...ProductPerformanceMobile.args, selectable: true, defaultSelectedKeys: ["2", "3", "5"] },
+  globals: ProductPerformanceMobile.globals,
+  parameters: ProductPerformanceMobile.parameters,
+  decorators: ProductPerformanceMobile.decorators,
+};
