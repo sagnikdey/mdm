@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BarChart3, Building2, Handshake, LayoutDashboard, Settings, Target } from "lucide-react";
 import { AppShell, Breadcrumb, MetricCard, NotificationCenter, UserMenu, type AppShellNavSection } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const nav: AppShellNavSection[] = [
   { items: [
     { label: "Overview", href: "#overview", icon: <LayoutDashboard /> },
@@ -17,7 +18,7 @@ const meta = {
   title: "Navigation/App shell",
   component: AppShell,
   tags: ["autodocs"],
-  parameters: { layout: "fullscreen" },
+  parameters: { layout: "fullscreen", design: figma("142:9913") },
   args: {
     nav,
     currentHref: "#overview",
