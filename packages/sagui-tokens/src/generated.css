@@ -232,6 +232,7 @@
   --sg-bg-surface: var(--sg-white);
   --sg-bg-muted: var(--sg-neutral-warm-100);
   --sg-bg-emphasis: var(--sg-neutral-cool-950);
+  --sg-bg-scrim: var(--sg-black-a46);
   --sg-fg-default: var(--sg-neutral-cool-950);
   --sg-fg-subtle: var(--sg-neutral-cool-700);
   --sg-fg-muted: var(--sg-neutral-cool-600);
@@ -288,6 +289,7 @@
   --sg-bg-surface: var(--sg-neutral-cool-950);
   --sg-bg-muted: var(--sg-neutral-cool-900);
   --sg-bg-emphasis: var(--sg-neutral-warm-100);
+  --sg-bg-scrim: var(--sg-black-a56);
   --sg-fg-default: var(--sg-neutral-warm-100);
   --sg-fg-subtle: var(--sg-neutral-cool-300);
   --sg-fg-muted: var(--sg-neutral-cool-400);

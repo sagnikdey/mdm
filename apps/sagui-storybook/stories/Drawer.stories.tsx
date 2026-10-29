@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "@sagui/ui";
 
-const meta = { title: "Overlays/Drawer", component: Drawer, tags: ["autodocs"] } satisfies Meta<typeof Drawer>;
+import { figma } from "../.storybook/figma";
+const meta = { title: "Overlays/Drawer",
+  parameters: { design: figma("108:6768") }, component: Drawer, tags: ["autodocs"] } satisfies Meta<typeof Drawer>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

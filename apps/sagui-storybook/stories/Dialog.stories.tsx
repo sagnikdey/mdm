@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Dialog, DialogClose, DialogContent, DialogTrigger } from "@sagui/ui";
 
-const meta = { title: "Overlays/Dialog", component: Dialog, tags: ["autodocs"] } satisfies Meta<typeof Dialog>;
+import { figma } from "../.storybook/figma";
+const meta = { title: "Overlays/Dialog",
+  parameters: { design: figma("107:6685") }, component: Dialog, tags: ["autodocs"] } satisfies Meta<typeof Dialog>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

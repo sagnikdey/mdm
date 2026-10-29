@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Accordion } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const items = [
   { title: "What is SagUI?", content: "A React design system with spring motion and Tailwind v4 styling." },
   { title: "Can I use it without Tailwind?", content: "Components ship as Tailwind classes, so your app needs Tailwind v4 to generate them." },
@@ -11,7 +12,7 @@ const meta = {
   title: "Disclosure/Accordion",
   component: Accordion,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("108:7277"), layout: "padded" },
   args: { items, defaultOpen: 0, size: "md" },
   argTypes: { size: { control: "inline-radio", options: ["md", "lg"] } },
   decorators: [(Story) => <div className="w-[520px]"><Story /></div>],

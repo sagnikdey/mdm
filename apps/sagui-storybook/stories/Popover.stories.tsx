@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Input, Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@sagui/ui";
 
-const meta = { title: "Overlays/Popover", component: Popover, tags: ["autodocs"], parameters: { layout: "padded" }, decorators: [(Story) => <div className="h-72"><Story /></div>] } satisfies Meta<typeof Popover>;
+import { figma } from "../.storybook/figma";
+const meta = { title: "Overlays/Popover", component: Popover, tags: ["autodocs"], parameters: { design: figma("107:6490"), layout: "padded" }, decorators: [(Story) => <div className="h-72"><Story /></div>] } satisfies Meta<typeof Popover>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

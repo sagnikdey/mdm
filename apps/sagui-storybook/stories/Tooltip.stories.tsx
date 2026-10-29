@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Button, Tooltip } from "@sagui/ui";
 
-const meta = { title: "Overlays/Tooltip", component: Tooltip, tags: ["autodocs"], parameters: { layout: "centered" } } satisfies Meta<typeof Tooltip>;
+import { figma } from "../.storybook/figma";
+const meta = { title: "Overlays/Tooltip", component: Tooltip, tags: ["autodocs"], parameters: { design: figma("107:6315"), layout: "centered" } } satisfies Meta<typeof Tooltip>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

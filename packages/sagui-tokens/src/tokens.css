@@ -57,6 +57,7 @@
   --color-bg-surface: var(--sg-bg-surface);
   --color-bg-muted: var(--sg-bg-muted);
   --color-bg-emphasis: var(--sg-bg-emphasis);
+  --color-bg-scrim: var(--sg-bg-scrim);
   --color-fg-default: var(--sg-fg-default);
   --color-fg-subtle: var(--sg-fg-subtle);
   --color-fg-muted: var(--sg-fg-muted);

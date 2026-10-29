@@ -33,7 +33,7 @@ export interface DialogContentProps extends React.ComponentPropsWithoutRef<typeo
 const fade: Transition = { duration: duration.instant };
 const leave: Transition = { duration: duration.quick, ease: easeStandard };
 
-const overlayClass = "fixed inset-0 z-50 bg-[oklch(10%_0_0/.46)] backdrop-blur-[7px] data-[state=closed]:!pointer-events-none";
+const overlayClass = "fixed inset-0 z-50 bg-bg-scrim backdrop-blur-[7px] data-[state=closed]:!pointer-events-none";
 // Centered with auto margins (like a native modal dialog) so transform stays free for the entrance spring.
 const contentClass = "fixed inset-0 z-51 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[min(calc(100vw-2rem),440px)] overflow-auto rounded-[var(--radius-xl)] border border-border-default bg-bg-surface text-fg-default shadow-overlay focus:outline-none data-[state=closed]:!pointer-events-none";
 

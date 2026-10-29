@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CreditCard, Settings, UserRound } from "lucide-react";
 import { UserMenu } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Navigation/User menu",
+  parameters: { design: figma("111:7532") },
   component: UserMenu,
   tags: ["autodocs"],
   args: {

@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Button, MetricCard } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Cards/Metric card",
   component: MetricCard,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("109:7097"), layout: "padded" },
   args: { label: "Active users", value: 12840, context: "Compared with last week", change: "+12.4%" },
   decorators: [(Story) => <div className="w-[300px]"><Story /></div>],
 } satisfies Meta<typeof MetricCard>;
