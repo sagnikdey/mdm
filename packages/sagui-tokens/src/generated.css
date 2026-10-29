@@ -2,17 +2,17 @@
 
 /* Tier 1: primitives. Raw values, never used by components directly. */
 :root {
-  --sg-brand-1-50: oklch(0.986 0.007 277.2);
-  --sg-brand-1-100: oklch(0.96 0.02 286);
-  --sg-brand-1-200: oklch(0.921 0.038 284);
-  --sg-brand-1-300: oklch(0.799 0.104 285);
-  --sg-brand-1-400: oklch(0.7 0.165 285.3);
-  --sg-brand-1-500: oklch(0.621 0.209 285.1);
-  --sg-brand-1-600: oklch(0.55 0.216 285.1);
-  --sg-brand-1-700: oklch(0.48 0.201 285);
-  --sg-brand-1-800: oklch(0.38 0.165 284.8);
-  --sg-brand-1-900: oklch(0.281 0.12 285.2);
-  --sg-brand-1-950: oklch(0.211 0.085 285.3);
+  --sg-brand-1-50: oklch(0.984 0.009 197);
+  --sg-brand-1-100: oklch(0.959 0.024 196.8);
+  --sg-brand-1-200: oklch(0.919 0.048 196.3);
+  --sg-brand-1-300: oklch(0.799 0.091 195.5);
+  --sg-brand-1-400: oklch(0.701 0.118 194.8);
+  --sg-brand-1-500: oklch(0.619 0.105 195.6);
+  --sg-brand-1-600: oklch(0.55 0.093 194.8);
+  --sg-brand-1-700: oklch(0.479 0.08 196);
+  --sg-brand-1-800: oklch(0.381 0.064 194.8);
+  --sg-brand-1-900: oklch(0.28 0.048 194.8);
+  --sg-brand-1-950: oklch(0.209 0.036 194.8);
   --sg-brand-2-50: oklch(0.984 0.007 354.8);
   --sg-brand-2-100: oklch(0.959 0.021 355.2);
   --sg-brand-2-200: oklch(0.92 0.044 354.8);
@@ -264,11 +264,11 @@
   --sg-border-subtle: var(--sg-neutral-warm-100);
   --sg-border-default: var(--sg-neutral-warm-200);
   --sg-border-strong: var(--sg-neutral-warm-300);
-  --sg-border-focus: var(--sg-brand-1-500);
+  --sg-border-focus: var(--sg-brand-1-600);
   --sg-border-focus-soft: var(--sg-brand-1-200);
-  --sg-accent-default: var(--sg-brand-1-600);
-  --sg-accent-hover: var(--sg-brand-1-700);
-  --sg-accent-active: var(--sg-brand-1-800);
+  --sg-accent-default: var(--sg-brand-1-700);
+  --sg-accent-hover: var(--sg-brand-1-800);
+  --sg-accent-active: var(--sg-brand-1-900);
   --sg-accent-subtle: var(--sg-brand-1-50);
   --sg-accent-subtle-hover: var(--sg-brand-1-100);
   --sg-accent-border: var(--sg-brand-1-200);
@@ -293,10 +293,10 @@
   --sg-on-accent-hover: var(--sg-white-a12);
   --sg-on-accent-divider: var(--sg-white-a20);
   --sg-on-accent-muted: var(--sg-white-a72);
-  --sg-chart-1: var(--sg-brand-1-600);
+  --sg-chart-1: var(--sg-brand-1-700);
   --sg-chart-2: var(--sg-brand-2-600);
   --sg-chart-3: var(--sg-amber-400);
-  --sg-chart-4: var(--sg-teal-500);
+  --sg-chart-4: var(--sg-blue-600);
   --sg-elevation-resting: var(--sg-black-a3_5);
   --sg-elevation-raised-1: var(--sg-black-a6_5);
   --sg-elevation-raised-2: var(--sg-black-a3_5);
@@ -353,7 +353,7 @@
   --sg-chart-1: var(--sg-brand-1-400);
   --sg-chart-2: var(--sg-brand-2-400);
   --sg-chart-3: var(--sg-orange-400);
-  --sg-chart-4: var(--sg-teal-500);
+  --sg-chart-4: var(--sg-blue-400);
   --sg-elevation-resting: var(--sg-black-a30);
   --sg-elevation-raised-1: var(--sg-black-a36);
   --sg-elevation-raised-2: var(--sg-black-a26);

@@ -71,7 +71,7 @@ const Code = ({ children, muted }: { children: ReactNode; muted?: boolean }) => 
 
 export function OverviewPage() {
   const tiers = [
-    ["Tier 1", "Primitives", "--sg-brand-1-600", "var(--sg-brand-1-600)", "Raw values with no meaning: color ramps, sizes, radii, font values. Never applied to a component directly."],
+    ["Tier 1", "Primitives", "--sg-brand-1-700", "var(--sg-brand-1-700)", "Raw values with no meaning: color ramps, sizes, radii, font values. Never applied to a component directly."],
     ["Tier 2", "Semantic", "--sg-accent-default", "var(--sg-accent-default)", "What a value is for. Points at a primitive, and at a different one in dark mode. The only tokens components use."],
     ["Usage", "Components", "bg-accent-default", "var(--sg-accent-default)", "Utilities and styles read semantic tokens, so a theme or brand change is one edit in tokens.json."],
   ] as const;
@@ -112,7 +112,7 @@ export function OverviewPage() {
 
 const ramps = Object.keys(PC).filter((k) => k !== "white" && k !== "black");
 /** Brand ramps get a display name; the rest show their token key. */
-const rampName: Record<string, string> = { "brand-1": "Brand 1 · Iris", "brand-2": "Brand 2 · Raspberry" };
+const rampName: Record<string, string> = { "brand-1": "Brand 1 · Teal", "brand-2": "Brand 2 · Raspberry" };
 
 function Swatch({ color, h = 44, checker }: { color: string; h?: number; checker?: boolean }) {
   const bg: CSSProperties = checker
@@ -129,7 +129,7 @@ export function ColorPage() {
   const semantic = leaves(T.color);
   return (
     <Page title="Color" lead="Tier 1 ramps feed Tier 2 semantic tokens. Use the semantic tokens; each one points at a primitive, and at a different one in dark mode.">
-      <Section title="Primitive color" lead="Eleven-step OKLCH ramps sharing one lightness curve, so a step reads at the same weight across hues. Brand 1 (Iris) drives the accent; Brand 2 (Raspberry) is the secondary brand color.">
+      <Section title="Primitive color" lead="Eleven-step OKLCH ramps sharing one lightness curve, so a step reads at the same weight across hues. Brand 1 (Teal) drives the accent at step 700 (400 in dark mode); Brand 2 (Raspberry) is the secondary brand color.">
         <div className="grid gap-3">
           {ramps.map((r) => {
             const steps = leaves(PC[r] as Tree);
