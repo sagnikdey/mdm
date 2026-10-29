@@ -11,7 +11,7 @@ function PlusIcon() {
 }
 
 const meta = {
-  title: "Components/Button",
+  title: "Navigation/Button",
   parameters: { design: figma("7:126") },
   component: Button,
   tags: ["autodocs"],

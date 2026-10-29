@@ -16,7 +16,7 @@ const nav: AppShellNavSection[] = [
 ];
 
 const meta = {
-  title: "Navigation/App shell",
+  title: "Navigation/App Shell",
   component: AppShell,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen", design: figma("142:9913") },

@@ -5,7 +5,7 @@ import { Button, EmptyState } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Cards/Empty state",
+  title: "Cards/Empty State",
   component: EmptyState,
   tags: ["autodocs"],
   parameters: { design: figma("49:388"), layout: "padded" },

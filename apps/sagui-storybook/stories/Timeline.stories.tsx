@@ -7,7 +7,7 @@ const icons: Record<string, React.ReactNode> = { e2: <TriangleAlert size={14} />
 const events = activity.map((event) => ({ ...event, icon: icons[event.id] }));
 
 const meta = {
-  title: "Data/Timeline",
+  title: "Display/Timeline",
   component: Timeline,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

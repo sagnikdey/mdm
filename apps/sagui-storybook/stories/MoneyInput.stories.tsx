@@ -4,7 +4,7 @@ import { MoneyInput } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Special inputs/Money input",
+  title: "Form Elements/Money Input",
   component: MoneyInput,
   tags: ["autodocs"],
   parameters: { design: figma("58:11009"), layout: "padded" },

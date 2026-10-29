@@ -3,7 +3,7 @@ import { TagInput } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Special inputs/Tag input",
+  title: "Form Elements/Tag Input",
   component: TagInput,
   tags: ["autodocs"],
   parameters: { design: figma("58:11319"), layout: "padded" },

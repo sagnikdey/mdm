@@ -9,7 +9,7 @@ const items = [
 ];
 
 const meta = {
-  title: "Disclosure/Accordion",
+  title: "Display/Accordion",
   component: Accordion,
   tags: ["autodocs"],
   parameters: { design: figma("108:7277"), layout: "padded" },

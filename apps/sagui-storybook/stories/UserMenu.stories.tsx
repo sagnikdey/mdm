@@ -4,7 +4,7 @@ import { UserMenu } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Navigation/User menu",
+  title: "Navigation/User Menu",
   parameters: { design: figma("111:7532") },
   component: UserMenu,
   tags: ["autodocs"],

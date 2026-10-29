@@ -4,7 +4,7 @@ import { Input } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Inputs/Input",
+  title: "Form Elements/Input",
   parameters: { design: figma("15:141") },
   component: Input,
   tags: ["autodocs"],

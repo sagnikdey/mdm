@@ -3,7 +3,7 @@ import { WaffleChart } from "@sagui/ui";
 import { powerMix2015, powerMix2023 } from "./sample-data";
 
 const meta = {
-  title: "Charts/Waffle chart",
+  title: "Charts/Waffle Chart",
   component: WaffleChart,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

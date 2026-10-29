@@ -3,7 +3,7 @@ import { Select } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Select",
+  title: "Form Elements/Select",
   component: Select,
   tags: ["autodocs"],
   parameters: { design: figma("58:9409"), layout: "padded" },

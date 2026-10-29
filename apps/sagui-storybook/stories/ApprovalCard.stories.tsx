@@ -11,7 +11,7 @@ const questions: ApprovalQuestion[] = [
 ];
 
 const meta = {
-  title: "Components/Approval card",
+  title: "Cards/Approval Card",
   parameters: { design: figma("51:512") },
   component: ApprovalCard,
   tags: ["autodocs"],

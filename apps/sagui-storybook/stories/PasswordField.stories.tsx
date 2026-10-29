@@ -3,7 +3,7 @@ import { PasswordField } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Inputs/Password field",
+  title: "Form Elements/Password Field",
   parameters: { design: figma("57:8141") },
   component: PasswordField,
   tags: ["autodocs"],

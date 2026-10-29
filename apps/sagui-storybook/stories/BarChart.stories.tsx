@@ -3,7 +3,7 @@ import { BarChart } from "@sagui/ui";
 import { activeMinutes } from "./sample-data";
 
 const meta = {
-  title: "Charts/Bar chart",
+  title: "Charts/Bar Chart",
   component: BarChart,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextShimmer } from "@sagui/ui";
 
 const meta = {
-  title: "Text/Text shimmer",
+  title: "Text Effects/Text Shimmer",
   component: TextShimmer,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

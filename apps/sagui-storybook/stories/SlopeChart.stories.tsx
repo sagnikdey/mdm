@@ -3,7 +3,7 @@ import { SlopeChart } from "@sagui/ui";
 import { channelsQ2, channelsQ3 } from "./sample-data";
 
 const meta = {
-  title: "Charts/Slope chart",
+  title: "Charts/Slope Chart",
   component: SlopeChart,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

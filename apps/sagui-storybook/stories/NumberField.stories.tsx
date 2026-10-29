@@ -3,7 +3,7 @@ import { NumberField } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Special inputs/Number field",
+  title: "Form Elements/Number Field",
   parameters: { design: figma("58:10688") },
   component: NumberField,
   tags: ["autodocs"],

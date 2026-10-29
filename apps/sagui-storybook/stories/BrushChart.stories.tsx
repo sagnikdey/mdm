@@ -5,7 +5,7 @@ import { dailyActiveUsers, launches } from "./sample-data";
 const days = dailyActiveUsers();
 
 const meta = {
-  title: "Charts/Brush chart",
+  title: "Charts/Brush Chart",
   component: BrushChart,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

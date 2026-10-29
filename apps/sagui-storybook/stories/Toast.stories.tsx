@@ -4,10 +4,10 @@ import { Button, Toast } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Messages/Toast",
+  title: "Display/Toast",
   component: Toast,
   tags: ["autodocs"],
-  parameters: { design: figma("53:337"), layout: "padded" },
+  parameters: { design: figma("143:16852"), layout: "padded" },
   args: { title: "Project saved", description: "Atlas redesign is up to date." },
 } satisfies Meta<typeof Toast>;
 export default meta;

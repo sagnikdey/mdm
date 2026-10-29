@@ -5,7 +5,7 @@ import { ConfirmMorph } from "@sagui/ui";
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const meta = {
-  title: "Components/Confirm morph",
+  title: "Navigation/Confirm Morph",
   component: ConfirmMorph,
   tags: ["autodocs"],
   args: { label: "Delete", icon: <Trash2 />, prompt: "Delete 3 files?", onConfirm: () => wait(900), onUndo: () => wait(600) },

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BottomSheet, BottomSheetClose, Button } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
-const meta = { title: "Overlays/Bottom sheet", component: BottomSheet, tags: ["autodocs"], parameters: { design: figma("108:7035"), layout: "centered" } } satisfies Meta<typeof BottomSheet>;
+const meta = { title: "Overlays/Bottom Sheet", component: BottomSheet, tags: ["autodocs"], parameters: { design: figma("108:7035"), layout: "centered" } } satisfies Meta<typeof BottomSheet>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

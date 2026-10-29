@@ -5,7 +5,7 @@ import { SplitButton } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Components/Split button",
+  title: "Navigation/Split Button",
   parameters: { design: figma("57:7664") },
   component: SplitButton,
   tags: ["autodocs"],

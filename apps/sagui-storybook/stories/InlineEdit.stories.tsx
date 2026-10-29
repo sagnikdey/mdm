@@ -6,7 +6,7 @@ import { figma } from "../.storybook/figma";
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const meta = {
-  title: "Inputs/Inline edit",
+  title: "Form Elements/Inline Edit",
   parameters: { design: figma("57:8725") },
   component: InlineEdit,
   tags: ["autodocs"],

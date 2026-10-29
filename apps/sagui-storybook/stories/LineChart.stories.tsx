@@ -3,7 +3,7 @@ import { LineChart } from "@sagui/ui";
 import { signups, signupSeries } from "./sample-data";
 
 const meta = {
-  title: "Charts/Line chart",
+  title: "Charts/Line Chart",
   component: LineChart,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

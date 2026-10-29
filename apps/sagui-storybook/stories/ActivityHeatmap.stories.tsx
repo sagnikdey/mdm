@@ -3,7 +3,7 @@ import { ActivityHeatmap } from "@sagui/ui";
 import { contributions } from "./sample-data";
 
 const meta = {
-  title: "Charts/Activity heatmap",
+  title: "Charts/Activity Heatmap",
   component: ActivityHeatmap,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

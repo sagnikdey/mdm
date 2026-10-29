@@ -15,10 +15,10 @@ function withTopPadding(Story: () => React.JSX.Element) {
 }
 
 const meta = {
-  title: "Data display/Avatar group",
+  title: "Display/Avatar Group",
   component: AvatarGroup,
   tags: ["autodocs"],
-  parameters: { design: figma("30:414"), layout: "padded" },
+  parameters: { design: figma("135:16075"), layout: "padded" },
   args: { members: people, max: 4, size: "md" },
   argTypes: { size: { control: "inline-radio", options: ["sm", "md", "lg"] } },
   decorators: [withTopPadding],

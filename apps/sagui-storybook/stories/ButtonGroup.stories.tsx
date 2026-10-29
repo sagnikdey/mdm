@@ -5,7 +5,7 @@ import { ButtonGroup } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Components/Button group",
+  title: "Navigation/Button Group",
   parameters: { design: figma("57:7033") },
   component: ButtonGroup,
   tags: ["autodocs"],

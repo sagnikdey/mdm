@@ -4,7 +4,7 @@ import { RadioCards } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Radio cards",
+  title: "Form Elements/Radio Cards",
   component: RadioCards,
   tags: ["autodocs"],
   parameters: { design: figma("57:9085"), layout: "padded" },

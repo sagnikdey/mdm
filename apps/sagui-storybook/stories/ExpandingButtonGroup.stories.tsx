@@ -5,7 +5,7 @@ import { ExpandingButtonGroup } from "@sagui/ui";
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const meta = {
-  title: "Components/Expanding button group",
+  title: "Navigation/Expanding Button Group",
   component: ExpandingButtonGroup,
   tags: ["autodocs"],
   args: {

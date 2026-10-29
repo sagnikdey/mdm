@@ -3,7 +3,7 @@ import { SegmentedControl } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Segmented control",
+  title: "Navigation/Segmented Control",
   parameters: { design: figma("58:10142") },
   component: SegmentedControl,
   tags: ["autodocs"],

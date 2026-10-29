@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { InViewTitle } from "@sagui/ui";
 
 const meta = {
-  title: "Text/In-view title",
+  title: "Text Effects/In-view Title",
   component: InViewTitle,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

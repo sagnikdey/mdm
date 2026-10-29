@@ -3,7 +3,7 @@ import { Switch } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Switch",
+  title: "Form Elements/Switch",
   parameters: { design: figma("57:8963") },
   component: Switch,
   tags: ["autodocs"],

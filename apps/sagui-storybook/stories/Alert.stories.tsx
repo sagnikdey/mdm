@@ -4,10 +4,10 @@ import { Alert, Button } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Messages/Alert",
+  title: "Display/Alert",
   component: Alert,
   tags: ["autodocs"],
-  parameters: { design: figma("53:218"), layout: "padded" },
+  parameters: { design: figma("143:16525"), layout: "padded" },
   args: { title: "Your trial ends in 3 days", children: "Add a payment method to keep your projects.", tone: "info" },
   argTypes: { tone: { control: "inline-radio", options: ["info", "success", "warning", "danger"] } },
   decorators: [(Story) => <div className="w-[480px]"><Story /></div>],

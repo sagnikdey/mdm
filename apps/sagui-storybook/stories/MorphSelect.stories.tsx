@@ -4,7 +4,7 @@ import { MorphSelect } from "@sagui/ui";
 const zones = ["Pacific", "Mountain", "Central", "Eastern", "Atlantic", "UTC", "London", "Paris", "Berlin", "Cairo", "Dubai", "Mumbai", "Singapore", "Tokyo", "Sydney"].map((name, index) => ({ value: name.toLowerCase(), label: name, meta: `UTC${index < 5 ? "-" : "+"}${(index % 8) + 1}` }));
 
 const meta = {
-  title: "Selection/Morph select",
+  title: "Form Elements/Morph Select",
   component: MorphSelect,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

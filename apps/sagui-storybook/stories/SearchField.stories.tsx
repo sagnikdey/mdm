@@ -4,7 +4,7 @@ import { SearchField } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Inputs/Search field",
+  title: "Form Elements/Search Field",
   parameters: { design: figma("57:8576") },
   component: SearchField,
   tags: ["autodocs"],

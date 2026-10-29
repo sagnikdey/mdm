@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { AnimatedCounter, Button } from "@sagui/ui";
 
-const meta = { title: "Cards/Animated counter", component: AnimatedCounter, tags: ["autodocs"], args: { value: 1280, label: "Orders" } } satisfies Meta<typeof AnimatedCounter>;
+const meta = { title: "Cards/Animated Counter", component: AnimatedCounter, tags: ["autodocs"], args: { value: 1280, label: "Orders" } } satisfies Meta<typeof AnimatedCounter>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

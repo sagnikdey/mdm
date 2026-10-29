@@ -4,7 +4,7 @@ import { CommandPalette } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Navigation/Command palette",
+  title: "Navigation/Command Palette",
   component: CommandPalette,
   tags: ["autodocs"],
   parameters: { design: figma("58:10418"), layout: "padded" },

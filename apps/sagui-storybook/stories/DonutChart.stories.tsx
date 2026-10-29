@@ -3,7 +3,7 @@ import { DonutChart } from "@sagui/ui";
 import { trafficLastMonth, trafficThisMonth } from "./sample-data";
 
 const meta = {
-  title: "Charts/Donut chart",
+  title: "Charts/Donut Chart",
   component: DonutChart,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

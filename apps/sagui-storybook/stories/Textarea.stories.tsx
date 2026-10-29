@@ -4,7 +4,7 @@ import { Textarea } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Inputs/Textarea",
+  title: "Form Elements/Textarea",
   parameters: { design: figma("57:8024") },
   component: Textarea,
   tags: ["autodocs"],

@@ -4,7 +4,7 @@ import { PhoneInput } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Special inputs/Phone input",
+  title: "Form Elements/Phone Input",
   component: PhoneInput,
   tags: ["autodocs"],
   parameters: { design: figma("58:11138"), layout: "padded" },

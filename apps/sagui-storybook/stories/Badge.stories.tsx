@@ -5,8 +5,8 @@ import { Badge, Button } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Data display/Badge",
-  parameters: { design: figma("30:547") },
+  title: "Display/Badge",
+  parameters: { design: figma("143:16728") },
   component: Badge,
   tags: ["autodocs"],
   args: { children: "Active", tone: "success", size: "md" },

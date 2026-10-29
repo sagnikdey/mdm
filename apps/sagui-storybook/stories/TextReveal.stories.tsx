@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextReveal } from "@sagui/ui";
 
 const meta = {
-  title: "Text/Text reveal",
+  title: "Text Effects/Text Reveal",
   component: TextReveal,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

@@ -4,7 +4,7 @@ import { PasswordStrength } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Inputs/Password strength",
+  title: "Form Elements/Password Strength",
   parameters: { design: figma("57:8272") },
   component: PasswordStrength,
   tags: ["autodocs"],

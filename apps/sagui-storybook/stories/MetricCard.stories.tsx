@@ -4,7 +4,7 @@ import { Button, MetricCard } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Cards/Metric card",
+  title: "Cards/Metric Card",
   component: MetricCard,
   tags: ["autodocs"],
   parameters: { design: figma("109:7097"), layout: "padded" },

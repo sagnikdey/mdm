@@ -3,7 +3,7 @@ import { Copy, Hand, MousePointer2, Redo2, Share2, Undo2 } from "lucide-react";
 import { FloatingButtonGroup } from "@sagui/ui";
 
 const meta = {
-  title: "Components/Floating button group",
+  title: "Navigation/Floating Button Group",
   component: FloatingButtonGroup,
   tags: ["autodocs"],
   args: {

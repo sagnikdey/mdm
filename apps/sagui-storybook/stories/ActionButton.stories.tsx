@@ -5,7 +5,7 @@ import { figma } from "../.storybook/figma";
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const meta = {
-  title: "Components/Action button",
+  title: "Navigation/Action Button",
   parameters: { design: figma("57:7569") },
   component: ActionButton,
   tags: ["autodocs"],

@@ -5,10 +5,10 @@ import { projects } from "./sample-data";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Data/Sortable data table",
+  title: "Data Table",
   component: SortableDataTable,
   tags: ["autodocs"],
-  parameters: { design: figma("115:8663"), layout: "padded" },
+  parameters: { docs: { slug: "sortable-data-table" }, design: figma("115:8663"), layout: "padded" },
   args: { caption: "Projects", rows: projects, rowKey: "id", columns: [{ key: "name", label: "Name" }, { key: "owner", label: "Owner" }, { key: "status", label: "Status" }, { key: "budget", label: "Budget", render: (value: unknown) => `$${Number(value).toLocaleString("en-US")}` }], defaultSort: { key: "name", direction: "asc" } },
 } satisfies Meta<typeof SortableDataTable>;
 export default meta;

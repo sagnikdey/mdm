@@ -3,8 +3,8 @@ import { NotificationCenter } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Messages/Notification center",
-  parameters: { design: figma("54:1006") },
+  title: "Display/Notification Center",
+  parameters: { design: figma("143:16979") },
   component: NotificationCenter,
   tags: ["autodocs"],
   args: {

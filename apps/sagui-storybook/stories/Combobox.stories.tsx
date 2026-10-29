@@ -3,7 +3,7 @@ import { Combobox } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Combobox",
+  title: "Form Elements/Combobox",
   component: Combobox,
   tags: ["autodocs"],
   parameters: { design: figma("58:9782"), layout: "padded" },

@@ -4,7 +4,7 @@ import { Checkbox } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Checkbox",
+  title: "Form Elements/Checkbox",
   parameters: { design: figma("57:8800") },
   component: Checkbox,
   tags: ["autodocs"],

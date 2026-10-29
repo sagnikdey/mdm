@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextMorph } from "@sagui/ui";
 
 const meta = {
-  title: "Text/Text morph",
+  title: "Text Effects/Text Morph",
   component: TextMorph,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

@@ -13,7 +13,7 @@ const items: ExpandingSearchItem[] = [
 ];
 
 const meta = {
-  title: "Inputs/Expanding search",
+  title: "Form Elements/Expanding Search",
   component: ExpandingSearch,
   tags: ["autodocs"],
   parameters: { design: figma("57:8643"), layout: "padded" },

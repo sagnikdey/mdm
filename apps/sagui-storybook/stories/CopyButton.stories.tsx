@@ -3,7 +3,7 @@ import { CopyButton } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Components/Copy button",
+  title: "Navigation/Copy Button",
   parameters: { design: figma("57:7899") },
   component: CopyButton,
   tags: ["autodocs"],

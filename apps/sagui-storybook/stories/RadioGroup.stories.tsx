@@ -3,7 +3,7 @@ import { RadioGroup } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Radio group",
+  title: "Form Elements/Radio Group",
   component: RadioGroup,
   tags: ["autodocs"],
   parameters: { design: figma("57:9041"), layout: "padded" },

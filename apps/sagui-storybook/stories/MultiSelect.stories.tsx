@@ -3,7 +3,7 @@ import { MultiSelect } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const meta = {
-  title: "Selection/Multi-select",
+  title: "Form Elements/Multi-select",
   component: MultiSelect,
   tags: ["autodocs"],
   parameters: { design: figma("58:9565"), layout: "padded" },
