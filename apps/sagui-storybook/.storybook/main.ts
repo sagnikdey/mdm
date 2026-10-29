@@ -27,7 +27,9 @@ const config: StorybookConfig = {
       : alias
         ? Object.entries(alias).map(([find, replacement]) => ({ find, replacement }))
         : [];
-    cfg.resolve.alias = [...existing, uiAlias];
+    // addon-designs is hoisted to the repo root but addon-docs is nested here, so point its docs blocks at this copy.
+    const docsBlocks = { find: /^@storybook\/addon-docs\/blocks$/, replacement: require.resolve("@storybook/addon-docs/blocks") };
+    cfg.resolve.alias = [...existing, uiAlias, docsBlocks];
     cfg.server ??= {};
     cfg.server.fs ??= {};
     cfg.server.fs.allow = [...(cfg.server.fs.allow ?? []), join(storybookDir, "../../..")];

@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import * as React from "react";
 import { Controls, Markdown, Primary, Stories, Subtitle, Title, useOf } from "@storybook/addon-docs/blocks";
+import { Figma } from "@storybook/addon-designs/blocks";
 
 /**
  * The component guidance lives once, in the docs site's markdown. Storybook's Docs tab reads the same files,
@@ -41,11 +42,24 @@ function Section({ guide, name, title = name }: { guide: Guide; name: string; ti
   );
 }
 
+/** The component's documentation frame from the SagUI Figma library, set with `parameters.design`. */
+function Design({ url }: { url?: string }) {
+  if (!url) return null;
+  return (
+    <>
+      <h2>Design</h2>
+      <p>The Figma documentation frame for this component: variants, states and usage. Sign in to Figma to view it.</p>
+      <Figma url={url} height={640} showLink collapsable />
+    </>
+  );
+}
+
 export function GuidePage() {
   const { preparedMeta } = useOf("meta");
   const slug = (preparedMeta.parameters?.docs?.slug as string | undefined) ?? slugOf(preparedMeta.title);
   const raw = bySlug.get(slug);
   const guide = raw ? parse(raw) : null;
+  const design = (preparedMeta.parameters?.design as { url?: string } | undefined)?.url;
   if (!guide) {
     return (
       <>
@@ -53,6 +67,7 @@ export function GuidePage() {
         <Subtitle />
         <Primary />
         <Controls />
+        <Design url={design} />
         <Stories />
       </>
     );
@@ -63,6 +78,7 @@ export function GuidePage() {
       <Subtitle>{guide.description}</Subtitle>
       <Primary />
       <Controls />
+      <Design url={design} />
       <Section guide={guide} name="When to use" />
       <Section guide={guide} name="When not to use" />
       <Section guide={guide} name="Usage" />
