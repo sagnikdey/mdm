@@ -10,18 +10,20 @@ Components only read semantic tokens, never raw colors. Change a token and every
 Tokens come in two tiers, generated from `packages/tokens/tokens.json`, the same structure as the Figma variables.
 
 1. **Primitives** are raw values with no meaning attached: color ramps such as `--sg-blue-600` and `--sg-neutral-warm-100`, plus sizes, radii and font values. Components never read them.
+
+   Two brand ramps sit alongside them. **Brand 1** (`--sg-brand-1-*`) is a deep teal that drives the accent; **Brand 2** (`--sg-brand-2-*`) is raspberry, for highlights. Teal is light for how dark it is, so the accent uses `brand-1-700` in light mode and `brand-1-400` in dark, with hover at 800, active at 900 and the focus ring at 600.
 2. **Semantic tokens** say what a value is for, such as `--sg-accent-default` or `--sg-fg-muted`. Each points at a primitive, and color tokens point at a different primitive in dark mode. Tailwind exposes them as utilities: `bg-accent-default`, `text-fg-muted`, `border-border-default`.
 
 To restyle the system, point semantic tokens at other primitives, or override them directly.
 
 ```css
 :root {
-  --sg-accent-default: var(--sg-violet-600);
-  --sg-accent-hover: var(--sg-violet-700);
+  --sg-accent-default: var(--sg-brand-2-600);
+  --sg-accent-hover: var(--sg-brand-2-700);
 }
 
 [data-theme="dark"] {
-  --sg-accent-default: var(--sg-violet-400);
+  --sg-accent-default: var(--sg-brand-2-400);
 }
 ```
 
