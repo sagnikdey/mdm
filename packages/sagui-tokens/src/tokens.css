@@ -141,7 +141,6 @@
   --sg-muted: var(--sg-bg-muted);
   --sg-muted-foreground: var(--sg-fg-muted);
   --sg-border: var(--sg-border-default);
-  --sg-border-strong: var(--sg-border-strong);
   --sg-success: var(--sg-success-default);
   --sg-warning: var(--sg-warning-default);
   --sg-ring: var(--sg-border-focus);
