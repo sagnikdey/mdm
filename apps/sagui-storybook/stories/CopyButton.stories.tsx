@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CopyButton } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Components/Copy button",
+  parameters: { design: figma("57:7899") },
   component: CopyButton,
   tags: ["autodocs"],
   args: { value: "npm install @sagui/ui" },

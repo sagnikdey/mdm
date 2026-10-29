@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Button, Toast } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Messages/Toast",
   component: Toast,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("53:337"), layout: "padded" },
   args: { title: "Project saved", description: "Atlas redesign is up to date." },
 } satisfies Meta<typeof Toast>;
 export default meta;

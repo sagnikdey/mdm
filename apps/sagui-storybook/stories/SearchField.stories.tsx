@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { SearchField } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Inputs/Search field",
+  parameters: { design: figma("57:8576") },
   component: SearchField,
   tags: ["autodocs"],
   args: { label: "Search components", placeholder: "Search", value: "", onValueChange: () => {} },

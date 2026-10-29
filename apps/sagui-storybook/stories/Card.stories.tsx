@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Avatar, Button, Card } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 /** Photos from Unsplash (free to use under the Unsplash License), served at card width. */
 const unsplash = (id: string, width: number, height: number) => `https://images.unsplash.com/${id}?w=${width}&h=${height}&q=80&auto=format&fit=crop`;
 const officePhoto = unsplash("photo-1497366216548-37526070297c", 640, 320);
@@ -15,7 +16,7 @@ const meta = {
   title: "Cards/Card",
   component: Card,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("49:277"), layout: "padded" },
   args: { title: "Atlas redesign", description: "A quiet redesign of the workspace home.", meta: "Maya Chen", status: "Updated 2 hours ago" },
   decorators: [(Story) => <div className="w-[320px]"><Story /></div>],
 } satisfies Meta<typeof Card>;

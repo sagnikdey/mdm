@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TagInput } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Special inputs/Tag input",
   component: TagInput,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:11319"), layout: "padded" },
   args: { label: "Topics", defaultValue: ["design", "motion"] },
   decorators: [(Story) => <div className="w-[420px]"><Story /></div>],
 } satisfies Meta<typeof TagInput>;

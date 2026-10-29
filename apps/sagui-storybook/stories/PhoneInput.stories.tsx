@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { PhoneInput } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Special inputs/Phone input",
   component: PhoneInput,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:11138"), layout: "padded" },
   args: { label: "Phone number" },
   decorators: [(Story) => <div className="h-[420px] w-[360px]"><Story /></div>],
 } satisfies Meta<typeof PhoneInput>;

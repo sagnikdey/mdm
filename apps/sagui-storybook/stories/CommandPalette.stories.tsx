@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FilePlus2, Handshake, LayoutDashboard, Settings } from "lucide-react";
 import { CommandPalette } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Navigation/Command palette",
   component: CommandPalette,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:10418"), layout: "padded" },
   args: {
     items: [
       { id: "overview", label: "Overview", group: "Pages", icon: <LayoutDashboard /> },

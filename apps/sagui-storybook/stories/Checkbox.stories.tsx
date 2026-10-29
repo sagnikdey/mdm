@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Checkbox } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Selection/Checkbox",
+  parameters: { design: figma("57:8800") },
   component: Checkbox,
   tags: ["autodocs"],
   args: { label: "Email me product updates" },

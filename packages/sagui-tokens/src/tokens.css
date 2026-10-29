@@ -47,6 +47,11 @@
   --shadow-floating: var(--sg-shadow-floating);
   --shadow-overlay: var(--sg-shadow-overlay);
 
+}
+
+/* Colors are "inline" so utilities read var(--sg-*) on the element itself.
+   That lets a nested [data-theme="dark"] section switch its own colors. */
+@theme inline {
   /* Semantic colors: bg-bg-surface, text-fg-muted, border-border-default, bg-accent-default … */
   --color-bg-canvas: var(--sg-bg-canvas);
   --color-bg-surface: var(--sg-bg-surface);

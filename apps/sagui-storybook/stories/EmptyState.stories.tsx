@@ -3,11 +3,12 @@ import { useState } from "react";
 import { Inbox, Search } from "lucide-react";
 import { Button, EmptyState } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Cards/Empty state",
   component: EmptyState,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("49:388"), layout: "padded" },
   args: { title: "No projects yet", description: "Create your first project to start collaborating with your team.", action: <Button>New project</Button> },
   decorators: [(Story) => <div className="w-[420px] rounded-[var(--radius-xl)] border border-dashed border-border-default"><Story /></div>],
 } satisfies Meta<typeof EmptyState>;

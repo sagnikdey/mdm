@@ -3,6 +3,7 @@ import type React from "react";
 import { useState } from "react";
 import { AvatarGroup, Button } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const people = ["Ada Lovelace", "Grace Hopper", "Alan Turing", "Katherine Johnson", "Linus Torvalds", "Margaret Hamilton", "Dennis Ritchie"].map((name) => ({ name }));
 
 function withTopPadding(Story: () => React.JSX.Element) {
@@ -17,7 +18,7 @@ const meta = {
   title: "Data display/Avatar group",
   component: AvatarGroup,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("30:414"), layout: "padded" },
   args: { members: people, max: 4, size: "md" },
   argTypes: { size: { control: "inline-radio", options: ["sm", "md", "lg"] } },
   decorators: [withTopPadding],

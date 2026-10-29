@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SortableDataTable } from "@sagui/ui";
 import { projects } from "./sample-data";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Data/Sortable data table",
   component: SortableDataTable,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("47:470"), layout: "padded" },
   args: { caption: "Projects", rows: projects, rowKey: "id", columns: [{ key: "name", label: "Name" }, { key: "owner", label: "Owner" }, { key: "status", label: "Status" }, { key: "budget", label: "Budget", render: (value: unknown) => `$${Number(value).toLocaleString("en-US")}` }], defaultSort: { key: "name", direction: "asc" } },
   decorators: [(Story) => <div className="w-[720px] max-w-full"><Story /></div>],
 } satisfies Meta<typeof SortableDataTable>;

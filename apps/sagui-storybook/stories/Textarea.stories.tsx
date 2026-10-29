@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Textarea } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Inputs/Textarea",
+  parameters: { design: figma("57:8024") },
   component: Textarea,
   tags: ["autodocs"],
   args: { label: "Notes", placeholder: "Anything the team should know" },

@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { MoneyInput } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Special inputs/Money input",
   component: MoneyInput,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:11009"), layout: "padded" },
   args: { label: "Amount", defaultValue: 12500 },
   decorators: [(Story) => <div className="w-[420px]"><Story /></div>],
 } satisfies Meta<typeof MoneyInput>;

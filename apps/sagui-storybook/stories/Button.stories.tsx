@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Button } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 function ArrowIcon() {
   return (<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>);
 }
@@ -11,6 +12,7 @@ function PlusIcon() {
 
 const meta = {
   title: "Components/Button",
+  parameters: { design: figma("7:126") },
   component: Button,
   tags: ["autodocs"],
   args: { children: "Continue" },

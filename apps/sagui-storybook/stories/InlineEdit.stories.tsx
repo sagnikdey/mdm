@@ -2,10 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { InlineEdit } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const meta = {
   title: "Inputs/Inline edit",
+  parameters: { design: figma("57:8725") },
   component: InlineEdit,
   tags: ["autodocs"],
   args: { value: "Atlas redesign", label: "Project name", onSave: () => wait(700) },

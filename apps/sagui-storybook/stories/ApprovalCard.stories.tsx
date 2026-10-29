@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ApprovalCard, type ApprovalQuestion } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const questions: ApprovalQuestion[] = [
@@ -11,6 +12,7 @@ const questions: ApprovalQuestion[] = [
 
 const meta = {
   title: "Components/Approval card",
+  parameters: { design: figma("51:512") },
   component: ApprovalCard,
   tags: ["autodocs"],
   args: { questions, onSubmit: () => wait(700), onDismiss: () => {} },

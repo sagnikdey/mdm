@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PasswordField } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Inputs/Password field",
+  parameters: { design: figma("57:8141") },
   component: PasswordField,
   tags: ["autodocs"],
   args: { label: "Password", autoComplete: "current-password" },

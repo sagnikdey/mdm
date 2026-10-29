@@ -4,7 +4,14 @@ import { GuidePage } from "./guide-page";
 import "./preview.css";
 
 const preview: Preview = {
-  parameters: { layout: "centered", a11y: { test: "error" }, docs: { page: GuidePage } },
+  parameters: {
+    layout: "centered",
+    a11y: { test: "error" },
+    docs: { page: GuidePage },
+    options: {
+      storySort: { order: ["Foundations", ["Overview", "Color", "Typography", "Radius", "Spacing", "Borders & controls", "Elevation"]] },
+    },
+  },
   decorators: [
     withThemeByDataAttribute({
       themes: { light: "light", dark: "dark" },

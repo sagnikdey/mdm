@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MultiSelect } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Selection/Multi-select",
   component: MultiSelect,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:9565"), layout: "padded" },
   args: {
     label: "Teams",
     defaultValue: ["design", "eng"],

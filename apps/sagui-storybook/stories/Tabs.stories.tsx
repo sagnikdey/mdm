@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Navigation/Tabs",
   component: Tabs,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:10236"), layout: "padded" },
   decorators: [(Story) => <div className="w-[480px]"><Story /></div>],
 } satisfies Meta<typeof Tabs>;
 export default meta;

@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Combobox } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Selection/Combobox",
   component: Combobox,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:9782"), layout: "padded" },
   args: {
     label: "Framework",
     options: [

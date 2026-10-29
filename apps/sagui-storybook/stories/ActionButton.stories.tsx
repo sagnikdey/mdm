@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ActionButton } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const meta = {
   title: "Components/Action button",
+  parameters: { design: figma("57:7569") },
   component: ActionButton,
   tags: ["autodocs"],
   args: { label: "Publish", pendingLabel: "Publishing", successLabel: "Published", onAction: () => wait(1200) },

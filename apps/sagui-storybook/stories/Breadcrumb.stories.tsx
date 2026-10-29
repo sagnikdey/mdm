@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Breadcrumb } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Navigation/Breadcrumb",
+  parameters: { design: figma("58:10327") },
   component: Breadcrumb,
   tags: ["autodocs"],
   args: { items: [{ label: "Home", href: "#" }, { label: "Projects", href: "#" }, { label: "Apollo" }] },

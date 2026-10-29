@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { PasswordStrength } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Inputs/Password strength",
+  parameters: { design: figma("57:8272") },
   component: PasswordStrength,
   tags: ["autodocs"],
   args: { label: "New password" },

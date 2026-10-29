@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ChipGroup } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const topics = ["Design", "Motion", "Tokens", "Accessibility", "React", "Storybook", "Typography", "Layout", "Color", "Forms"].map((label) => ({ value: label.toLowerCase(), label }));
 
 const meta = {
   title: "Selection/Chip group",
   component: ChipGroup,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("22:106"), layout: "padded" },
   args: { label: "Topics", options: topics.slice(0, 5), defaultValue: ["design"] },
   decorators: [(Story) => <div className="w-[420px]"><Story /></div>],
 } satisfies Meta<typeof ChipGroup>;

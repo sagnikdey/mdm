@@ -15,7 +15,7 @@ const saguiUiEntry = join(storybookDir, "../../../packages/ui/src/index.ts");
 const config: StorybookConfig = {
   framework: abs("@storybook/react-vite") as "@storybook/react-vite",
   stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(ts|tsx)"],
-  addons: [abs("@storybook/addon-docs"), abs("@storybook/addon-a11y"), abs("@storybook/addon-themes"), abs("@storybook/addon-mcp")],
+  addons: [abs("@storybook/addon-docs"), abs("@storybook/addon-a11y"), abs("@storybook/addon-themes"), abs("@storybook/addon-mcp"), abs("@storybook/addon-designs")],
   viteFinal: async (cfg) => {
     cfg.plugins = [...(cfg.plugins ?? []), tailwindcss()];
     cfg.base = process.env.STORYBOOK_BASE ?? cfg.base;

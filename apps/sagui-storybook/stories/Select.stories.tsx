@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Select } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Selection/Select",
   component: Select,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("58:9409"), layout: "padded" },
   args: {
     label: "Role",
     options: [

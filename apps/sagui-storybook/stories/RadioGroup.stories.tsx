@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { RadioGroup } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Selection/Radio group",
   component: RadioGroup,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("57:9041"), layout: "padded" },
   args: {
     label: "Notifications",
     defaultValue: "mentions",

@@ -3,8 +3,10 @@ import { useState } from "react";
 import { Archive, Check, Link, Minus, Plus, Share2, Star, Trash2 } from "lucide-react";
 import { ButtonGroup } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Components/Button group",
+  parameters: { design: figma("57:7033") },
   component: ButtonGroup,
   tags: ["autodocs"],
   args: {

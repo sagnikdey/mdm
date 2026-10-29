@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Rocket, Sprout, Building2 } from "lucide-react";
 import { RadioCards } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Selection/Radio cards",
   component: RadioCards,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { design: figma("57:9085"), layout: "padded" },
   args: {
     "aria-label": "Plan",
     defaultValue: "pro",

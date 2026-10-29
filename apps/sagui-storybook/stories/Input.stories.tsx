@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Input } from "@sagui/ui";
 
+import { figma } from "../.storybook/figma";
 const meta = {
   title: "Inputs/Input",
+  parameters: { design: figma("15:141") },
   component: Input,
   tags: ["autodocs"],
   args: { label: "Project name", placeholder: "Untitled project" },
