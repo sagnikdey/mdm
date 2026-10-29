@@ -79,7 +79,7 @@ export function SegmentedControl({ options, value: valueProp, defaultValue, onVa
 
   return (
     // The frame can shrink below its content inside flex and grid parents; the track then scrolls inside it.
-    <div className={cn("inline-flex min-w-0 max-w-full shrink rounded-[var(--radius-lg)] border border-border bg-muted", className)} role="group" aria-label={label}>
+    <div className={cn("inline-flex min-w-0 max-w-full shrink rounded-[var(--radius-lg)] border border-border-default bg-bg-muted", className)} role="group" aria-label={label}>
       <LayoutGroup id={id}>
         {/* The track owns the stacking context so the gliding highlight passes under every label, not over earlier ones. */}
         <motion.div
@@ -96,7 +96,7 @@ export function SegmentedControl({ options, value: valueProp, defaultValue, onVa
             <button
               key={option.value}
               id={`${id}-${option.value}`}
-              className="relative min-h-8 flex-none cursor-pointer rounded-[var(--radius-md)] border-0 bg-transparent px-3 text-sm font-medium whitespace-nowrap text-muted-foreground [font-family:inherit] [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-quick)] active:text-foreground aria-pressed:text-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring max-[380px]:px-2.5 motion-reduce:transition-none"
+              className="relative min-h-8 flex-none cursor-pointer rounded-[var(--radius-md)] border-0 bg-transparent px-3 text-sm font-medium whitespace-nowrap text-fg-muted [font-family:inherit] [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-quick)] active:text-fg-default aria-pressed:text-fg-default [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus max-[380px]:px-2.5 motion-reduce:transition-none"
               type="button"
               data-value={option.value}
               aria-pressed={value === option.value}
@@ -108,7 +108,7 @@ export function SegmentedControl({ options, value: valueProp, defaultValue, onVa
             >
               {value === option.value && (
                 <motion.span
-                  className="absolute inset-0 -z-1 rounded-[inherit] border border-border bg-surface shadow-resting"
+                  className="absolute inset-0 -z-1 rounded-[inherit] border border-border-default bg-bg-surface shadow-resting"
                   layoutId="selection"
                   layoutDependency={value}
                   transition={reduced ? { duration: 0 } : spring.morph}

@@ -21,6 +21,6 @@ export const Disabled: Story = { args: { disabled: true } };
 export const E164Output: Story = {
   render: function Render() {
     const [value, setValue] = useState("");
-    return <div className="grid gap-3"><PhoneInput label="Phone number" onValueChange={setValue} /><code className="text-xs text-muted-foreground">e164 = {value || "(empty)"}</code></div>;
+    return <div className="grid gap-3"><PhoneInput label="Phone number" onValueChange={setValue} /><code className="text-xs text-fg-muted">e164 = {value || "(empty)"}</code></div>;
   },
 };

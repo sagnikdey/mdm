@@ -13,4 +13,4 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-export const Paragraph: Story = { args: { as: "p", className: "text-lg text-muted-foreground", text: "Each word rises out of its own clip while it sharpens from a soft blur." } };
+export const Paragraph: Story = { args: { as: "p", className: "text-lg text-fg-muted", text: "Each word rises out of its own clip while it sharpens from a soft blur." } };

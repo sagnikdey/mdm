@@ -2,4 +2,4 @@
 @import "@sagui/ui/styles.css";
 @source "../../../packages/ui/src";
 @source "../stories";
-body { background: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
+body { background: var(--color-bg-canvas); color: var(--color-fg-default); font-family: var(--font-sans); }

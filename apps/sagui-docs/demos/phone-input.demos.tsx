@@ -19,7 +19,7 @@ export function E164() {
   return (
     <div className="grid h-[380px] w-full max-w-sm content-start gap-3">
       <PhoneInput label="Phone number" onValueChange={setValue} />
-      <code className="text-xs text-muted-foreground">e164 = {value || "(empty)"}</code>
+      <code className="text-xs text-fg-muted">e164 = {value || "(empty)"}</code>
     </div>
   );
 }

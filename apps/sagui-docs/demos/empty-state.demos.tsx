@@ -7,7 +7,7 @@ import { Button, EmptyState } from "@sagui/ui";
 // #region Hero
 export function Hero() {
   return (
-    <div className="w-full max-w-md rounded-[var(--radius-xl)] border border-dashed border-border">
+    <div className="w-full max-w-md rounded-[var(--radius-xl)] border border-dashed border-border-default">
       <EmptyState title="No projects yet" description="Create your first project to start collaborating with your team." action={<Button>New project</Button>} />
     </div>
   );
@@ -17,7 +17,7 @@ export function Hero() {
 // #region NoResults
 export function NoResults() {
   return (
-    <div className="w-full max-w-md rounded-[var(--radius-xl)] border border-dashed border-border">
+    <div className="w-full max-w-md rounded-[var(--radius-xl)] border border-dashed border-border-default">
       <EmptyState
         icon={<Search size={24} />}
         title="No results for “atlas”"
@@ -33,7 +33,7 @@ export function NoResults() {
 export function Morphing() {
   const [caughtUp, setCaughtUp] = useState(false);
   return (
-    <div className="w-full max-w-md rounded-[var(--radius-xl)] border border-dashed border-border">
+    <div className="w-full max-w-md rounded-[var(--radius-xl)] border border-dashed border-border-default">
       <EmptyState
         icon={caughtUp ? <Inbox size={24} /> : undefined}
         title={caughtUp ? "You are all caught up" : "No projects yet"}

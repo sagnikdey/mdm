@@ -29,16 +29,16 @@ const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, 
 function Tile({ title, hint, href, className = "", children }: { title: string; hint: string; href: string; className?: string; children: React.ReactNode }) {
   return (
     <figure className={`group/tile flex min-w-0 flex-col ${className}`}>
-      <div className="relative grid flex-1 place-items-center rounded-[var(--radius-xl)] border border-border bg-surface p-6 shadow-resting sm:p-8">
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_oklab,var(--color-primary)_5%,transparent),transparent_60%)]" aria-hidden="true" />
+      <div className="relative grid flex-1 place-items-center rounded-[var(--radius-xl)] border border-border-default bg-bg-surface p-6 shadow-resting sm:p-8">
+        <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[radial-gradient(120%_80%_at_50%_0%,color-mix(in_oklab,var(--color-accent-default)_5%,transparent),transparent_60%)]" aria-hidden="true" />
         <div className="relative w-full">{children}</div>
       </div>
       <figcaption className="mt-3 flex items-start justify-between gap-3 px-1">
         <span>
           <span className="type-label block">{title}</span>
-          <span className="type-caption text-muted-foreground">{hint}</span>
+          <span className="type-caption text-fg-muted">{hint}</span>
         </span>
-        <Link href={href} aria-label={`${title} docs`} className="mt-0.5 grid size-7 flex-none place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <Link href={href} aria-label={`${title} docs`} className="mt-0.5 grid size-7 flex-none place-items-center rounded-full text-fg-muted transition-colors hover:bg-bg-muted hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
           <ArrowUpRight size={16} aria-hidden="true" />
         </Link>
       </figcaption>
@@ -61,7 +61,7 @@ function Dashboard() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="type-title">Analytics</p>
-          <p className="type-caption text-muted-foreground">sagui.dev · last {period.replace("d", " days")}</p>
+          <p className="type-caption text-fg-muted">sagui.dev · last {period.replace("d", " days")}</p>
         </div>
         <SegmentedControl
           label="Period"
@@ -95,7 +95,7 @@ function Triage() {
       <div>
         <Badge tone={tones[current.value as keyof typeof tones]} icon={current.icon}>{current.label}</Badge>
         <p className="type-title mt-3">Checkout stalls on Safari 17</p>
-        <p className="type-body-sm mt-1 text-muted-foreground">Tapping Pay leaves the spinner running after the card is approved.</p>
+        <p className="type-body-sm mt-1 text-fg-muted">Tapping Pay leaves the spinner running after the card is approved.</p>
       </div>
       <MorphSelect label="Status" items={statuses} value={status} onValueChange={setStatus} />
     </div>
@@ -108,7 +108,7 @@ function Seats() {
     <div className="mx-auto grid w-full max-w-xs gap-4">
       <div className="flex items-baseline justify-between">
         <p className="type-title">Team plan</p>
-        <p className="type-h3 tabular-nums"><AnimatedCounter value={seats * 12} prefix="$" /><span className="type-caption text-muted-foreground"> / mo</span></p>
+        <p className="type-h3 tabular-nums"><AnimatedCounter value={seats * 12} prefix="$" /><span className="type-caption text-fg-muted"> / mo</span></p>
       </div>
       <NumberField label="Seats" value={seats} onValueChange={setSeats} min={1} max={20} suffix={(n) => (n === 1 ? " seat" : " seats")} scrub description="$12 each. Drag the label to scrub." />
     </div>

@@ -123,7 +123,7 @@ function Check({ reduced }: { reduced: boolean }) {
   return (
     <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" aria-hidden="true">
       <motion.circle
-        className="fill-success"
+        className="fill-success-default"
         cx="9" cy="9" r="8"
         style={{ transformOrigin: "9px 9px" }}
         initial={reduced ? false : { scale: 0.4, opacity: 0 }}
@@ -131,7 +131,7 @@ function Check({ reduced }: { reduced: boolean }) {
         transition={{ scale: physical(0.34, 0.3), opacity: { duration: 0.12 } }}
       />
       <motion.path
-        className="stroke-background"
+        className="stroke-fg-on-emphasis"
         d="M5.6 9.3 7.8 11.4 12.4 6.7"
         strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
         initial={reduced ? false : { pathLength: 0 }}
@@ -147,16 +147,16 @@ const actionButton = [
   "inline-flex h-8 flex-none items-center px-[11px] border-0 rounded-full cursor-pointer font-[inherit] font-medium",
   "[transition:background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
   "active:scale-95 active:[transition-duration:var(--duration-quick),var(--duration-quick),90ms]",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus",
   "motion-reduce:transition-none motion-reduce:active:scale-100",
 ].join(" ");
 const secondaryButton = (strong: boolean) => cn(
   actionButton,
   "bg-transparent",
-  strong ? "text-foreground" : "text-muted-foreground",
-  `${hoverable}:bg-[color:color-mix(in_oklab,var(--color-foreground)_7%,transparent)] ${hoverable}:text-foreground`
+  strong ? "text-fg-default" : "text-fg-muted",
+  `${hoverable}:bg-[color:color-mix(in_oklab,var(--color-fg-default)_7%,transparent)] ${hoverable}:text-fg-default`
 );
-const primaryButton = cn(actionButton, "bg-primary text-primary-foreground", `${hoverable}:bg-primary/90`);
+const primaryButton = cn(actionButton, "bg-accent-default text-fg-on-accent", `${hoverable}:bg-accent-hover`);
 
 export function ConfirmMorph({
   label, icon, prompt, confirmLabel = "Delete", cancelLabel = "Cancel", pendingLabel = "Deleting", doneLabel = "Deleted", errorLabel = "Couldn’t finish",
@@ -294,20 +294,20 @@ export function ConfirmMorph({
     switch (state) {
       case "confirming": return (
         <>
-          <span id={promptId} className="min-w-[3ch] max-w-64 flex-[0_1_auto] overflow-hidden pr-1.5 pl-[11px] text-foreground font-medium tabular-nums leading-[1.3] text-ellipsis">{shownPrompt}</span>
+          <span id={promptId} className="min-w-[3ch] max-w-64 flex-[0_1_auto] overflow-hidden pr-1.5 pl-[11px] text-fg-default font-medium tabular-nums leading-[1.3] text-ellipsis">{shownPrompt}</span>
           <button type="button" className={secondaryButton(false)} data-autofocus onClick={cancel}>{cancelLabel}</button>
           <button type="button" className={primaryButton} onClick={() => void perform("confirm")}>{confirmLabel}</button>
         </>
       );
       case "pending": return (
-        <span className="inline-flex items-center gap-[7px] pr-4 pl-3.5 font-medium text-muted-foreground tabular-nums">
+        <span className="inline-flex items-center gap-[7px] pr-4 pl-3.5 font-medium text-fg-muted tabular-nums">
           <LoaderCircle className="flex-none animate-[sg-spin_.7s_linear_infinite] motion-reduce:animate-[sg-spin_1.6s_linear_infinite]" size={16} strokeWidth={1.75} aria-hidden="true" />
           <span>{working === "undo" ? undoingLabel : pendingLabel}</span>
         </span>
       );
       case "done": return (
         <>
-          <span className={cn("inline-flex items-center gap-[7px] pl-2.5 pr-2 font-medium text-foreground tabular-nums", !onUndo && "pr-3")}>
+          <span className={cn("inline-flex items-center gap-[7px] pl-2.5 pr-2 font-medium text-fg-default tabular-nums", !onUndo && "pr-3")}>
             <Check reduced={reduced} /><span className="leading-[1.3]">{doneLabel}</span>
           </span>
           {onUndo && <button type="button" className={secondaryButton(true)} data-autofocus onClick={() => void perform("undo")}>{undoLabel}</button>}
@@ -315,8 +315,8 @@ export function ConfirmMorph({
       );
       case "error": return (
         <>
-          <span className="inline-flex items-center gap-[7px] pl-2.5 pr-2 font-medium text-foreground tabular-nums">
-            <CircleAlert className="flex-none text-destructive" size={16} strokeWidth={1.75} aria-hidden="true" /><span className="leading-[1.3]">{errorLabel}</span>
+          <span className="inline-flex items-center gap-[7px] pl-2.5 pr-2 font-medium text-fg-default tabular-nums">
+            <CircleAlert className="flex-none text-danger-default" size={16} strokeWidth={1.75} aria-hidden="true" /><span className="leading-[1.3]">{errorLabel}</span>
           </span>
           <button type="button" className={secondaryButton(true)} data-autofocus onClick={() => void perform(working)}>{retryLabel}</button>
         </>
@@ -330,11 +330,11 @@ export function ConfirmMorph({
           className={cn(
             "inline-flex h-full items-center gap-2 pr-[15px] pl-[13px] border-0 rounded-[inherit] bg-transparent cursor-pointer font-[inherit] font-medium",
             "transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quint)]",
-            "disabled:cursor-not-allowed disabled:text-muted-foreground",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+            "disabled:cursor-not-allowed disabled:text-fg-muted",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus",
             danger
-              ? `text-destructive ${hoverable}:enabled:bg-[color:color-mix(in_oklab,var(--color-destructive)_8%,transparent)]`
-              : `text-foreground ${hoverable}:enabled:bg-[color:color-mix(in_oklab,var(--color-foreground)_5%,transparent)]`
+              ? `text-danger-default ${hoverable}:enabled:bg-[color:color-mix(in_oklab,var(--color-danger-default)_8%,transparent)]`
+              : `text-fg-default ${hoverable}:enabled:bg-[color:color-mix(in_oklab,var(--color-fg-default)_5%,transparent)]`
           )}
           onClick={() => { setAnnouncement(typeof shownPrompt === "string" ? shownPrompt : ""); go("confirming"); }}
         >
@@ -347,17 +347,17 @@ export function ConfirmMorph({
 
   // One pill for every state. The border is an overlay so it never changes a measurement. Danger stays quiet: red text and a faint red edge on a neutral pill.
   const surfaceTone = disabled && state === "idle"
-    ? "shadow-none after:border-[color:color-mix(in_oklab,var(--color-border)_60%,transparent)]"
+    ? "shadow-none after:border-[color:color-mix(in_oklab,var(--color-border-default)_60%,transparent)]"
     : danger && (state === "idle" || state === "error")
-      ? "bg-[color:color-mix(in_oklab,var(--color-destructive)_4%,var(--color-surface))] shadow-none after:border-[color:color-mix(in_oklab,var(--color-destructive)_18%,var(--color-border))]"
+      ? "bg-[color:color-mix(in_oklab,var(--color-danger-default)_4%,var(--color-bg-surface))] shadow-none after:border-[color:color-mix(in_oklab,var(--color-danger-default)_18%,var(--color-border-default))]"
       : danger && state === "confirming"
-        ? "after:border-[color:color-mix(in_oklab,var(--color-destructive)_24%,var(--color-border))]"
+        ? "after:border-[color:color-mix(in_oklab,var(--color-danger-default)_24%,var(--color-border-default))]"
         : "";
 
   return (
     <div
       ref={rootRef}
-      className={cn("group/cm relative inline-flex min-w-0 max-w-full align-middle text-sm leading-none tracking-[-0.01em] text-foreground [-webkit-tap-highlight-color:transparent] focus:outline-none", className)}
+      className={cn("group/cm relative inline-flex min-w-0 max-w-full align-middle text-sm leading-none tracking-[-0.01em] text-fg-default [-webkit-tap-highlight-color:transparent] focus:outline-none", className)}
       data-state={state}
       data-tone={tone}
       data-disabled={disabled || undefined}
@@ -370,8 +370,8 @@ export function ConfirmMorph({
     >
       <motion.div
         className={cn(
-          "relative flex h-10 max-w-full justify-center overflow-clip rounded-full bg-surface shadow-resting",
-          "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:border after:border-border after:transition-colors after:duration-[var(--duration-standard)] after:content-['']",
+          "relative flex h-10 max-w-full justify-center overflow-clip rounded-full bg-bg-surface shadow-resting",
+          "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:border after:border-border-default after:transition-colors after:duration-[var(--duration-standard)] after:content-['']",
           // Release springs back; the press itself is quick.
           "[transition:background-color_var(--duration-standard)_var(--ease-out-quint),box-shadow_var(--duration-standard)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
           "group-has-[[data-trigger]:active:not(:disabled)]/cm:scale-[.96] group-has-[[data-trigger]:active:not(:disabled)]/cm:[transition-duration:var(--duration-standard),var(--duration-standard),90ms]",

@@ -24,7 +24,7 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
       <SearchField label="Filter documentation" value={query} onValueChange={setQuery} placeholder="Filter" />
       {filtered.map((group) => (
         <div key={group.title}>
-          <h2 className="mb-2 px-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">{group.title}</h2>
+          <h2 className="mb-2 px-3 text-xs font-medium tracking-wide text-fg-muted uppercase">{group.title}</h2>
           <ul className="grid gap-0.5">
             {group.items.map((item) => {
               const active = pathname === item.href;
@@ -33,7 +33,7 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className="block rounded-[var(--radius-md)] px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:font-medium aria-[current=page]:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="block rounded-[var(--radius-md)] px-3 py-1.5 text-sm text-fg-muted transition-colors hover:bg-bg-muted hover:text-fg-default aria-[current=page]:bg-bg-muted aria-[current=page]:font-medium aria-[current=page]:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                   >
                     {item.title}
                   </Link>
@@ -43,7 +43,7 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
           </ul>
         </div>
       ))}
-      {!filtered.length && <p className="px-3 text-sm text-muted-foreground">Nothing matches “{query}”.</p>}
+      {!filtered.length && <p className="px-3 text-sm text-fg-muted">Nothing matches “{query}”.</p>}
     </nav>
   );
 
@@ -51,7 +51,7 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
     <>
       <button
         type="button"
-        className="fixed bottom-4 left-4 z-40 inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-border bg-surface px-4 text-sm font-medium shadow-floating lg:hidden"
+        className="fixed bottom-4 left-4 z-40 inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-border-default bg-bg-surface px-4 text-sm font-medium shadow-floating lg:hidden"
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-controls="docs-sheet"
@@ -60,9 +60,9 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
       </button>
       <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-64 flex-none overflow-y-auto py-8 pr-4 lg:block">{nav}</aside>
       {open && (
-        <div id="docs-sheet" role="dialog" aria-modal="true" aria-label="Documentation menu" className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden">
-          <div className="h-full w-[min(20rem,90vw)] overflow-y-auto border-r border-border bg-background p-4">
-            <button type="button" className="mb-4 ml-auto grid size-9 cursor-pointer place-items-center rounded-full hover:bg-muted" onClick={() => setOpen(false)} aria-label="Close menu">
+        <div id="docs-sheet" role="dialog" aria-modal="true" aria-label="Documentation menu" className="fixed inset-0 z-50 bg-bg-canvas/80 backdrop-blur-sm lg:hidden">
+          <div className="h-full w-[min(20rem,90vw)] overflow-y-auto border-r border-border-default bg-bg-canvas p-4">
+            <button type="button" className="mb-4 ml-auto grid size-9 cursor-pointer place-items-center rounded-full hover:bg-bg-muted" onClick={() => setOpen(false)} aria-label="Close menu">
               <X size={18} aria-hidden="true" />
             </button>
             {nav}

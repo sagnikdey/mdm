@@ -13,13 +13,13 @@ const levels = [
 
 export function Levels() {
   return (
-    <div className="grid w-full grid-cols-2 gap-5 bg-background p-2 sm:grid-cols-3 xl:grid-cols-5">
+    <div className="grid w-full grid-cols-2 gap-5 bg-bg-canvas p-2 sm:grid-cols-3 xl:grid-cols-5">
       {levels.map(({ level, token, use }) => (
-        <div key={token} className={`grid min-h-32 content-between rounded-[var(--radius-container)] border border-border bg-surface p-4 ${level ? token : ""}`}>
-          <span className="type-h2 text-muted-foreground tabular-nums">{level}</span>
+        <div key={token} className={`grid min-h-32 content-between rounded-[var(--radius-container)] border border-border-default bg-bg-surface p-4 ${level ? token : ""}`}>
+          <span className="type-h2 text-fg-muted tabular-nums">{level}</span>
           <div>
-            <code className="type-code block text-xs text-foreground">{token}</code>
-            <p className="type-caption mt-1 text-muted-foreground">{use}</p>
+            <code className="type-code block text-xs text-fg-default">{token}</code>
+            <p className="type-caption mt-1 text-fg-muted">{use}</p>
           </div>
         </div>
       ))}
@@ -33,10 +33,10 @@ export function Hover() {
   return (
     <a
       href="#elevation-and-motion"
-      className="block w-full max-w-xs rounded-[var(--radius-container)] border border-border bg-surface p-5 shadow-resting transition-[translate,box-shadow,border-color] duration-quick ease-out-quint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)_and_(pointer:fine)]:hover:border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-raised motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      className="block w-full max-w-xs rounded-[var(--radius-container)] border border-border-default bg-bg-surface p-5 shadow-resting transition-[translate,box-shadow,border-color] duration-quick ease-out-quint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)_and_(pointer:fine)]:hover:border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:shadow-raised motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       <p className="type-title">Hover me</p>
-      <p className="type-body-sm mt-1 text-muted-foreground">Rests at level 1 and lifts to level 2 by 2px.</p>
+      <p className="type-body-sm mt-1 text-fg-muted">Rests at level 1 and lifts to level 2 by 2px.</p>
     </a>
   );
 }
@@ -53,7 +53,7 @@ export function Layers() {
         <PopoverTrigger asChild><Button variant="outline">Popover</Button></PopoverTrigger>
         <PopoverContent>
           <p className="type-label">Level 3</p>
-          <p className="type-body-sm text-muted-foreground">Floating layers use shadow-floating.</p>
+          <p className="type-body-sm text-fg-muted">Floating layers use shadow-floating.</p>
         </PopoverContent>
       </Popover>
     </div>

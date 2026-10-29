@@ -68,7 +68,7 @@ function CheckMark({ reduce }: { reduce: boolean | null }) {
   );
 }
 
-const chipClass = "box-border mr-[5px] max-w-36 flex-none truncate rounded-full bg-muted px-2 py-1 text-xs text-foreground shadow-[inset_0_0_0_1px_var(--color-border)] transition-colors duration-[var(--duration-quick)] motion-reduce:transition-none group-aria-expanded/trigger:bg-surface [@media(hover:hover)_and_(pointer:fine)]:group-hover/trigger:group-enabled/trigger:bg-surface";
+const chipClass = "box-border mr-[5px] max-w-36 flex-none truncate rounded-full bg-bg-muted px-2 py-1 text-xs text-fg-default shadow-[inset_0_0_0_1px_var(--color-border-default)] transition-colors duration-[var(--duration-quick)] motion-reduce:transition-none group-aria-expanded/trigger:bg-bg-surface [@media(hover:hover)_and_(pointer:fine)]:group-hover/trigger:group-enabled/trigger:bg-bg-surface";
 
 /** Select several values while keeping the field readable: chips open and close on springs, and extras collapse into a rolling "+n". */
 export function MultiSelect({ label, options, value, defaultValue = [], onValueChange, placeholder = "Select options", description, error, maxVisible = 2, disabled = false, className }: MultiSelectProps) {
@@ -129,13 +129,13 @@ export function MultiSelect({ label, options, value, defaultValue = [], onValueC
         <button
           type="button"
           className={cn(
-            "group/trigger relative flex min-h-10 w-full cursor-pointer items-center gap-2 rounded-[var(--radius-md)] border bg-surface py-[5px] pr-[11px] pl-3 text-left text-sm text-foreground ",
+            "group/trigger relative flex min-h-10 w-full cursor-pointer items-center gap-2 rounded-[var(--radius-md)] border bg-bg-surface py-[5px] pr-[11px] pl-3 text-left text-sm text-fg-default ",
             "transition-[border-color,background-color,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-            "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-muted",
-            "active:enabled:border-border-strong active:enabled:bg-muted aria-expanded:border-border-strong aria-expanded:bg-muted",
-            "focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/25",
+            "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-bg-muted",
+            "active:enabled:border-border-strong active:enabled:bg-bg-muted aria-expanded:border-border-strong aria-expanded:bg-bg-muted",
+            "focus-visible:border-border-focus focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-border-focus-soft",
             "disabled:cursor-not-allowed disabled:opacity-50",
-            error ? "border-destructive focus-visible:ring-destructive/25" : "border-border"
+            error ? "border-danger-default focus-visible:ring-danger-border" : "border-border-default"
           )}
           disabled={disabled}
           aria-labelledby={`${labelId} ${valueId}`}
@@ -157,7 +157,7 @@ export function MultiSelect({ label, options, value, defaultValue = [], onValueC
               ))}
               {remaining > 0 && (
                 <motion.span key="more" className="flex min-w-0 flex-shrink-0 overflow-hidden" variants={reduce ? slotFade : slot} initial="hidden" animate="shown" exit="gone">
-                  <motion.span className={cn(chipClass, "inline-flex tabular-nums text-muted-foreground")} variants={reduce ? chipStill : chip}>
+                  <motion.span className={cn(chipClass, "inline-flex tabular-nums text-fg-muted")} variants={reduce ? chipStill : chip}>
                     +
                     <span className="inline-grid">
                       <AnimatePresence initial={false} custom={countDirection}>
@@ -169,12 +169,12 @@ export function MultiSelect({ label, options, value, defaultValue = [], onValueC
               )}
               {/* The placeholder sits outside the flow so the first chip can open its slot from the leading edge. */}
               {!selected.length && (
-                <motion.span key="placeholder" className="absolute inset-0 flex items-center overflow-hidden whitespace-nowrap text-muted-foreground" variants={fade} initial="hidden" animate="shown" exit="gone">{placeholder}</motion.span>
+                <motion.span key="placeholder" className="absolute inset-0 flex items-center overflow-hidden whitespace-nowrap text-fg-muted" variants={fade} initial="hidden" animate="shown" exit="gone">{placeholder}</motion.span>
               )}
             </AnimatePresence>
           </span>
           {/* The chevron stays pinned to the trailing edge; a selection only reserves room for the clear button beside it, so nothing jumps. */}
-          <ChevronDown className={cn("flex-none text-muted-foreground [transition:transform_var(--duration-spring)_var(--ease-spring)] group-aria-expanded/trigger:rotate-180 motion-reduce:transition-none", selected.length > 0 && "ml-[26px]")} size={16} aria-hidden="true" />
+          <ChevronDown className={cn("flex-none text-fg-muted [transition:transform_var(--duration-spring)_var(--ease-spring)] group-aria-expanded/trigger:rotate-180 motion-reduce:transition-none", selected.length > 0 && "ml-[26px]")} size={16} aria-hidden="true" />
         </button>
         <AnimatePresence initial={false}>
           {selected.length > 0 && !disabled && (
@@ -196,7 +196,7 @@ export function MultiSelect({ label, options, value, defaultValue = [], onValueC
           {open && (
             <motion.div
               id={`${id}-listbox`}
-              className="absolute inset-x-0 top-[calc(100%+8px)] z-80 origin-top overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface p-[5px] shadow-floating will-change-[transform,opacity]"
+              className="absolute inset-x-0 top-[calc(100%+8px)] z-80 origin-top overflow-hidden rounded-[var(--radius-xl)] border border-border-default bg-bg-surface p-[5px] shadow-floating will-change-[transform,opacity]"
               role="listbox"
               aria-label={label}
               aria-multiselectable="true"
@@ -212,7 +212,7 @@ export function MultiSelect({ label, options, value, defaultValue = [], onValueC
                   aria-disabled={option.disabled || undefined}
                   key={option.value}
                   // Arrow keys move the highlight often, so it changes almost instantly. Selection is shown by the check, so labels never reflow.
-                  className="flex min-h-[38px] w-full cursor-pointer items-center justify-between gap-3 rounded-[calc(var(--radius-xl)-5px)] border-0 bg-transparent px-[11px] text-left text-sm text-foreground transition-colors duration-75 data-[active=true]:bg-muted disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transition-none"
+                  className="flex min-h-[38px] w-full cursor-pointer items-center justify-between gap-3 rounded-[calc(var(--radius-xl)-5px)] border-0 bg-transparent px-[11px] text-left text-sm text-fg-default transition-colors duration-75 data-[active=true]:bg-bg-muted disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transition-none"
                   data-active={activeIndex === index}
                   disabled={option.disabled}
                   onPointerMove={() => { if (activeIndex !== index) setActiveIndex(index); }}

@@ -23,8 +23,8 @@ export function FilterList() {
     <div className="grid w-full max-w-sm gap-3">
       <SearchField label="Filter components" placeholder="Filter" value={query} onValueChange={setQuery} />
       <ul className="grid gap-1 text-sm" aria-live="polite">
-        {visible.map((item) => <li key={item} className="rounded-md bg-muted px-3 py-2">{item}</li>)}
-        {!visible.length && <li className="px-1 text-muted-foreground">Nothing matches “{query}”.</li>}
+        {visible.map((item) => <li key={item} className="rounded-md bg-bg-muted px-3 py-2">{item}</li>)}
+        {!visible.length && <li className="px-1 text-fg-muted">Nothing matches “{query}”.</li>}
       </ul>
     </div>
   );

@@ -18,7 +18,7 @@ export function Hero() {
   return (
     <div className="grid w-full max-w-lg gap-3">
       <CommandPalette items={items} onSelect={(item) => setLast(item.label)} />
-      <p className="text-sm text-muted-foreground">{last ? `Ran: ${last}` : "Type to filter, use the arrow keys, press Enter."}</p>
+      <p className="text-sm text-fg-muted">{last ? `Ran: ${last}` : "Type to filter, use the arrow keys, press Enter."}</p>
     </div>
   );
 }

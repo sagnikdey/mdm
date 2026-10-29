@@ -12,22 +12,22 @@ import { easeEnter, easeStandard } from "../../lib/motion";
 const s = {
   // Isolation keeps the rounded clip on the media while the card lifts on its own layer (Safari drops it otherwise).
   // Motion drives the lift and the quick look morph, so transform never gets a CSS transition here.
-  card: "relative isolate min-w-0 overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface text-foreground transition-[border-color,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] data-[hover]:border-border-strong data-[hover]:shadow-raised has-[[data-trigger]:focus-visible]:border-border-strong has-[[data-trigger]:focus-visible]:ring-2 has-[[data-trigger]:focus-visible]:ring-ring motion-reduce:transition-none",
-  media: "relative overflow-hidden bg-muted",
+  card: "relative isolate min-w-0 overflow-hidden rounded-[var(--radius-lg)] border border-border-default bg-bg-surface text-fg-default transition-[border-color,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] data-[hover]:border-border-strong data-[hover]:shadow-raised has-[[data-trigger]:focus-visible]:border-border-strong has-[[data-trigger]:focus-visible]:ring-2 has-[[data-trigger]:focus-visible]:ring-border-focus motion-reduce:transition-none",
+  media: "relative overflow-hidden bg-bg-muted",
   zoom: "grid min-h-28 place-items-center",
   content: "p-5",
   // Fit-content width keeps the title's box the shape of its text, so it scales evenly when it grows into the quick look.
   title: "m-0 w-fit max-w-full text-lg font-medium leading-[1.3] tracking-[-0.01em] [text-wrap:balance]",
   // The title's hit area stretches over the whole card, so pointing anywhere opens the quick look while the action stays on top.
   trigger: "cursor-pointer border-0 bg-none p-0 text-left text-[length:inherit] [font:inherit] [letter-spacing:inherit] text-inherit [-webkit-tap-highlight-color:transparent] after:absolute after:inset-0 after:content-[''] focus-visible:outline-none",
-  description: "mt-2 max-w-[34ch] text-sm leading-snug text-muted-foreground [text-wrap:pretty]",
+  description: "mt-2 max-w-[34ch] text-sm leading-snug text-fg-muted [text-wrap:pretty]",
   footer: "mt-5 flex items-center justify-between gap-3",
   byline: "flex min-w-0 flex-auto items-center gap-3",
-  avatar: "grid size-8 flex-none overflow-hidden rounded-full bg-muted [&>*]:size-full [&>*]:object-cover",
+  avatar: "grid size-8 flex-none overflow-hidden rounded-full bg-bg-muted [&>*]:size-full [&>*]:object-cover",
   // A shrinkable column, so a narrow footer truncates the byline instead of sliding it under the action.
   bylineText: "grid min-w-0 grid-cols-[minmax(0,1fr)] text-xs leading-snug",
-  meta: "truncate font-medium text-foreground",
-  status: "relative whitespace-nowrap text-muted-foreground tabular-nums [overflow:clip_visible]",
+  meta: "truncate font-medium text-fg-default",
+  status: "relative whitespace-nowrap text-fg-muted tabular-nums [overflow:clip_visible]",
   roll: "relative block",
   line: "block text-ellipsis [overflow:clip_visible]",
   word: "inline-block whitespace-pre",
@@ -36,16 +36,16 @@ const s = {
   overlay: "fixed inset-0 z-50 bg-[oklch(10%_0_0/.46)] backdrop-blur-[7px] data-[state=closed]:!pointer-events-none",
   // Centered with auto margins, so transform stays free for the morph. Closing: the panel takes the card's box and look, so it lands exactly where the card sits and hands back without a seam.
   panel: cn(
-    "fixed inset-0 z-51 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[min(calc(100vw-2rem),30rem)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-[var(--radius-xl)] border border-border bg-surface text-foreground shadow-floating focus:outline-none",
+    "fixed inset-0 z-51 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[min(calc(100vw-2rem),30rem)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-[var(--radius-xl)] border border-border-default bg-bg-surface text-fg-default shadow-floating focus:outline-none",
     "transition-[background-color,box-shadow] duration-[var(--duration-standard)] ease-[var(--ease-out-quint)]",
     "[&_.sg-content]:p-6 [&_h2]:text-xl [&_.sg-desc]:max-w-[var(--card-measure,34ch)]",
-    "data-[returning]:pointer-events-none data-[returning]:inset-auto data-[returning]:top-[var(--landing-top)] data-[returning]:left-[var(--landing-left)] data-[returning]:m-0 data-[returning]:h-[var(--landing-height)] data-[returning]:max-h-none data-[returning]:w-[var(--landing-width)] data-[returning]:overflow-hidden data-[returning]:border-border data-[returning]:shadow-none",
+    "data-[returning]:pointer-events-none data-[returning]:inset-auto data-[returning]:top-[var(--landing-top)] data-[returning]:left-[var(--landing-left)] data-[returning]:m-0 data-[returning]:h-[var(--landing-height)] data-[returning]:max-h-none data-[returning]:w-[var(--landing-width)] data-[returning]:overflow-hidden data-[returning]:border-border-default data-[returning]:shadow-none",
     "data-[returning]:[&_.sg-content]:p-5 data-[returning]:[&_h2]:text-lg"
   ),
   // The slot carries the entrance, so the button's own press answers instantly.
   closeSlot: "absolute top-4 right-4 z-2 grid",
-  close: "grid size-8 cursor-pointer place-items-center rounded-full border border-border/70 bg-surface/75 p-0 text-foreground backdrop-blur-[12px] transition-colors duration-[var(--duration-quick)] [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none",
-  details: "mt-6 border-t border-border pt-5 text-sm leading-snug text-muted-foreground",
+  close: "grid size-8 cursor-pointer place-items-center rounded-full border border-border-default/70 bg-bg-surface/75 p-0 text-fg-default backdrop-blur-[12px] transition-colors duration-[var(--duration-quick)] [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus motion-reduce:transition-none",
+  details: "mt-6 border-t border-border-default pt-5 text-sm leading-snug text-fg-muted",
 };
 
 

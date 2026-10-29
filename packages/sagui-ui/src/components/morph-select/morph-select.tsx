@@ -70,7 +70,7 @@ const NARROW = physical(0.42, 0);
 const FLY = physical(0.3, 0.06);
 const OPEN_RADIUS = 20;
 const triggerBase = "box-border flex h-[var(--ms-h)] items-center gap-2 pr-9 pl-3.5 text-sm font-medium whitespace-nowrap";
-const iconClass = "grid size-5 flex-none place-items-center text-muted-foreground [&>svg]:size-4 [&>img]:size-5 [&>img]:rounded-full [&>img]:object-cover";
+const iconClass = "grid size-5 flex-none place-items-center text-fg-muted [&>svg]:size-4 [&>img]:size-5 [&>img]:rounded-full [&>img]:object-cover";
 const TYPEAHEAD_RESET = 600, PAGE = 8;
 
 const isGroup = (item: MorphSelectItem): item is MorphSelectGroup => "options" in item;
@@ -355,7 +355,7 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
 
   const renderValue = (option: MorphSelectOption | undefined) => option
     ? <>{option.icon && <span className={iconClass} aria-hidden="true">{option.icon}</span>}<span className="min-w-0 truncate">{option.label}</span></>
-    : <span className="font-normal text-muted-foreground">{placeholder}</span>;
+    : <span className="font-normal text-fg-muted">{placeholder}</span>;
 
   const showSearch = open && canSearch;
   const layerKey = selected ?? "__empty";
@@ -366,14 +366,14 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
     // The root lays out the label and the anchor. The anchor holds the closed trigger's place; the shape floats over it and grows past it when open.
     <div
       ref={rootRef}
-      className={cn("group/ms relative inline-grid min-w-0 justify-items-start gap-2 text-sm leading-snug tracking-[-0.01em] text-foreground [--ms-h:40px] [--ms-trigger-w:0px] data-[align=end]:justify-items-end data-[open]:z-30", className)}
+      className={cn("group/ms relative inline-grid min-w-0 justify-items-start gap-2 text-sm leading-snug tracking-[-0.01em] text-fg-default [--ms-h:40px] [--ms-trigger-w:0px] data-[align=end]:justify-items-end data-[open]:z-30", className)}
       style={rootStyle}
       data-open={open || undefined}
       data-align={align}
       data-disabled={disabled || undefined}
       onBlur={onBlur}
     >
-      <span id={labelId} className={hideLabel ? "sr-only" : "text-sm font-medium text-foreground"}>{label}</span>
+      <span id={labelId} className={hideLabel ? "sr-only" : "text-sm font-medium text-fg-default"}>{label}</span>
 
       <motion.div className="relative h-[var(--ms-h)] max-w-full" style={{ width: anchorW }}>
         {/* Sizes the closed trigger. It holds the chosen label with the trigger's own padding, so the width spring has a target before anything moves.
@@ -389,12 +389,12 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
         {/* One material for both states. The border is an overlay so it never changes a measurement. */}
         <motion.div
           className={cn(
-            "absolute top-0 left-0 overflow-clip bg-surface shadow-resting group-data-[align=end]/ms:right-0 group-data-[align=end]/ms:left-auto",
+            "absolute top-0 left-0 overflow-clip bg-bg-surface shadow-resting group-data-[align=end]/ms:right-0 group-data-[align=end]/ms:left-auto",
             "[transition:box-shadow_480ms_var(--ease-out-quint),background-color_var(--duration-quick)_var(--ease-out-quint)] motion-reduce:transition-none",
-            "after:pointer-events-none after:absolute after:inset-0 after:z-2 after:rounded-[inherit] after:border after:border-border after:transition-colors after:duration-[var(--duration-quick)] after:content-[''] contrast-more:after:border-border-strong",
-            "has-[[data-trigger]:focus-visible]:after:border-ring has-[[data-trigger]:focus-visible]:after:ring-[3px] has-[[data-trigger]:focus-visible]:after:ring-ring/25 has-[input:focus]:after:border-ring has-[input:focus]:after:ring-[3px] has-[input:focus]:after:ring-ring/25",
-            "group-data-[open]/ms:bg-surface group-data-[open]/ms:shadow-floating group-data-[disabled]/ms:opacity-55",
-            "[@media(hover:hover)_and_(pointer:fine)]:group-not-data-[open]/ms:group-not-data-[disabled]/ms:hover:bg-muted [@media(hover:hover)_and_(pointer:fine)]:group-not-data-[open]/ms:group-not-data-[disabled]/ms:hover:after:border-border-strong"
+            "after:pointer-events-none after:absolute after:inset-0 after:z-2 after:rounded-[inherit] after:border after:border-border-default after:transition-colors after:duration-[var(--duration-quick)] after:content-[''] contrast-more:after:border-border-strong",
+            "has-[[data-trigger]:focus-visible]:after:border-border-focus has-[[data-trigger]:focus-visible]:after:ring-[3px] has-[[data-trigger]:focus-visible]:after:ring-border-focus-soft has-[input:focus]:after:border-border-focus has-[input:focus]:after:ring-[3px] has-[input:focus]:after:ring-border-focus-soft",
+            "group-data-[open]/ms:bg-bg-surface group-data-[open]/ms:shadow-floating group-data-[disabled]/ms:opacity-55",
+            "[@media(hover:hover)_and_(pointer:fine)]:group-not-data-[open]/ms:group-not-data-[disabled]/ms:hover:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:group-not-data-[open]/ms:group-not-data-[disabled]/ms:hover:after:border-border-strong"
           )}
           style={{ width: shapeW, height: shapeH, borderRadius: radius }}
         >
@@ -445,10 +445,10 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
                 animate={showSearch ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: reduced ? "blur(0px)" : `blur(${blur.subtle}px)` }}
                 transition={showSearch ? { duration: 0.18, ease: enter, delay: reduced ? 0 : 0.04 } : { duration: 0.1, ease: standard }}
               >
-                <Search className="flex-none text-muted-foreground" size={16} strokeWidth={1.75} aria-hidden="true" />
+                <Search className="flex-none text-fg-muted" size={16} strokeWidth={1.75} aria-hidden="true" />
                 <input
                   ref={inputRef}
-                  className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 font-[inherit] text-sm tracking-[-0.01em] text-foreground outline-none placeholder:text-muted-foreground"
+                  className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 font-[inherit] text-sm tracking-[-0.01em] text-fg-default outline-none placeholder:text-fg-muted"
                   type="text"
                   role="combobox"
                   aria-label={`Search ${label.toLowerCase()}`}
@@ -468,7 +468,7 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
                     <motion.button
                       key="clear"
                       type="button"
-                      className="grid size-6 flex-none cursor-pointer place-items-center rounded-full border-0 bg-[color-mix(in_oklab,var(--color-foreground)_8%,transparent)] p-0 text-muted-foreground transition-colors [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="grid size-6 flex-none cursor-pointer place-items-center rounded-full border-0 bg-[color-mix(in_oklab,var(--color-fg-default)_8%,transparent)] p-0 text-fg-muted transition-colors [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                       aria-label="Clear search"
                       onPointerDown={(event) => event.preventDefault()}
                       onClick={() => { onQuery(""); inputRef.current?.focus(); }}
@@ -484,14 +484,14 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
                 {/* Sits exactly over the shared chevron, so the chevron closes the list in both lid states. */}
                 <button
                   type="button"
-                  className="size-9 flex-none cursor-pointer rounded-full border-0 bg-transparent p-0 transition-colors duration-[var(--duration-quick)] [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--color-foreground)_8%,transparent)] focus-visible:bg-[color-mix(in_oklab,var(--color-foreground)_8%,transparent)] focus-visible:outline-none"
+                  className="size-9 flex-none cursor-pointer rounded-full border-0 bg-transparent p-0 transition-colors duration-[var(--duration-quick)] [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--color-fg-default)_8%,transparent)] focus-visible:bg-[color-mix(in_oklab,var(--color-fg-default)_8%,transparent)] focus-visible:outline-none"
                   aria-label={`Close ${label.toLowerCase()}`}
                   onClick={() => close(true)}
                 />
               </motion.div>
             )}
 
-            <motion.span className="pointer-events-none absolute top-1/2 right-3 -mt-2 grid size-4 place-items-center text-muted-foreground" aria-hidden="true" initial={false} animate={{ rotate: open ? 180 : 0 }} transition={reduced ? { duration: 0 } : GLIDE}>
+            <motion.span className="pointer-events-none absolute top-1/2 right-3 -mt-2 grid size-4 place-items-center text-fg-muted" aria-hidden="true" initial={false} animate={{ rotate: open ? 180 : 0 }} transition={reduced ? { duration: 0 } : GLIDE}>
               <ChevronDown size={16} strokeWidth={1.75} />
             </motion.span>
           </div>
@@ -499,7 +499,7 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
           {/* The list hangs under the lid at its own width, so it measures the same whatever size the surface is mid spring. */}
           <motion.div
             ref={listFaceRef}
-            className="absolute top-[var(--ms-h)] left-0 box-border w-[max(var(--ms-trigger-w),min(var(--ms-panel-w),calc(100vw-2rem)))] px-1.5 pb-1.5 before:absolute before:inset-x-3.5 before:top-0 before:h-px before:bg-border/60 before:content-[''] group-data-[align=end]/ms:right-0 group-data-[align=end]/ms:left-auto inert:pointer-events-none"
+            className="absolute top-[var(--ms-h)] left-0 box-border w-[max(var(--ms-trigger-w),min(var(--ms-panel-w),calc(100vw-2rem)))] px-1.5 pb-1.5 before:absolute before:inset-x-3.5 before:top-0 before:h-px before:bg-border-default/60 before:content-[''] group-data-[align=end]/ms:right-0 group-data-[align=end]/ms:left-auto inert:pointer-events-none"
             inert={!open || undefined}
             aria-hidden={!open || undefined}
             initial={false}
@@ -508,7 +508,7 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
           >
             <div ref={scrollRef} className="max-h-[var(--ms-list-max)] overflow-y-auto overscroll-contain pt-1.5 [scrollbar-width:thin]">
               <div id={listId} className="relative grid gap-0.5" role="listbox" aria-labelledby={labelId}>
-                <motion.span className="pointer-events-none absolute inset-x-0 top-0 rounded-[10px] bg-[color-mix(in_oklab,var(--color-foreground)_6.5%,transparent)]" style={{ y: hy, height: hh, opacity: ho }} aria-hidden="true" />
+                <motion.span className="pointer-events-none absolute inset-x-0 top-0 rounded-[10px] bg-[color-mix(in_oklab,var(--color-fg-default)_6.5%,transparent)]" style={{ y: hy, height: hh, opacity: ho }} aria-hidden="true" />
                 {visibleSections.map((section) => {
                   const rows = section.options.map((option) => {
                     const index = indexOf.get(option.value) ?? 0;
@@ -521,7 +521,7 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
                         role="option"
                         aria-selected={isSelected}
                         aria-disabled={option.disabled || undefined}
-                        className="relative box-border flex min-h-9 cursor-pointer select-none items-center gap-2 rounded-[10px] py-0 pr-2.5 pl-2 text-muted-foreground transition-colors duration-[var(--duration-quick)] data-[active]:text-foreground aria-selected:text-foreground aria-disabled:cursor-not-allowed aria-disabled:text-muted-foreground aria-disabled:opacity-60 motion-reduce:transition-none"
+                        className="relative box-border flex min-h-9 cursor-pointer select-none items-center gap-2 rounded-[10px] py-0 pr-2.5 pl-2 text-fg-muted transition-colors duration-[var(--duration-quick)] data-[active]:text-fg-default aria-selected:text-fg-default aria-disabled:cursor-not-allowed aria-disabled:text-fg-muted aria-disabled:opacity-60 motion-reduce:transition-none"
                         data-active={isActive || undefined}
                         ref={(node) => { if (node) optionRefs.current.set(option.value, node); else optionRefs.current.delete(option.value); }}
                         onPointerMove={(event) => { if (event.pointerType === "mouse" && !option.disabled && option.value !== current) setActive(option.value); }}
@@ -532,9 +532,9 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
                           {option.icon && <span className={iconClass} aria-hidden="true">{option.icon}</span>}
                           <span className="min-w-0 truncate">{option.label}</span>
                         </span>
-                        {option.meta && <span className="flex-none text-xs tabular-nums text-muted-foreground">{option.meta}</span>}
+                        {option.meta && <span className="flex-none text-xs tabular-nums text-fg-muted">{option.meta}</span>}
                         <span
-                          className="grid size-4 flex-none scale-[.6] place-items-center text-foreground opacity-0 [transition:opacity_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)] data-[on]:scale-100 data-[on]:opacity-100 motion-reduce:transition-none"
+                          className="grid size-4 flex-none scale-[.6] place-items-center text-fg-default opacity-0 [transition:opacity_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)] data-[on]:scale-100 data-[on]:opacity-100 motion-reduce:transition-none"
                           data-on={isSelected || undefined}
                           aria-hidden="true"
                         >
@@ -545,14 +545,14 @@ export function MorphSelect({ label, hideLabel = false, items, value, defaultVal
                   });
                   return section.label ? (
                     <div key={section.key} role="group" aria-labelledby={`${uid}-${section.key}`} className="grid gap-0.5 [&+&]:mt-1">
-                      <div id={`${uid}-${section.key}`} className="px-2.5 pt-2 pb-1 text-xs text-muted-foreground" role="presentation">{section.label}</div>
+                      <div id={`${uid}-${section.key}`} className="px-2.5 pt-2 pb-1 text-xs text-fg-muted" role="presentation">{section.label}</div>
                       {rows}
                     </div>
                   ) : (
                     <div key={section.key} role="presentation" className="grid gap-0.5 [&+&]:mt-1">{rows}</div>
                   );
                 })}
-                {resultCount === 0 && <p className="m-0 px-2.5 pt-3 pb-3.5 text-sm text-muted-foreground">No matches for “{query.trim()}”</p>}
+                {resultCount === 0 && <p className="m-0 px-2.5 pt-3 pb-3.5 text-sm text-fg-muted">No matches for “{query.trim()}”</p>}
               </div>
             </div>
           </motion.div>

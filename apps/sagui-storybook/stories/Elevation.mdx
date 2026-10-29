@@ -14,13 +14,13 @@ export const levels = [
   [4, "shadow-overlay", "shadow-overlay", "Dialogs and drawers"],
 ];
 
-<div className="sb-unstyled grid grid-cols-5 gap-6 bg-background p-6 text-foreground">
+<div className="sb-unstyled grid grid-cols-5 gap-6 bg-bg-canvas p-6 text-fg-default">
   {levels.map(([level, cls, token, use]) => (
-    <div key={level} className={`grid min-h-32 content-between rounded-[var(--radius-lg)] border border-border bg-surface p-4 ${cls}`}>
-      <span className="type-h2 text-muted-foreground">{level}</span>
+    <div key={level} className={`grid min-h-32 content-between rounded-[var(--radius-lg)] border border-border-default bg-bg-surface p-4 ${cls}`}>
+      <span className="type-h2 text-fg-muted">{level}</span>
       <div>
         <code className="type-code block text-xs">{token}</code>
-        <span className="type-caption text-muted-foreground">{use}</span>
+        <span className="type-caption text-fg-muted">{use}</span>
       </div>
     </div>
   ))}

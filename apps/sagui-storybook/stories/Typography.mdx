@@ -23,12 +23,12 @@ export const roles = [
   ["type-code", "13 / 1.6 · 400 mono", "npm install @sagui/ui"],
 ];
 
-<div className="sb-unstyled grid divide-y divide-border text-foreground">
+<div className="sb-unstyled grid divide-y divide-border-default text-fg-default">
   {roles.map(([role, spec, sample]) => (
     <div key={role} className="grid grid-cols-[12rem_1fr] items-baseline gap-6 py-3">
       <div>
         <code className="type-code">{role}</code>
-        <div className="type-caption text-muted-foreground">{spec}</div>
+        <div className="type-caption text-fg-muted">{spec}</div>
       </div>
       <div className={role}>{sample}</div>
     </div>
@@ -39,10 +39,10 @@ export const roles = [
 
 export const steps = ["text-xs", "text-sm", "text-base", "text-lg", "text-xl", "text-2xl", "text-3xl", "text-4xl", "text-5xl", "text-6xl"];
 
-<div className="sb-unstyled grid gap-2 text-foreground">
+<div className="sb-unstyled grid gap-2 text-fg-default">
   {steps.map((step) => (
     <div key={step} className="flex items-baseline gap-4">
-      <code className="type-caption w-24 flex-none text-muted-foreground">{step}</code>
+      <code className="type-caption w-24 flex-none text-fg-muted">{step}</code>
       <span className={`${step} font-medium`}>Aa Quiet type</span>
     </div>
   ))}
@@ -50,7 +50,7 @@ export const steps = ["text-xs", "text-sm", "text-base", "text-lg", "text-xl", "
 
 ## Weights
 
-<div className="sb-unstyled flex gap-8 text-3xl text-foreground">
+<div className="sb-unstyled flex gap-8 text-3xl text-fg-default">
   <span className="font-normal">Ag 400</span>
   <span className="font-medium">Ag 500</span>
   <span className="font-semibold">Ag 600</span>

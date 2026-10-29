@@ -42,7 +42,7 @@ const tokens = themeDecls.map(({ name, value, note }) => {
   const ref = value.match(/^var\((--sg-[\w-]+)\)$/)?.[1];
   const t = { name, category: category(name), value };
   if (ref) { t.light = light[ref]; t.dark = dark[ref]; }
-  if (name.startsWith("--color-")) t.tailwind = name.slice(8); // bg-primary, text-muted-foreground...
+  if (name.startsWith("--color-")) t.tailwind = name.slice(8); // bg-accent-default, text-fg-muted...
   if (note) t.note = note;
   return t;
 });

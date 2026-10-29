@@ -54,17 +54,17 @@ export const Switch = React.forwardRef<React.ElementRef<typeof SwitchPrimitive.R
       onKeyDown={(event) => { onKeyDown?.(event); if (event.key === " ") setPressed(true); }}
       onKeyUp={(event) => { onKeyUp?.(event); if (pressed && !props.disabled) releasedAt.current = performance.now(); setPressed(false); }}
       onBlur={(event) => { onBlur?.(event); setPressed(false); }}
-      className={cn("group/sw inline-flex min-h-10 cursor-pointer items-center gap-3 border-0 bg-transparent p-0 text-sm text-foreground [-webkit-tap-highlight-color:transparent] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50", className)}
+      className={cn("group/sw inline-flex min-h-10 cursor-pointer items-center gap-3 border-0 bg-transparent p-0 text-sm text-fg-default [-webkit-tap-highlight-color:transparent] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50", className)}
       aria-label={props["aria-label"] ?? label}
     >
       {/* Fixed box: the thumb moves inside it with transforms, so nothing around the switch shifts. The track crossfades between the two fills. */}
       <span
         className={cn(
-          "relative isolate box-border flex h-6 w-[42px] flex-none items-center rounded-full bg-[color-mix(in_oklab,var(--color-foreground)_18%,var(--color-surface))] p-[3px]",
+          "relative isolate box-border flex h-6 w-[42px] flex-none items-center rounded-full bg-[color-mix(in_oklab,var(--color-fg-default)_18%,var(--color-bg-surface))] p-[3px]",
           "transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-          "before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:bg-primary before:opacity-0 before:transition-opacity before:duration-[var(--duration-standard)] before:content-[''] group-data-[state=checked]/sw:before:opacity-100 motion-reduce:before:transition-none",
-          "[@media(hover:hover)_and_(pointer:fine)]:group-hover/sw:group-enabled/sw:group-data-[state=unchecked]/sw:bg-[color-mix(in_oklab,var(--color-foreground)_26%,var(--color-surface))]",
-          "group-focus-visible/sw:ring-2 group-focus-visible/sw:ring-ring group-focus-visible/sw:ring-offset-2 group-focus-visible/sw:ring-offset-background"
+          "before:absolute before:inset-0 before:-z-1 before:rounded-[inherit] before:bg-accent-default before:opacity-0 before:transition-opacity before:duration-[var(--duration-standard)] before:content-[''] group-data-[state=checked]/sw:before:opacity-100 motion-reduce:before:transition-none",
+          "[@media(hover:hover)_and_(pointer:fine)]:group-hover/sw:group-enabled/sw:group-data-[state=unchecked]/sw:bg-[color-mix(in_oklab,var(--color-fg-default)_26%,var(--color-bg-surface))]",
+          "group-focus-visible/sw:ring-2 group-focus-visible/sw:ring-border-focus group-focus-visible/sw:ring-offset-2 group-focus-visible/sw:ring-offset-bg-canvas"
         )}
       >
         {/* The thumb stretches like a held finger and keeps its far edge anchored, then travels on a spring. */}

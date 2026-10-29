@@ -31,7 +31,7 @@ export function Status() {
   return (
     <div className="grid justify-items-center gap-3">
       <UserMenu user={{ name: "Maya Chen", email: "maya@example.com" }} status={status} onStatusChange={setStatus} theme={theme} onThemeChange={setTheme} onSignOut={() => {}} />
-      <p className="text-sm text-muted-foreground">Status: {status}, theme: {theme}</p>
+      <p className="text-sm text-fg-muted">Status: {status}, theme: {theme}</p>
     </div>
   );
 }

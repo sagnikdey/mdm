@@ -25,11 +25,11 @@ const fadeOnly: TargetAndTransition = { opacity: 0, transition: { duration: dura
 
 /** Colours come from per-tone custom properties so hover can mix the tone into the surface. */
 const tones: Record<BadgeTone, string> = {
-  neutral: "[--badge-color:var(--color-muted-foreground)] [--badge-fg:var(--color-muted-foreground)] [--badge-bg:var(--color-muted)] [--badge-border:var(--color-border)]",
-  success: "[--badge-color:var(--color-success)] [--badge-fg:var(--color-success)] [--badge-bg:color-mix(in_oklab,var(--color-success)_10%,var(--color-surface))] [--badge-border:color-mix(in_oklab,var(--color-success)_25%,var(--color-border))]",
-  info: "[--badge-color:var(--color-primary)] [--badge-fg:var(--color-primary)] [--badge-bg:var(--color-secondary)] [--badge-border:color-mix(in_oklab,var(--color-primary)_24%,var(--color-border))]",
-  warning: "[--badge-color:var(--color-warning)] [--badge-fg:var(--color-warning)] [--badge-bg:color-mix(in_oklab,var(--color-warning)_11%,var(--color-surface))] [--badge-border:color-mix(in_oklab,var(--color-warning)_27%,var(--color-border))]",
-  danger: "[--badge-color:var(--color-destructive)] [--badge-fg:var(--color-destructive)] [--badge-bg:color-mix(in_oklab,var(--color-destructive)_10%,var(--color-surface))] [--badge-border:color-mix(in_oklab,var(--color-destructive)_26%,var(--color-border))]",
+  neutral: "[--badge-color:var(--color-fg-muted)] [--badge-fg:var(--color-fg-muted)] [--badge-bg:var(--color-bg-muted)] [--badge-border:var(--color-border-default)]",
+  success: "[--badge-color:var(--color-success-default)] [--badge-fg:var(--color-success-default)] [--badge-bg:color-mix(in_oklab,var(--color-success-default)_10%,var(--color-bg-surface))] [--badge-border:color-mix(in_oklab,var(--color-success-default)_25%,var(--color-border-default))]",
+  info: "[--badge-color:var(--color-accent-default)] [--badge-fg:var(--color-accent-default)] [--badge-bg:var(--color-secondary-default)] [--badge-border:color-mix(in_oklab,var(--color-accent-default)_24%,var(--color-border-default))]",
+  warning: "[--badge-color:var(--color-warning-default)] [--badge-fg:var(--color-warning-default)] [--badge-bg:color-mix(in_oklab,var(--color-warning-default)_11%,var(--color-bg-surface))] [--badge-border:color-mix(in_oklab,var(--color-warning-default)_27%,var(--color-border-default))]",
+  danger: "[--badge-color:var(--color-danger-default)] [--badge-fg:var(--color-danger-default)] [--badge-bg:color-mix(in_oklab,var(--color-danger-default)_10%,var(--color-bg-surface))] [--badge-border:color-mix(in_oklab,var(--color-danger-default)_26%,var(--color-border-default))]",
 };
 const sizes: Record<BadgeSize, string> = {
   sm: "min-h-[22px] px-2 text-[11px]",
@@ -72,7 +72,7 @@ export function Badge({ tone = "neutral", size = "md", icon, className, children
     <span
       {...props}
       className={cn(
-        "inline-flex items-center overflow-clip whitespace-nowrap rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] font-medium leading-none tracking-[-0.01em] text-[var(--badge-fg)] transition-[border-color,background-color,color] duration-[var(--duration-standard)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:border-[color-mix(in_oklab,var(--badge-color)_32%,var(--color-border))] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--badge-color)_10%,var(--color-surface))]",
+        "inline-flex items-center overflow-clip whitespace-nowrap rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] font-medium leading-none tracking-[-0.01em] text-[var(--badge-fg)] transition-[border-color,background-color,color] duration-[var(--duration-standard)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:border-[color-mix(in_oklab,var(--badge-color)_32%,var(--color-border-default))] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--badge-color)_10%,var(--color-bg-surface))]",
         tones[tone], sizes[size], className
       )}
     >

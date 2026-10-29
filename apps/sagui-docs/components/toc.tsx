@@ -20,23 +20,23 @@ export function Toc({ items, markdownHref }: { items: { id: string; title: strin
   if (!items.length) return null;
   return (
     <nav aria-label="On this page" className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-52 flex-none overflow-y-auto py-8 pl-4 xl:block">
-      <h2 className="mb-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">On this page</h2>
-      <ul className="grid gap-1 border-l border-border">
+      <h2 className="mb-3 text-xs font-medium tracking-wide text-fg-muted uppercase">On this page</h2>
+      <ul className="grid gap-1 border-l border-border-default">
         {items.map((item) => (
           <li key={item.id}>
             <a
               href={`#${item.id}`}
               aria-current={active === item.id ? "location" : undefined}
-              className="-ml-px block border-l border-transparent py-1 pl-3 text-[13px] text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:border-foreground aria-[current=location]:text-foreground"
+              className="-ml-px block border-l border-transparent py-1 pl-3 text-[13px] text-fg-muted transition-colors hover:text-fg-default aria-[current=location]:border-fg-default aria-[current=location]:text-fg-default"
             >
               {item.title}
             </a>
           </li>
         ))}
       </ul>
-      <div className="mt-6 grid gap-1.5 border-t border-border pt-4 text-[13px]">
-        {markdownHref && <a href={markdownHref} className="text-muted-foreground transition-colors hover:text-foreground">View as Markdown</a>}
-        <a href="#" className="text-muted-foreground transition-colors hover:text-foreground">Back to top</a>
+      <div className="mt-6 grid gap-1.5 border-t border-border-default pt-4 text-[13px]">
+        {markdownHref && <a href={markdownHref} className="text-fg-muted transition-colors hover:text-fg-default">View as Markdown</a>}
+        <a href="#" className="text-fg-muted transition-colors hover:text-fg-default">Back to top</a>
       </div>
     </nav>
   );

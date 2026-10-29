@@ -29,7 +29,7 @@ export function Sides() {
       <Popover>
         <PopoverTrigger asChild><Button variant="outline">Opens above</Button></PopoverTrigger>
         <PopoverContent side="top" align="center">
-          <p className="text-sm text-muted-foreground">Radix flips the side when there is no room.</p>
+          <p className="text-sm text-fg-muted">Radix flips the side when there is no room.</p>
         </PopoverContent>
       </Popover>
     </div>

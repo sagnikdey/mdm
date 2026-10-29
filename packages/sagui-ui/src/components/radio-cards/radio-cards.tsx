@@ -117,7 +117,7 @@ export const RadioCards = React.forwardRef<HTMLDivElement, RadioCardsProps>(func
       aria-disabled={disabled || undefined}
       aria-required={required || undefined}
       className={cn(
-        "relative grid text-sm leading-snug tracking-[-0.01em] text-foreground [&_*]:box-border",
+        "relative grid text-sm leading-snug tracking-[-0.01em] text-fg-default [&_*]:box-border",
         grid ? "gap-2.5 [grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--min-column,180px)),1fr))]" : "gap-2 grid-cols-[minmax(0,1fr)]",
         className
       )}
@@ -126,7 +126,7 @@ export const RadioCards = React.forwardRef<HTMLDivElement, RadioCardsProps>(func
       {...rest}
     >
       {/* The one moving part: a ring that springs from card to card. It sits over the card border so the card itself never changes size. */}
-      <motion.span className="pointer-events-none absolute top-0 left-0 z-1 rounded-[var(--radius-xl)] border-[1.5px] border-primary" style={{ x, y, width: w, height: h, opacity: o }} aria-hidden="true" />
+      <motion.span className="pointer-events-none absolute top-0 left-0 z-1 rounded-[var(--radius-xl)] border-[1.5px] border-accent-default" style={{ x, y, width: w, height: h, opacity: o }} aria-hidden="true" />
       {options.map((option, index) => {
         const checked = index === selectedIndex;
         const off = !usable(option);
@@ -139,15 +139,15 @@ export const RadioCards = React.forwardRef<HTMLDivElement, RadioCardsProps>(func
             role="radio"
             data-card={index}
             className={cn(
-              "group/card relative grid min-w-0 cursor-pointer select-none items-start gap-x-3 gap-y-1 rounded-[var(--radius-xl)] border border-border bg-surface [-webkit-tap-highlight-color:transparent]",
+              "group/card relative grid min-w-0 cursor-pointer select-none items-start gap-x-3 gap-y-1 rounded-[var(--radius-xl)] border border-border-default bg-bg-surface [-webkit-tap-highlight-color:transparent]",
               "transition-[background-color,border-color] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
               grid
                 ? "px-4 py-3.5 [grid-template-areas:'body_indicator'_'meta_meta'] grid-cols-[minmax(0,1fr)_auto] grid-rows-[minmax(0,1fr)_auto]"
                 : "items-center py-[13px] pr-4 pl-3.5 [grid-template-areas:'indicator_body_meta'] grid-cols-[auto_minmax(0,1fr)_auto]",
-              checked && "bg-[color-mix(in_oklab,var(--color-primary)_4%,var(--color-surface))]",
-              off && "cursor-not-allowed bg-muted",
-              !checked && !off && "[@media(hover:hover)_and_(pointer:fine)]:hover:border-border-strong active:bg-muted focus-visible:border-border-strong focus-visible:bg-muted",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              checked && "bg-[color-mix(in_oklab,var(--color-accent-default)_4%,var(--color-bg-surface))]",
+              off && "cursor-not-allowed bg-bg-muted",
+              !checked && !off && "[@media(hover:hover)_and_(pointer:fine)]:hover:border-border-strong active:bg-bg-muted focus-visible:border-border-strong focus-visible:bg-bg-muted",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg-canvas"
             )}
             aria-checked={checked}
             aria-disabled={off || undefined}
@@ -162,21 +162,21 @@ export const RadioCards = React.forwardRef<HTMLDivElement, RadioCardsProps>(func
               className={cn(
                 "grid size-[18px] flex-none place-items-center rounded-full border-[1.5px] border-border-strong [grid-area:indicator] transition-[border-color,background-color] duration-[var(--duration-quick)] motion-reduce:transition-none",
                 grid && "mt-px",
-                checked && "border-primary bg-primary",
-                off && "border-border"
+                checked && "border-accent-default bg-accent-default",
+                off && "border-border-default"
               )}
               aria-hidden="true"
             >
-              <motion.span className="size-1.5 rounded-full bg-primary-foreground" initial={false} animate={{ scale: checked ? 1 : 0 }} transition={reduced ? { duration: 0 } : spring.snappy} />
+              <motion.span className="size-1.5 rounded-full bg-fg-on-accent" initial={false} animate={{ scale: checked ? 1 : 0 }} transition={reduced ? { duration: 0 } : spring.snappy} />
             </span>
             <span className="grid min-w-0 gap-0.5 [grid-area:body]">
-              <span id={labelId} className={cn("flex min-w-0 items-center gap-2 font-medium", off && "text-muted-foreground")}>
-                {option.icon && <span className={cn("grid size-[18px] flex-none place-items-center text-muted-foreground [&>svg]:size-[18px]", checked && "text-foreground")}>{option.icon}</span>}
+              <span id={labelId} className={cn("flex min-w-0 items-center gap-2 font-medium", off && "text-fg-muted")}>
+                {option.icon && <span className={cn("grid size-[18px] flex-none place-items-center text-fg-muted [&>svg]:size-[18px]", checked && "text-fg-default")}>{option.icon}</span>}
                 <span className="min-w-0 truncate">{option.label}</span>
               </span>
-              {description && <span id={descriptionId} className="text-xs leading-snug text-muted-foreground [text-wrap:pretty]">{description}</span>}
+              {description && <span id={descriptionId} className="text-xs leading-snug text-fg-muted [text-wrap:pretty]">{description}</span>}
             </span>
-            {option.meta && <span className={cn("tabular-nums whitespace-nowrap [grid-area:meta]", grid ? "mt-2.5 text-lg" : "font-medium", off ? "text-muted-foreground" : "text-foreground")}>{option.meta}</span>}
+            {option.meta && <span className={cn("tabular-nums whitespace-nowrap [grid-area:meta]", grid ? "mt-2.5 text-lg" : "font-medium", off ? "text-fg-muted" : "text-fg-default")}>{option.meta}</span>}
           </div>
         );
       })}

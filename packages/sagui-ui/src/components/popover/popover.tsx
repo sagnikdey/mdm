@@ -12,7 +12,7 @@ export const PopoverTrigger = React.forwardRef<HTMLButtonElement, React.Componen
 PopoverTrigger.displayName = "PopoverTrigger";
 
 const content = [
-  "z-80 min-w-48 max-w-[min(22rem,calc(100vw-20px))] rounded-[var(--radius-xl)] border border-border bg-surface p-4 text-foreground shadow-floating focus:outline-none",
+  "z-80 min-w-48 max-w-[min(22rem,calc(100vw-20px))] rounded-[var(--radius-xl)] border border-border-default bg-bg-surface p-4 text-fg-default shadow-floating focus:outline-none",
   "origin-[var(--radix-popover-content-transform-origin)]",
   // The panel starts a few pixels toward its trigger and settles on a spring; it leaves faster than it arrives.
   // Transitions instead of keyframes, so a close that interrupts the open, or a reopen during the close, reverses from where the panel is.

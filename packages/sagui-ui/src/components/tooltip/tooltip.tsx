@@ -6,8 +6,8 @@ import { easeEnter, easeStandard } from "../../lib/motion";
 import { cn } from "../../lib/cn";
 
 export const tooltipContent = [
-  "z-90 max-w-60 px-3 py-2 rounded-[var(--radius-md)] border border-[color-mix(in_oklab,var(--color-background)_14%,var(--color-foreground))]",
-  "bg-foreground text-background shadow-raised text-sm font-normal leading-snug",
+  "z-90 max-w-60 px-3 py-2 rounded-[var(--radius-md)] border border-[color-mix(in_oklab,var(--color-bg-canvas)_14%,var(--color-fg-default))]",
+  "bg-bg-emphasis text-fg-on-emphasis shadow-raised text-sm font-normal leading-snug",
   "origin-[var(--radix-tooltip-content-transform-origin)] [--tip-x:0px] [--tip-y:3px]",
   "data-[side=bottom]:[--tip-y:-3px] data-[side=left]:[--tip-x:3px] data-[side=left]:[--tip-y:0px] data-[side=right]:[--tip-x:-3px] data-[side=right]:[--tip-y:0px]",
   "[transition:opacity_var(--duration-fast)_var(--ease-enter),transform_var(--duration-fast)_var(--ease-enter)]",

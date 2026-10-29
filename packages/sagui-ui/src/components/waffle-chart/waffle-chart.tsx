@@ -164,7 +164,7 @@ export function WaffleChart({ data, label, unit = "", formatValue, rows = 10, co
     if (item.color) return item.color;
     if (key === accent) return "var(--color-chart-1)";
     const rank = data.filter(entry => entry.key !== accent).findIndex(entry => entry.key === key);
-    return rank < 3 ? `var(--color-chart-${rank + 2})` : `color-mix(in oklab, var(--color-foreground) ${SHADES[(rank - 3) % SHADES.length]}%, var(--color-surface))`;
+    return rank < 3 ? `var(--color-chart-${rank + 2})` : `color-mix(in oklab, var(--color-fg-default) ${SHADES[(rank - 3) % SHADES.length]}%, var(--color-bg-surface))`;
   };
 
   const shapeOf = (key: string | null) => {

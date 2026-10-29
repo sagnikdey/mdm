@@ -76,8 +76,8 @@ Delete everything create-next-app put in `app/globals.css`. Its `:root` colors, 
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--color-bg-canvas);
+  color: var(--color-fg-default);
   font-family: var(--font-sans);
 }
 ```
@@ -478,7 +478,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
     <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="type-overline text-muted-foreground">Sales</p>
+          <p className="type-overline text-fg-muted">Sales</p>
           <h1 className="type-h1 mt-1">Overview</h1>
         </div>
         <RangeSwitch value={range} />
@@ -490,17 +490,17 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
         <MetricCard label="Win rate" value={data.kpis.winRate * 100} suffix="%" decimals={1} change={`+${(data.kpis.winRateChange * 100).toFixed(1)} pts`} context={compared} />
       </section>
 
-      <section aria-labelledby="revenue-title" className="rounded-container border border-border bg-surface p-5 shadow-resting">
+      <section aria-labelledby="revenue-title" className="rounded-container border border-border-default bg-bg-surface p-5 shadow-resting">
         <h2 id="revenue-title" className="type-h3 mb-4">Revenue against target</h2>
         <RevenueChart data={data.revenue} />
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section aria-labelledby="pipeline-title" className="rounded-container border border-border bg-surface p-5 shadow-resting">
+        <section aria-labelledby="pipeline-title" className="rounded-container border border-border-default bg-bg-surface p-5 shadow-resting">
           <h2 id="pipeline-title" className="type-h3 mb-4">Pipeline</h2>
           <PipelineByStage data={data.pipeline} period={`Last ${range.replace("d", " days")}`} />
         </section>
-        <section aria-labelledby="sources-title" className="rounded-container border border-border bg-surface p-5 shadow-resting">
+        <section aria-labelledby="sources-title" className="rounded-container border border-border-default bg-bg-surface p-5 shadow-resting">
           <h2 id="sources-title" className="type-h3 mb-4">Sources</h2>
           <RevenueBySource data={data.sources} />
         </section>
@@ -519,7 +519,7 @@ Page layout rules:
 
 - One `type-h1` per page, a `type-overline` eyebrow above it, and the page's filters on the same row.
 - KPIs first, then the main trend, then breakdowns, then records.
-- Chart panels are `rounded-container border border-border bg-surface p-5 shadow-resting`, each with a `type-h3` heading and an `aria-labelledby` link to it.
+- Chart panels are `rounded-container border border-border-default bg-bg-surface p-5 shadow-resting`, each with a `type-h3` heading and an `aria-labelledby` link to it.
 - Widths come from `max-w-7xl` for dashboards and `max-w-3xl` for forms and settings.
 - Use `gap-4` inside a group and `gap-8` between groups.
 
@@ -536,9 +536,9 @@ export default function Loading() {
     <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6" aria-busy="true">
       <Skeleton lines={1} label="Loading page" />
       <div className="grid gap-4 sm:grid-cols-3">
-        {[0, 1, 2].map((index) => <div key={index} className="rounded-container border border-border bg-surface p-5"><Skeleton lines={2} label="Loading metric" /></div>)}
+        {[0, 1, 2].map((index) => <div key={index} className="rounded-container border border-border-default bg-bg-surface p-5"><Skeleton lines={2} label="Loading metric" /></div>)}
       </div>
-      <div className="rounded-container border border-border bg-surface p-5"><Skeleton lines={6} label="Loading chart" /></div>
+      <div className="rounded-container border border-border-default bg-bg-surface p-5"><Skeleton lines={6} label="Loading chart" /></div>
     </div>
   );
 }
@@ -569,15 +569,15 @@ Use these and nothing else for visual styling.
 
 | Purpose | Use |
 | --- | --- |
-| Page and text | `bg-background`, `text-foreground` |
-| Panels, cards, popovers | `bg-surface` |
-| Quiet fills, secondary text | `bg-muted`, `text-muted-foreground` |
-| Lines | `border-border`, and `border-border-strong` for emphasis |
-| Main action, links, selection | `bg-primary`, `text-primary-foreground`, `text-primary` |
-| Secondary emphasis | `bg-secondary`, `text-secondary-foreground` |
-| Status | `text-success`, `text-warning`, `text-destructive` (and `bg-*` versions) |
+| Page and text | `bg-bg-canvas`, `text-fg-default` |
+| Panels, cards, popovers | `bg-bg-surface` |
+| Quiet fills, secondary text | `bg-bg-muted`, `text-fg-muted` |
+| Lines | `border-border-default`, and `border-border-strong` for emphasis |
+| Main action, links, selection | `bg-accent-default`, `text-fg-on-accent`, `text-accent-default` |
+| Secondary emphasis | `bg-secondary-default`, `text-secondary-fg` |
+| Status | `text-success-default`, `text-warning-default`, `text-danger-default` (and `bg-*` versions) |
 | Charts you draw yourself | `--color-chart-1` to `--color-chart-4` (`bg-chart-1`, `text-chart-3` ...) |
-| Focus | `ring-ring` |
+| Focus | `ring-border-focus` |
 | Type | `type-display`, `type-h1`, `type-h2`, `type-h3`, `type-title`, `type-body-lg`, `type-body`, `type-body-sm`, `type-label`, `type-caption`, `type-overline`, `type-code` |
 | Corners | `rounded-control` (inputs, buttons), `rounded-container` (cards, panels), `rounded-overlay` (menus, dialogs), `rounded-pill` |
 | Elevation | `shadow-resting` (panels), `shadow-raised` (hover), `shadow-floating` (menus, popovers), `shadow-overlay` (dialogs) |

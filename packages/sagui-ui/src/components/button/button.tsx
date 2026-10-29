@@ -9,7 +9,7 @@ export const buttonVariants = cva(
   [
     "relative inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium select-none overflow-hidden",
     "rounded-[var(--radius-md)] transition-colors duration-[var(--duration-base)] cursor-pointer",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg-canvas",
     "disabled:pointer-events-none disabled:opacity-50",
     "aria-busy:cursor-progress",
     "[&_svg]:size-4 [&_svg]:shrink-0",
@@ -17,11 +17,11 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        outline: "border border-border bg-transparent text-foreground hover:bg-muted",
-        ghost: "bg-transparent text-foreground hover:bg-muted",
-        danger: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        primary: "bg-accent-default text-fg-on-accent shadow-sm hover:bg-accent-hover",
+        secondary: "bg-secondary-default text-secondary-fg hover:bg-secondary-default/80",
+        outline: "border border-border-default bg-transparent text-fg-default hover:bg-bg-muted",
+        ghost: "bg-transparent text-fg-default hover:bg-bg-muted",
+        danger: "bg-danger-default text-fg-on-danger shadow-sm hover:bg-danger-default/90",
       },
       size: {
         sm: "h-8 px-3 text-sm",

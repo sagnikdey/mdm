@@ -445,17 +445,17 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
       <div
         ref={controlRef}
         className={cn(
-          "relative box-border flex h-[var(--pi-h)] min-w-0 rounded-[var(--radius-md)] border bg-surface",
+          "relative box-border flex h-[var(--pi-h)] min-w-0 rounded-[var(--radius-md)] border bg-bg-surface",
           "transition-[border-color,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-          "has-[[data-number]:focus]:border-ring has-[[data-number]:focus]:ring-[3px] has-[[data-number]:focus]:ring-ring/25",
-          invalid ? "border-destructive has-[[data-number]:focus]:border-destructive has-[[data-number]:focus]:ring-destructive/25" : "border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:not-has-[[data-number]:focus]:border-foreground",
-          "group-data-[disabled]/pi:bg-muted group-data-[disabled]/pi:opacity-50"
+          "has-[[data-number]:focus]:border-border-focus has-[[data-number]:focus]:ring-[3px] has-[[data-number]:focus]:ring-border-focus-soft",
+          invalid ? "border-danger-default has-[[data-number]:focus]:border-danger-default has-[[data-number]:focus]:ring-danger-border" : "border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:not-has-[[data-number]:focus]:border-fg-default",
+          "group-data-[disabled]/pi:bg-bg-muted group-data-[disabled]/pi:opacity-50"
         )}
         data-invalid={invalid || undefined}
       >
         {/* The anchor holds the closed button's place and springs to a new width when the calling code changes length. */}
         <motion.div
-          className="relative h-full flex-none after:absolute after:top-2.5 after:right-0 after:bottom-2.5 after:w-px after:bg-border after:transition-opacity after:duration-[var(--duration-quick)] after:content-[''] group-data-[open]/pi:after:opacity-0"
+          className="relative h-full flex-none after:absolute after:top-2.5 after:right-0 after:bottom-2.5 after:w-px after:bg-border-default after:transition-opacity after:duration-[var(--duration-quick)] after:content-[''] group-data-[open]/pi:after:opacity-0"
           style={{ width: anchorW }}
         >
           {/* Sizes the closed button: same padding and content, so the width spring has a target before anything moves. */}
@@ -464,10 +464,10 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
           {/* One material for both states. Open, it steps out over the shell's own border so the two edges never double up. */}
           <motion.div
             className={cn(
-              "absolute top-0 left-0 z-2 overflow-clip bg-surface",
+              "absolute top-0 left-0 z-2 overflow-clip bg-bg-surface",
               "[transition:box-shadow_480ms_var(--ease-out-quint),background-color_var(--duration-quick)_var(--ease-out-quint)] motion-reduce:transition-none",
-              "after:pointer-events-none after:absolute after:inset-0 after:z-3 after:rounded-[inherit] after:border after:border-border after:opacity-0 after:transition-opacity after:duration-[var(--duration-quick)] after:content-[''] contrast-more:after:border-border-strong",
-              "group-data-[open]/pi:-translate-x-px group-data-[open]/pi:-translate-y-px group-data-[open]/pi:bg-surface group-data-[open]/pi:shadow-floating group-data-[open]/pi:after:opacity-100",
+              "after:pointer-events-none after:absolute after:inset-0 after:z-3 after:rounded-[inherit] after:border after:border-border-default after:opacity-0 after:transition-opacity after:duration-[var(--duration-quick)] after:content-[''] contrast-more:after:border-border-strong",
+              "group-data-[open]/pi:-translate-x-px group-data-[open]/pi:-translate-y-px group-data-[open]/pi:bg-bg-surface group-data-[open]/pi:shadow-floating group-data-[open]/pi:after:opacity-100",
               "group-data-[disabled]/pi:bg-transparent"
             )}
             style={{ width: shapeW, height: shapeH, borderRadius: radius }}
@@ -478,10 +478,10 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
                 type="button"
                 className={cn(
                   triggerBase,
-                  "absolute m-0 h-auto w-[calc(100%-6px)] cursor-pointer rounded-[calc(var(--radius-md)-4px)] border-0 bg-transparent py-0 pr-[33px] pl-[9px] text-left text-foreground [font-family:inherit] [letter-spacing:inherit] touch-manipulation [-webkit-tap-highlight-color:transparent] [inset:3px_auto_3px_3px]",
+                  "absolute m-0 h-auto w-[calc(100%-6px)] cursor-pointer rounded-[calc(var(--radius-md)-4px)] border-0 bg-transparent py-0 pr-[33px] pl-[9px] text-left text-fg-default [font-family:inherit] [letter-spacing:inherit] touch-manipulation [-webkit-tap-highlight-color:transparent] [inset:3px_auto_3px_3px]",
                   "transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-                  "[@media(hover:hover)_and_(pointer:fine)]:group-not-data-[open]/pi:group-not-data-[disabled]/pi:hover:bg-muted active:enabled:bg-muted disabled:cursor-not-allowed",
-                  "focus-visible:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                  "[@media(hover:hover)_and_(pointer:fine)]:group-not-data-[open]/pi:group-not-data-[disabled]/pi:hover:bg-bg-muted active:enabled:bg-bg-muted disabled:cursor-not-allowed",
+                  "focus-visible:bg-bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus"
                 )}
                 disabled={disabled}
                 inert={open || undefined}
@@ -519,10 +519,10 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
                 animate={open ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: reduced ? "blur(0px)" : `blur(${blur.subtle}px)` }}
                 transition={open ? { duration: 0.18, ease: easeEnter, delay: reduced ? 0 : 0.05 } : { duration: 0.1, ease: easeStandard }}
               >
-                <Search className="flex-none text-muted-foreground" size={16} strokeWidth={1.75} aria-hidden="true" />
+                <Search className="flex-none text-fg-muted" size={16} strokeWidth={1.75} aria-hidden="true" />
                 <input
                   ref={searchRef}
-                  className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 font-[inherit] text-sm tracking-[-0.01em] text-foreground outline-none placeholder:text-muted-foreground"
+                  className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 font-[inherit] text-sm tracking-[-0.01em] text-fg-default outline-none placeholder:text-fg-muted"
                   type="text"
                   role="combobox"
                   aria-label="Search countries or calling codes"
@@ -542,7 +542,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
                     <motion.button
                       key="clear"
                       type="button"
-                      className="grid size-6 flex-none cursor-pointer place-items-center rounded-full border-0 bg-[color-mix(in_oklab,var(--color-foreground)_8%,transparent)] p-0 text-muted-foreground transition-colors [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="grid size-6 flex-none cursor-pointer place-items-center rounded-full border-0 bg-[color-mix(in_oklab,var(--color-fg-default)_8%,transparent)] p-0 text-fg-muted transition-colors [-webkit-tap-highlight-color:transparent] [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                       aria-label="Clear search"
                       onPointerDown={(event) => event.preventDefault()}
                       onClick={() => { onQuery(""); searchRef.current?.focus(); }}
@@ -558,13 +558,13 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
                 {/* Sits over the shared chevron, so the chevron closes the list. */}
                 <button
                   type="button"
-                  className="size-9 flex-none cursor-pointer rounded-full border-0 bg-transparent p-0 [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-quick)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--color-foreground)_8%,transparent)] focus-visible:bg-[color-mix(in_oklab,var(--color-foreground)_8%,transparent)] focus-visible:outline-none"
+                  className="size-9 flex-none cursor-pointer rounded-full border-0 bg-transparent p-0 [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-quick)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[color-mix(in_oklab,var(--color-fg-default)_8%,transparent)] focus-visible:bg-[color-mix(in_oklab,var(--color-fg-default)_8%,transparent)] focus-visible:outline-none"
                   aria-label="Close country list"
                   onClick={() => close("trigger")}
                 />
               </motion.div>
 
-              <motion.span className="pointer-events-none absolute top-1/2 right-3 -mt-2 grid size-4 place-items-center text-muted-foreground" aria-hidden="true" initial={false} animate={{ rotate: open ? 180 : 0 }} transition={reduced ? { duration: 0 } : GLIDE}>
+              <motion.span className="pointer-events-none absolute top-1/2 right-3 -mt-2 grid size-4 place-items-center text-fg-muted" aria-hidden="true" initial={false} animate={{ rotate: open ? 180 : 0 }} transition={reduced ? { duration: 0 } : GLIDE}>
                 <ChevronDown size={16} strokeWidth={1.75} />
               </motion.span>
             </div>
@@ -572,7 +572,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
             {/* The list hangs under the lid at its final width, so rows never reflow while the surface springs open. */}
             <motion.div
               ref={listFaceRef}
-              className="absolute top-[calc(var(--pi-h)-2px)] left-0 box-border w-[var(--pi-panel-w)] px-1.5 pb-1.5 before:absolute before:inset-x-3.5 before:top-0 before:h-px before:bg-border/60 before:content-[''] inert:pointer-events-none"
+              className="absolute top-[calc(var(--pi-h)-2px)] left-0 box-border w-[var(--pi-panel-w)] px-1.5 pb-1.5 before:absolute before:inset-x-3.5 before:top-0 before:h-px before:bg-border-default/60 before:content-[''] inert:pointer-events-none"
               inert={!open || undefined}
               aria-hidden={!open || undefined}
               initial={false}
@@ -581,7 +581,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
             >
               <div ref={scrollRef} className="max-h-[280px] overflow-y-auto overscroll-contain pt-1.5 [scrollbar-width:thin]">
                 <div id={listId} className="relative grid gap-0.5" role="listbox" aria-label="Countries">
-                  <motion.span className="pointer-events-none absolute inset-x-0 top-0 rounded-[10px] bg-[color-mix(in_oklab,var(--color-foreground)_6.5%,transparent)]" style={{ y: hy, height: hh, opacity: ho }} aria-hidden="true" />
+                  <motion.span className="pointer-events-none absolute inset-x-0 top-0 rounded-[10px] bg-[color-mix(in_oklab,var(--color-fg-default)_6.5%,transparent)]" style={{ y: hy, height: hh, opacity: ho }} aria-hidden="true" />
                   {sections.map((section) => {
                     const body = section.rows.map((row) => {
                       const selected = row.entry.iso === current.iso;
@@ -591,7 +591,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
                           id={optionId(row.key)}
                           role="option"
                           aria-selected={selected}
-                          className="relative box-border flex min-h-9 cursor-pointer select-none items-center gap-2.5 rounded-[10px] px-2.5 text-sm text-muted-foreground transition-colors duration-[var(--duration-quick)] data-[active]:text-foreground aria-selected:text-foreground motion-reduce:transition-none"
+                          className="relative box-border flex min-h-9 cursor-pointer select-none items-center gap-2.5 rounded-[10px] px-2.5 text-sm text-fg-muted transition-colors duration-[var(--duration-quick)] data-[active]:text-fg-default aria-selected:text-fg-default motion-reduce:transition-none"
                           data-active={row.key === activeKey || undefined}
                           ref={(node) => { if (node) rowRefs.current.set(row.key, node); else rowRefs.current.delete(row.key); }}
                           onPointerMove={(event) => { if (event.pointerType === "mouse" && row.key !== activeKey) setActive(row.key); }}
@@ -600,9 +600,9 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
                         >
                           <span className={cn("inline-grid w-5 flex-none place-items-center text-[17px] font-normal leading-none", flagFont)} aria-hidden="true">{flagOf(row.entry.iso)}</span>
                           <span className="min-w-0 flex-1 truncate font-medium">{row.entry.name}</span>
-                          <span className="flex-none text-xs tabular-nums text-muted-foreground">+{row.entry.dial}</span>
+                          <span className="flex-none text-xs tabular-nums text-fg-muted">+{row.entry.dial}</span>
                           <span
-                            className="grid size-4 flex-none scale-[.6] place-items-center text-foreground opacity-0 [transition:opacity_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)] data-[on]:scale-100 data-[on]:opacity-100 motion-reduce:transition-none"
+                            className="grid size-4 flex-none scale-[.6] place-items-center text-fg-default opacity-0 [transition:opacity_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)] data-[on]:scale-100 data-[on]:opacity-100 motion-reduce:transition-none"
                             data-on={selected || undefined}
                             aria-hidden="true"
                           >
@@ -613,14 +613,14 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
                     });
                     return section.label ? (
                       <div key={section.key} role="group" aria-labelledby={`${uid}-${section.key}`} className="grid gap-0.5 [&+&]:mt-1">
-                        <div id={`${uid}-${section.key}`} className="px-2.5 pt-2 pb-1 text-xs text-muted-foreground" role="presentation">{section.label}</div>
+                        <div id={`${uid}-${section.key}`} className="px-2.5 pt-2 pb-1 text-xs text-fg-muted" role="presentation">{section.label}</div>
                         {body}
                       </div>
                     ) : (
                       <div key={section.key} role="presentation" className="grid gap-0.5 [&+&]:mt-1">{body}</div>
                     );
                   })}
-                  {rows.length === 0 && <p className="m-0 px-2.5 pt-3 pb-3.5 text-sm text-muted-foreground">No countries match “{query.trim()}”</p>}
+                  {rows.length === 0 && <p className="m-0 px-2.5 pt-3 pb-3.5 text-sm text-fg-muted">No countries match “{query.trim()}”</p>}
                 </div>
               </div>
             </motion.div>
@@ -629,14 +629,14 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
 
         {/* The number and its guide share one box. The guide paints the typed part invisibly, then the rest of the example faintly after it. */}
         <div className="relative flex min-w-0 flex-1 items-center">
-          <span className="pointer-events-none absolute inset-0 box-border flex items-center overflow-hidden py-0 pr-9 pl-3 text-sm leading-snug tracking-[-0.01em] whitespace-pre tabular-nums text-[color-mix(in_oklab,var(--color-muted-foreground)_72%,transparent)] [font-family:inherit]" aria-hidden="true">
+          <span className="pointer-events-none absolute inset-0 box-border flex items-center overflow-hidden py-0 pr-9 pl-3 text-sm leading-snug tracking-[-0.01em] whitespace-pre tabular-nums text-[color-mix(in_oklab,var(--color-fg-muted)_72%,transparent)] [font-family:inherit]" aria-hidden="true">
             <span className="invisible">{formatted}</span>{guide}
           </span>
           <input
             ref={inputRef}
             id={inputId}
             data-number=""
-            className="relative z-1 m-0 box-border h-full w-full min-w-0 rounded-r-[var(--radius-md)] border-0 bg-transparent py-0 pr-9 pl-3 text-sm leading-snug tracking-[-0.01em] tabular-nums text-foreground outline-none [font-family:inherit] disabled:cursor-not-allowed"
+            className="relative z-1 m-0 box-border h-full w-full min-w-0 rounded-r-[var(--radius-md)] border-0 bg-transparent py-0 pr-9 pl-3 text-sm leading-snug tracking-[-0.01em] tabular-nums text-fg-default outline-none [font-family:inherit] disabled:cursor-not-allowed"
             type="tel"
             inputMode="tel"
             autoComplete="tel"
@@ -655,7 +655,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
             {showCheck && (
               <motion.span
                 key="ok"
-                className="pointer-events-none absolute top-1/2 right-3 z-1 -mt-[9px] grid size-[18px] place-items-center text-success"
+                className="pointer-events-none absolute top-1/2 right-3 z-1 -mt-[9px] grid size-[18px] place-items-center text-success-default"
                 aria-hidden="true"
                 initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6, filter: `blur(${blur.subtle}px)` }}
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}

@@ -64,8 +64,8 @@ const settle = physical({ visualDuration: .5, bounce: 0 });
 const pop = physical(spring.snappy, .002);
 /** Neutral steps after the four series colors, and the quietest step for Other. */
 const NEUTRAL = [56, 42, 32];
-const seriesColor = (index: number) => index < 4 ? `var(--color-chart-${index + 1})` : `color-mix(in oklab, var(--color-foreground) ${NEUTRAL[(index - 4) % NEUTRAL.length]}%, var(--color-surface))`;
-const OTHER_COLOR = "color-mix(in oklab, var(--color-foreground) 26%, var(--color-surface))";
+const seriesColor = (index: number) => index < 4 ? `var(--color-chart-${index + 1})` : `color-mix(in oklab, var(--color-fg-default) ${NEUTRAL[(index - 4) % NEUTRAL.length]}%, var(--color-bg-surface))`;
+const OTHER_COLOR = "color-mix(in oklab, var(--color-fg-default) 26%, var(--color-bg-surface))";
 /** Room left outside the ring for the lift; the gap between segments and their corner radius, in pixels. */
 const LIFT = 4, GROW = 2, MARGIN = 7, GAP = 3, CORNER = 4;
 const grouped = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });

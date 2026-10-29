@@ -23,6 +23,6 @@ export const Disabled: Story = { args: { disabled: true } };
 export const MinorUnits: Story = {
   render: function Render() {
     const [value, setValue] = useState<number | null>(1250);
-    return <div className="grid gap-3"><MoneyInput label="Amount" value={value} onValueChange={(next) => setValue(next)} /><code className="text-xs text-muted-foreground">value = {String(value)}</code></div>;
+    return <div className="grid gap-3"><MoneyInput label="Amount" value={value} onValueChange={(next) => setValue(next)} /><code className="text-xs text-fg-muted">value = {String(value)}</code></div>;
   },
 };

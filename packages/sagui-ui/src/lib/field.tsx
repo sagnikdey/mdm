@@ -4,46 +4,46 @@ import { blur, duration, spring } from "@sagui/tokens/motion";
 import { easeEnter, easeStandard } from "./motion";
 
 /** Label above a field. */
-export const fieldLabel = "mb-2 text-sm font-medium leading-snug text-foreground";
+export const fieldLabel = "mb-2 text-sm font-medium leading-snug text-fg-default";
 
 /** The focus language shared by every field: the border darkens and a soft ring appears; the box never changes size. */
-export const focusRing = "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/25";
+export const focusRing = "focus-within:border-border-focus focus-within:ring-[3px] focus-within:ring-border-focus-soft";
 
 /** Bordered surface that wraps an input and its adornments. Pass `invalid` to color the border. */
 export const fieldShell = (invalid?: boolean) =>
   [
-    "flex min-h-10 min-w-0 items-center rounded-[var(--radius-md)] border bg-surface",
+    "flex min-h-10 min-w-0 items-center rounded-[var(--radius-md)] border bg-bg-surface",
     "transition-[border-color,box-shadow,background-color] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
     focusRing,
     invalid
-      ? "border-destructive focus-within:border-destructive focus-within:ring-destructive/25"
-      : "border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:not-focus-within:border-foreground",
-    "has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-muted has-[input:disabled]:opacity-60",
+      ? "border-danger-default focus-within:border-danger-default focus-within:ring-danger-border"
+      : "border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:not-focus-within:border-fg-default",
+    "has-[input:disabled]:cursor-not-allowed has-[input:disabled]:bg-bg-muted has-[input:disabled]:opacity-60",
   ].join(" ");
 
 /** An input with no chrome of its own, for use inside a shell. */
 export const bareInput =
-  "w-full min-w-0 border-0 bg-transparent p-0 font-[inherit] text-sm leading-snug tracking-[-0.01em] text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed";
+  "w-full min-w-0 border-0 bg-transparent p-0 font-[inherit] text-sm leading-snug tracking-[-0.01em] text-fg-default outline-none placeholder:text-fg-muted disabled:cursor-not-allowed";
 
 /** A self-contained input control: border, focus ring, invalid and disabled states. */
 export const inputControl = [
-  "w-full min-h-10 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 font-[inherit] text-sm leading-snug tracking-[-0.01em] text-foreground outline-none",
-  "placeholder:text-muted-foreground",
+  "w-full min-h-10 rounded-[var(--radius-md)] border border-border-strong bg-bg-surface px-3 font-[inherit] text-sm leading-snug tracking-[-0.01em] text-fg-default outline-none",
+  "placeholder:text-fg-muted",
   "transition-[border-color,box-shadow,background-color] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-  "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/25",
-  "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:not-aria-invalid:not-focus-visible:border-foreground",
-  "aria-invalid:border-destructive aria-invalid:focus-visible:ring-destructive/25",
-  "disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-60",
+  "focus-visible:border-border-focus focus-visible:ring-[3px] focus-visible:ring-border-focus-soft",
+  "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:not-aria-invalid:not-focus-visible:border-fg-default",
+  "aria-invalid:border-danger-default aria-invalid:focus-visible:ring-danger-border",
+  "disabled:cursor-not-allowed disabled:bg-bg-muted disabled:opacity-60",
 ].join(" ");
 
 /** Small round icon button used inside shells (reveal, clear, steppers). */
 export const adornmentButton = [
-  "grid size-[30px] flex-none place-items-center rounded-[var(--radius-md)] border-0 bg-transparent text-muted-foreground cursor-pointer",
+  "grid size-[30px] flex-none place-items-center rounded-[var(--radius-md)] border-0 bg-transparent text-fg-muted cursor-pointer",
   "[transition:background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
-  "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground",
+  "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default",
   "active:scale-[.96] active:[transition-duration:var(--duration-quick),var(--duration-quick),100ms]",
   "disabled:cursor-not-allowed disabled:opacity-50",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus",
   "motion-reduce:transition-none motion-reduce:active:scale-100",
 ].join(" ");
 
@@ -152,8 +152,8 @@ function MessageRow({ id, text, className, alert, rollNumbers }: { id?: string; 
 }
 
 export const messageClass = {
-  description: "block pt-2 text-xs leading-snug text-muted-foreground",
-  error: "block pt-2 text-xs leading-snug text-destructive",
+  description: "block pt-2 text-xs leading-snug text-fg-muted",
+  error: "block pt-2 text-xs leading-snug text-danger-default",
 } as const;
 
 /**

@@ -19,7 +19,7 @@ export function MinorUnits() {
   return (
     <div className="grid w-full max-w-md gap-3">
       <MoneyInput label="Amount" value={cents} onValueChange={setCents} quickAdd={[]} />
-      <code className="text-xs text-muted-foreground">value = {String(cents)}</code>
+      <code className="text-xs text-fg-muted">value = {String(cents)}</code>
     </div>
   );
 }

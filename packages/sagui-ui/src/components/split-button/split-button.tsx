@@ -33,21 +33,21 @@ const half = [
   "border-0 text-[inherit] font-[inherit] cursor-pointer select-none",
   "transition-[background-color,color,opacity] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)]",
   "disabled:cursor-not-allowed disabled:opacity-50",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus",
 ].join(" ");
 
 const tone = {
   primary: {
-    group: "border-primary bg-primary rounded-[var(--radius-md)]",
-    half: "bg-primary text-primary-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-[color-mix(in_oklab,var(--color-primary)_88%,var(--color-background))] active:enabled:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-background))]",
+    group: "border-accent-default bg-accent-default rounded-[var(--radius-md)]",
+    half: "bg-accent-default text-fg-on-accent [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-[color-mix(in_oklab,var(--color-accent-default)_88%,var(--color-bg-canvas))] active:enabled:bg-[color-mix(in_oklab,var(--color-accent-default)_80%,var(--color-bg-canvas))]",
     main: "h-10 px-4 text-sm rounded-l-[calc(var(--radius-md)-1px)]",
-    trigger: "h-10 w-[38px] rounded-r-[calc(var(--radius-md)-1px)] border-l border-l-[color-mix(in_oklab,var(--color-background)_18%,var(--color-primary))] data-[state=open]:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-background))]",
+    trigger: "h-10 w-[38px] rounded-r-[calc(var(--radius-md)-1px)] border-l border-l-[color-mix(in_oklab,var(--color-bg-canvas)_18%,var(--color-accent-default))] data-[state=open]:bg-[color-mix(in_oklab,var(--color-accent-default)_80%,var(--color-bg-canvas))]",
   },
   secondary: {
-    group: "border-border bg-surface rounded-full",
-    half: "bg-surface text-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-muted active:enabled:bg-[color-mix(in_oklab,var(--color-muted),var(--color-border)_55%)]",
+    group: "border-border-default bg-bg-surface rounded-full",
+    half: "bg-bg-surface text-fg-default [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-bg-muted active:enabled:bg-[color-mix(in_oklab,var(--color-bg-muted),var(--color-border-default)_55%)]",
     main: "h-8 min-w-[142px] px-3 text-xs rounded-l-full",
-    trigger: "h-8 w-8 rounded-r-full border-l border-l-border/60 data-[state=open]:bg-[color-mix(in_oklab,var(--color-muted),var(--color-border)_55%)]",
+    trigger: "h-8 w-8 rounded-r-full border-l border-l-border-default/60 data-[state=open]:bg-[color-mix(in_oklab,var(--color-bg-muted),var(--color-border-default)_55%)]",
   },
 } as const;
 

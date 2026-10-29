@@ -103,7 +103,7 @@ function Reveal({ id, message, reduced }: { id: string; message: Message | null;
               key={message.key}
               className={cn(
                 "flex items-start gap-1.5 pt-1.5 pr-[var(--pad-x)] pb-1 pl-[calc(var(--pad-x)+1px)] text-xs font-normal leading-snug",
-                message.tone === "error" ? "text-destructive" : "text-muted-foreground"
+                message.tone === "error" ? "text-danger-default" : "text-fg-muted"
               )}
               custom={1}
               variants={reduced ? textFade : textMotion}
@@ -337,17 +337,17 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
 
   const noun = label.toLowerCase();
   const message: Message | null = error
-    ? { key: `error:${error}`, tone: "error", node: <><CircleAlert className="mt-0.5 flex-none text-destructive" size={14} strokeWidth={2} aria-hidden="true" /><span>{error}</span></> }
+    ? { key: `error:${error}`, tone: "error", node: <><CircleAlert className="mt-0.5 flex-none text-danger-default" size={14} strokeWidth={2} aria-hidden="true" /><span>{error}</span></> }
     : failed && !editing
       ? {
           key: `failed:${failed}`,
           tone: "failed",
           node: (
             <>
-              <CircleAlert className="mt-0.5 flex-none text-destructive" size={14} strokeWidth={2} aria-hidden="true" />
+              <CircleAlert className="mt-0.5 flex-none text-danger-default" size={14} strokeWidth={2} aria-hidden="true" />
               <span>
                 {`Couldn’t save “${failed}”, so the last saved ${noun} is back.`}{" "}
-                <button type="button" className="m-0 ml-0.5 cursor-pointer rounded-[4px] border-0 bg-none p-0 font-[inherit] font-medium text-foreground underline decoration-border-strong underline-offset-[3px] hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" onClick={retry}>Try again</button>
+                <button type="button" className="m-0 ml-0.5 cursor-pointer rounded-[4px] border-0 bg-none p-0 font-[inherit] font-medium text-fg-default underline decoration-border-strong underline-offset-[3px] hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus" onClick={retry}>Try again</button>
               </span>
             </>
           ),
@@ -356,18 +356,18 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
   const slot = editing ? "edit" : phase;
   const describedBy = (hint: string) => [hint, message ? messageId : null].filter(Boolean).join(" ");
   const fieldProps = {
-    className: cn(metrics, "absolute top-0 left-0 z-2 size-full resize-none overflow-hidden caret-foreground outline-none placeholder:text-muted-foreground placeholder:opacity-100", multiline && "whitespace-pre-wrap break-words"),
+    className: cn(metrics, "absolute top-0 left-0 z-2 size-full resize-none overflow-hidden caret-fg-default outline-none placeholder:text-fg-muted placeholder:opacity-100", multiline && "whitespace-pre-wrap break-words"),
     value: draft, onChange, onKeyDown, placeholder, "aria-label": label, "aria-invalid": error ? true : undefined,
     "aria-describedby": describedBy(editHintId), autoComplete: "off", spellCheck: variant === "body",
   };
 
   // The frame is the only surface: a hover tint at rest, a bordered field while editing, a soft danger wash when a save fails.
   const frameState = error
-    ? "border-destructive ring-[3px] ring-destructive/25"
+    ? "border-danger-default ring-[3px] ring-danger-border"
     : editing
-      ? "border-ring bg-surface ring-[3px] ring-ring/25"
+      ? "border-border-focus bg-bg-surface ring-[3px] ring-border-focus-soft"
       : flash === "on"
-        ? "border-[color:color-mix(in_oklab,var(--color-destructive)_30%,transparent)] bg-[color-mix(in_oklab,var(--color-destructive)_9%,transparent)]"
+        ? "border-[color:color-mix(in_oklab,var(--color-danger-default)_30%,transparent)] bg-[color-mix(in_oklab,var(--color-danger-default)_9%,transparent)]"
         : flash === "off" ? "[transition-duration:480ms]" : "";
 
   return (
@@ -377,8 +377,8 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
         "relative grid min-w-0 ms-[calc(-1*(var(--pad-x)+1px))] font-[inherit] tracking-[-0.01em] [--pad-x:8px] [--pad-y:3px]",
         // Whole-pixel line heights: an input centres its text by rounding, so a fractional line would sit the field a pixel below the display.
         variant === "title"
-          ? "[--size:1.375rem] [--leading:round(calc(var(--size)*1.3),2px)] [--weight:500] [--ink:var(--color-foreground)]"
-          : "[--pad-y:5px] [--size:.875rem] [--leading:round(calc(var(--size)*1.5),1px)] [--weight:400] [--ink:var(--color-muted-foreground)]",
+          ? "[--size:1.375rem] [--leading:round(calc(var(--size)*1.3),2px)] [--weight:500] [--ink:var(--color-fg-default)]"
+          : "[--pad-y:5px] [--size:.875rem] [--leading:round(calc(var(--size)*1.5),1px)] [--weight:400] [--ink:var(--color-fg-muted)]",
         className
       )}
       data-variant={variant}
@@ -396,7 +396,7 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
             type="button"
             className={cn(
               metrics,
-              "peer/display relative z-1 block max-w-full cursor-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "peer/display relative z-1 block max-w-full cursor-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus",
               multiline && "w-full",
               editing && "invisible",
               editing && !multiline && "min-w-[5em] pe-[calc(var(--pad-x)+16px)]",
@@ -409,7 +409,7 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
             aria-disabled={saving || undefined}
           >
             {/* An optimistic save shows the new text at once, a little quieter until the save lands; then it settles to full strength. */}
-            <span className={cn("relative block transition-opacity duration-[var(--duration-standard)] motion-reduce:transition-none", !layerText && "text-muted-foreground", saving && "opacity-50 duration-[var(--duration-quick)]")}>
+            <span className={cn("relative block transition-opacity duration-[var(--duration-standard)] motion-reduce:transition-none", !layerText && "text-fg-muted", saving && "opacity-50 duration-[var(--duration-quick)]")}>
               <AnimatePresence mode="popLayout" initial={false} custom={layer.direction}>
                 <motion.span
                   key={layer.key}
@@ -436,7 +436,7 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
               "pointer-events-none absolute top-0 bottom-0 left-0 z-0 box-border rounded-[var(--radius-md)] border border-transparent bg-transparent",
               "[transition:background-color_var(--duration-quick)_var(--ease-out-quint),border-color_var(--duration-quick)_var(--ease-out-quint),box-shadow_var(--duration-standard)_var(--ease-out-quint)] motion-reduce:transition-none",
               multiline && "right-0",
-              !saving && `${hoverFine}:peer-hover/display:bg-muted`,
+              !saving && `${hoverFine}:peer-hover/display:bg-bg-muted`,
               `${hoverFine}:peer-hover/display:[&_[data-pencil]]:opacity-100 ${hoverFine}:peer-focus-visible/display:[&_[data-pencil]]:opacity-100`,
               frameState
             )}
@@ -450,7 +450,7 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
                     <span className={cn("flex gap-1", multiline && "flex-col")}>
                       <button
                         type="button"
-                        className="grid size-7 flex-none cursor-pointer place-items-center rounded-full border border-transparent bg-primary p-0 text-primary-foreground transition-[background-color,transform] duration-[var(--duration-quick)] active:scale-[.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring motion-reduce:transition-none hover:bg-primary/90"
+                        className="grid size-7 flex-none cursor-pointer place-items-center rounded-full border border-transparent bg-accent-default p-0 text-fg-on-accent transition-[background-color,transform] duration-[var(--duration-quick)] active:scale-[.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus motion-reduce:transition-none hover:bg-accent-hover"
                         aria-label={`Save ${noun}`}
                         onPointerDown={(event) => event.preventDefault()}
                         onClick={() => submit("button")}
@@ -459,7 +459,7 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
                       </button>
                       <button
                         type="button"
-                        className="grid size-7 flex-none cursor-pointer place-items-center rounded-full border border-border bg-surface p-0 text-muted-foreground transition-[background-color,color,border-color,transform] duration-[var(--duration-quick)] active:scale-[.96] hover:border-border-strong hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring motion-reduce:transition-none"
+                        className="grid size-7 flex-none cursor-pointer place-items-center rounded-full border border-border-default bg-bg-surface p-0 text-fg-muted transition-[background-color,color,border-color,transform] duration-[var(--duration-quick)] active:scale-[.96] hover:border-border-strong hover:bg-bg-muted hover:text-fg-default focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus motion-reduce:transition-none"
                         aria-label="Cancel editing"
                         onPointerDown={(event) => event.preventDefault()}
                         onClick={cancel}
@@ -468,13 +468,13 @@ export function InlineEdit({ value, onSave, label, validate, placeholder = "", m
                       </button>
                     </span>
                   ) : slot === "saving" ? (
-                    <span className="ml-0.5 block size-3.5 animate-[sg-spin_.7s_linear_infinite] rounded-full border-[1.5px] border-muted-foreground border-r-transparent motion-reduce:animate-none" aria-hidden="true" />
+                    <span className="ml-0.5 block size-3.5 animate-[sg-spin_.7s_linear_infinite] rounded-full border-[1.5px] border-fg-muted border-r-transparent motion-reduce:animate-none" aria-hidden="true" />
                   ) : slot === "saved" ? (
-                    <span className="ml-px grid place-items-center text-success" aria-hidden="true"><DrawnCheck reduced={reduced} /></span>
+                    <span className="ml-px grid place-items-center text-success-default" aria-hidden="true"><DrawnCheck reduced={reduced} /></span>
                   ) : slot === "failed" ? (
-                    <CircleAlert className="ml-px text-destructive" size={16} strokeWidth={1.75} aria-hidden="true" />
+                    <CircleAlert className="ml-px text-danger-default" size={16} strokeWidth={1.75} aria-hidden="true" />
                   ) : (
-                    <Pencil data-pencil="" className={cn("ml-0.5 cursor-pointer text-muted-foreground", `${hoverFine}:opacity-0 ${hoverFine}:transition-opacity ${hoverFine}:duration-[var(--duration-quick)] ${hoverFine}:hover:opacity-100`)} size={14} strokeWidth={1.75} aria-hidden="true" onClick={() => startEdit(shown.length)} />
+                    <Pencil data-pencil="" className={cn("ml-0.5 cursor-pointer text-fg-muted", `${hoverFine}:opacity-0 ${hoverFine}:transition-opacity ${hoverFine}:duration-[var(--duration-quick)] ${hoverFine}:hover:opacity-100`)} size={14} strokeWidth={1.75} aria-hidden="true" onClick={() => startEdit(shown.length)} />
                   )}
                 </motion.span>
               </AnimatePresence>

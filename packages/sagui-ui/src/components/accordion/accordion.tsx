@@ -42,21 +42,21 @@ export function Accordion({ items, defaultOpen = 0, size = "md", className }: Ac
   const reduced = useReducedMotion();
   const lg = size === "lg";
   return (
-    <AccordionPrimitive.Root className={cn("w-full border-t border-border", className)} type="single" collapsible value={openValue} onValueChange={setOpenValue}>
+    <AccordionPrimitive.Root className={cn("w-full border-t border-border-default", className)} type="single" collapsible value={openValue} onValueChange={setOpenValue}>
       {items.map((item, index) => {
         const open = openValue === String(index);
         return (
-          <AccordionPrimitive.Item className="group/acc border-b border-border" value={String(index)} key={`${item.title}-${index}`}>
+          <AccordionPrimitive.Item className="group/acc border-b border-border-default" value={String(index)} key={`${item.title}-${index}`}>
             <AccordionPrimitive.Header className="m-0">
               <AccordionPrimitive.Trigger
                 className={cn(
-                  "flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-2 text-left font-medium leading-relaxed text-foreground [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-muted-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:[&_.sg-acc-icon]:text-foreground focus-visible:rounded-[var(--radius-md)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  "flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-2 text-left font-medium leading-relaxed text-fg-default [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:[&_.sg-acc-icon]:text-fg-default focus-visible:rounded-[var(--radius-md)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus",
                   lg ? "min-h-[68px] gap-8 py-5 text-base tracking-tight sm:min-h-[76px] sm:text-lg" : "min-h-12 gap-5 text-sm"
                 )}
               >
                 <span>{item.title}</span>
                 <motion.span
-                  className="sg-acc-icon inline-flex flex-none text-muted-foreground transition-colors duration-[var(--duration-fast)] ease-out-quint group-data-[state=open]/acc:text-foreground"
+                  className="sg-acc-icon inline-flex flex-none text-fg-muted transition-colors duration-[var(--duration-fast)] ease-out-quint group-data-[state=open]/acc:text-fg-default"
                   initial={false}
                   animate={{ rotate: open ? 180 : 0 }}
                   transition={reduced ? { duration: 0 } : spring.snappy}
@@ -67,7 +67,7 @@ export function Accordion({ items, defaultOpen = 0, size = "md", className }: Ac
             </AccordionPrimitive.Header>
             {/* Radix keeps semantics and ids; motion owns the height so a toggle mid-flight retargets instead of restarting. */}
             <AccordionPrimitive.Content forceMount asChild>
-              <motion.div className={cn("overflow-hidden text-muted-foreground", lg ? "text-sm leading-[1.65] sm:text-base" : "text-sm leading-relaxed")} initial={false} animate={open ? "open" : "closed"} variants={reduced ? panelStill : panelMotion}>
+              <motion.div className={cn("overflow-hidden text-fg-muted", lg ? "text-sm leading-[1.65] sm:text-base" : "text-sm leading-relaxed")} initial={false} animate={open ? "open" : "closed"} variants={reduced ? panelStill : panelMotion}>
                 <motion.div className={cn("[overflow-wrap:anywhere]", lg ? "max-w-[62ch] pr-6 pb-6 sm:pr-12" : "pr-8 pb-5")} variants={reduced ? contentStill : contentMotion}>{item.content}</motion.div>
               </motion.div>
             </AccordionPrimitive.Content>

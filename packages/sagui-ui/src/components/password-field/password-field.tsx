@@ -58,7 +58,7 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
           aria-describedby={describedBy(props["aria-describedby"], hintId, errorId)}
           className={cn(bareInput, "data-[reveal]:animate-[sg-resolve_var(--duration-standard)_var(--ease-enter)] motion-reduce:animate-none", className)}
         />
-        <button type="button" className={cn(adornmentButton, visible && "text-foreground")} onClick={() => { setVisible((current) => !current); setToggled(true); }} aria-label={visible ? "Hide password" : "Show password"} aria-pressed={visible}>
+        <button type="button" className={cn(adornmentButton, visible && "text-fg-default")} onClick={() => { setVisible((current) => !current); setToggled(true); }} aria-label={visible ? "Hide password" : "Show password"} aria-pressed={visible}>
           <EyeMorph slashed={visible} />
         </button>
       </div>

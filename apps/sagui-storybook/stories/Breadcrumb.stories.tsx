@@ -19,7 +19,7 @@ export const LocalState: Story = {
     return (
       <div className="grid gap-4">
         <Breadcrumb items={all.slice(0, depth).map((label, i) => ({ label, onClick: () => setDepth(i + 1) }))} />
-        <button type="button" className="w-fit rounded-md border border-border px-3 py-1 text-sm" onClick={() => setDepth((d) => (d % all.length) + 1)}>Go deeper</button>
+        <button type="button" className="w-fit rounded-md border border-border-default px-3 py-1 text-sm" onClick={() => setDepth((d) => (d % all.length) + 1)}>Go deeper</button>
       </div>
     );
   },

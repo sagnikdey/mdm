@@ -77,7 +77,7 @@ const fadeFast = { duration: duration.instant, ease: [...ease.standard] } as con
 
 /** Room above the top gridline, and the gap between the crosshair and its tooltip. */
 const TOP = 12, GAP = 14;
-const PALETTE = ["var(--color-primary)", "color-mix(in oklab, var(--color-foreground) 46%, var(--color-surface))", "color-mix(in oklab, var(--color-foreground) 26%, var(--color-surface))"];
+const PALETTE = ["var(--color-accent-default)", "color-mix(in oklab, var(--color-fg-default) 46%, var(--color-bg-surface))", "color-mix(in oklab, var(--color-fg-default) 26%, var(--color-bg-surface))"];
 const grouped = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
 const compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));

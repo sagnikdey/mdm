@@ -160,7 +160,7 @@ function Glyphs({ parts, direction, instant, reduced }: { parts: Part[]; directi
           className={cn(
             "relative inline-block overflow-x-visible overflow-y-clip -my-[var(--feather)] py-[var(--feather)] [--feather:.18em] transition-colors duration-[var(--duration-standard)] motion-reduce:transition-none",
             "[mask-image:linear-gradient(to_bottom,transparent,#000_calc(var(--feather)*1.4),#000_calc(100%-var(--feather)*1.4),transparent)]",
-            part.ghost && "text-[color-mix(in_oklab,var(--color-muted-foreground)_55%,transparent)]"
+            part.ghost && "text-[color-mix(in_oklab,var(--color-fg-muted)_55%,transparent)]"
           )}
           data-ghost={part.ghost || undefined}
           custom={direction}
@@ -196,7 +196,7 @@ function SymbolSlot({ symbol, reduced }: { symbol: string; reduced: boolean }) {
     return () => observer.disconnect();
   }, [reduced, width]);
   return (
-    <motion.span className="relative mr-[.06em] inline-block whitespace-pre text-muted-foreground in-[.group]:last:mr-0 in-[.group]:last:ml-[.18em]" style={{ width }} aria-hidden="true">
+    <motion.span className="relative mr-[.06em] inline-block whitespace-pre text-fg-muted in-[.group]:last:mr-0 in-[.group]:last:ml-[.18em]" style={{ width }} aria-hidden="true">
       <span ref={sizerRef} className="invisible absolute top-0 left-0 whitespace-pre">{symbol}</span>
       <AnimatePresence initial={false} mode="popLayout">
         <motion.span
@@ -520,11 +520,11 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
       {/* One tall shell: the amount on the left, the currency on the right. Set --money-input-height to resize it. */}
       <div
         className={cn(
-          "relative box-border flex h-[var(--money-h)] min-w-0 items-center gap-2 rounded-[var(--radius-xl)] border bg-surface py-0 pr-2 pl-[18px] max-[420px]:pl-3.5",
+          "relative box-border flex h-[var(--money-h)] min-w-0 items-center gap-2 rounded-[var(--radius-xl)] border bg-bg-surface py-0 pr-2 pl-[18px] max-[420px]:pl-3.5",
           "transition-[border-color,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-          "group-data-[disabled]/mi:bg-muted group-data-[disabled]/mi:opacity-50",
-          focused ? "border-ring ring-[3px] ring-ring/25" : invalid ? "border-destructive" : "border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:border-foreground",
-          invalid && focused && "border-destructive ring-destructive/25"
+          "group-data-[disabled]/mi:bg-bg-muted group-data-[disabled]/mi:opacity-50",
+          focused ? "border-border-focus ring-[3px] ring-border-focus-soft" : invalid ? "border-danger-default" : "border-border-strong [@media(hover:hover)_and_(pointer:fine)]:hover:border-fg-default",
+          invalid && focused && "border-danger-default ring-danger-border"
         )}
         data-invalid={invalid || undefined}
         data-focused={focused || undefined}
@@ -538,7 +538,7 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
         >
           <motion.div
             ref={groupRef}
-            className="group inline-flex flex-none origin-[0_50%] items-baseline whitespace-nowrap text-4xl font-medium leading-[1.2] tracking-[-0.03em] text-foreground tabular-nums [font-kerning:none] max-[420px]:text-2xl"
+            className="group inline-flex flex-none origin-[0_50%] items-baseline whitespace-nowrap text-4xl font-medium leading-[1.2] tracking-[-0.03em] text-fg-default tabular-nums [font-kerning:none] max-[420px]:text-2xl"
             style={{ scale, x: bumpX }}
           >
             {info.position === "prefix" && <SymbolSlot symbol={info.symbol} reduced={reduced} />}
@@ -548,7 +548,7 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
               <input
                 ref={inputRef}
                 id={inputId}
-                className="absolute top-0 left-0 z-1 m-0 h-full w-[calc(100%+.5em)] border-0 bg-transparent p-0 text-transparent caret-foreground outline-none [font:inherit] [font-kerning:none] [font-variant-numeric:inherit] [letter-spacing:inherit] [line-height:inherit] selection:bg-[color-mix(in_oklab,var(--color-foreground)_16%,transparent)] selection:text-transparent disabled:cursor-not-allowed"
+                className="absolute top-0 left-0 z-1 m-0 h-full w-[calc(100%+.5em)] border-0 bg-transparent p-0 text-transparent caret-fg-default outline-none [font:inherit] [font-kerning:none] [font-variant-numeric:inherit] [letter-spacing:inherit] [line-height:inherit] selection:bg-[color-mix(in_oklab,var(--color-fg-default)_16%,transparent)] selection:text-transparent disabled:cursor-not-allowed"
                 type="text"
                 role="spinbutton"
                 inputMode={info.digits ? "decimal" : "numeric"}
@@ -581,10 +581,10 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
               ref={menuButtonRef}
               type="button"
               className={cn(
-                "inline-flex h-9 cursor-pointer items-center gap-1 rounded-full border-0 bg-transparent py-0 pr-2 pl-3 font-[inherit] text-sm font-medium text-foreground [-webkit-tap-highlight-color:transparent]",
+                "inline-flex h-9 cursor-pointer items-center gap-1 rounded-full border-0 bg-transparent py-0 pr-2 pl-3 font-[inherit] text-sm font-medium text-fg-default [-webkit-tap-highlight-color:transparent]",
                 "transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-                "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-muted active:enabled:bg-muted data-[open]:bg-muted disabled:cursor-not-allowed",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-bg-muted active:enabled:bg-bg-muted data-[open]:bg-bg-muted disabled:cursor-not-allowed",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
               )}
               disabled={disabled}
               aria-haspopup="listbox"
@@ -596,7 +596,7 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
               onKeyDown={(event) => { if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); openMenu(); } }}
             >
               <span className="tabular-nums">{code}</span>
-              <motion.span className="grid size-4 place-items-center text-muted-foreground" aria-hidden="true" initial={false} animate={{ rotate: menuOpen ? 180 : 0 }} transition={reduced ? { duration: 0 } : GLIDE}>
+              <motion.span className="grid size-4 place-items-center text-fg-muted" aria-hidden="true" initial={false} animate={{ rotate: menuOpen ? 180 : 0 }} transition={reduced ? { duration: 0 } : GLIDE}>
                 <ChevronDown size={16} strokeWidth={1.75} />
               </motion.span>
             </button>
@@ -605,7 +605,7 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
                 // The menu grows out of the currency button's corner and opens 8px below the shell, whatever its height.
                 <motion.div
                   key="menu"
-                  className="absolute top-[calc(100%+(var(--money-h)-36px)/2+.5rem)] -right-2 z-30 box-border w-[min(256px,calc(100vw-2rem))] origin-[calc(100%-44px)_calc((var(--money-h)-36px)/-2-.5rem-18px)] rounded-[var(--radius-xl)] border border-border bg-surface p-1.5 shadow-floating"
+                  className="absolute top-[calc(100%+(var(--money-h)-36px)/2+.5rem)] -right-2 z-30 box-border w-[min(256px,calc(100vw-2rem))] origin-[calc(100%-44px)_calc((var(--money-h)-36px)/-2-.5rem-18px)] rounded-[var(--radius-xl)] border border-border-default bg-bg-surface p-1.5 shadow-floating"
                   initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: -4, filter: `blur(${blur.subtle}px)` }}
                   animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
                   exit={reduced ? { opacity: 0, transition: { duration: duration.instant } } : { opacity: 0, scale: 0.97, y: -2, filter: `blur(${blur.subtle}px)`, transition: { duration: duration.instant, ease: easeStandard } }}
@@ -621,25 +621,25 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
                     aria-activedescendant={`${uid}-cur-${activeCode}`}
                     onKeyDown={onMenuKeyDown}
                   >
-                    <motion.span className="pointer-events-none absolute inset-x-0 top-0 rounded-[10px] bg-[color-mix(in_oklab,var(--color-foreground)_6.5%,transparent)]" style={{ y: hy, height: hh, opacity: ho }} aria-hidden="true" />
+                    <motion.span className="pointer-events-none absolute inset-x-0 top-0 rounded-[10px] bg-[color-mix(in_oklab,var(--color-fg-default)_6.5%,transparent)]" style={{ y: hy, height: hh, opacity: ho }} aria-hidden="true" />
                     {options.map((option) => (
                       <div
                         key={option.code}
                         id={`${uid}-cur-${option.code}`}
                         role="option"
                         aria-selected={option.code === code}
-                        className="relative box-border flex min-h-9 cursor-pointer select-none items-center gap-2.5 rounded-[10px] px-2.5 text-sm text-muted-foreground transition-colors duration-[var(--duration-quick)] data-[active]:text-foreground aria-selected:text-foreground motion-reduce:transition-none"
+                        className="relative box-border flex min-h-9 cursor-pointer select-none items-center gap-2.5 rounded-[10px] px-2.5 text-sm text-fg-muted transition-colors duration-[var(--duration-quick)] data-[active]:text-fg-default aria-selected:text-fg-default motion-reduce:transition-none"
                         data-active={option.code === activeCode || undefined}
                         ref={(node) => { if (node) optionRefs.current.set(option.code, node); else optionRefs.current.delete(option.code); }}
                         onPointerMove={(event) => { if (event.pointerType === "mouse" && option.code !== activeCode) setActiveCode(option.code); }}
                         onPointerDown={(event) => event.preventDefault()}
                         onClick={() => chooseCurrency(option)}
                       >
-                        <span className="w-[22px] flex-none text-center text-muted-foreground" aria-hidden="true">{option.symbol}</span>
+                        <span className="w-[22px] flex-none text-center text-fg-muted" aria-hidden="true">{option.symbol}</span>
                         <span className="flex-none font-medium tabular-nums">{option.code}</span>
-                        <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">{option.name}</span>
+                        <span className="min-w-0 flex-1 truncate text-xs text-fg-muted">{option.name}</span>
                         <span
-                          className="grid size-4 flex-none scale-[.6] place-items-center text-foreground opacity-0 [transition:opacity_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)] data-[on]:scale-100 data-[on]:opacity-100 motion-reduce:transition-none"
+                          className="grid size-4 flex-none scale-[.6] place-items-center text-fg-default opacity-0 [transition:opacity_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)] data-[on]:scale-100 data-[on]:opacity-100 motion-reduce:transition-none"
                           data-on={option.code === code || undefined}
                           aria-hidden="true"
                         >
@@ -653,7 +653,7 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
             </AnimatePresence>
           </div>
         ) : (
-          <span className="flex-none px-2.5 text-sm font-medium text-muted-foreground">{code}</span>
+          <span className="flex-none px-2.5 text-sm font-medium text-fg-muted">{code}</span>
         )}
       </div>
 
@@ -670,12 +670,12 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
                     key={amount}
                     type="button"
                     className={cn(
-                      "h-[30px] cursor-pointer touch-manipulation rounded-full border border-border bg-surface px-3 font-[inherit] text-xs font-medium tabular-nums text-muted-foreground [-webkit-tap-highlight-color:transparent]",
+                      "h-[30px] cursor-pointer touch-manipulation rounded-full border border-border-default bg-bg-surface px-3 font-[inherit] text-xs font-medium tabular-nums text-fg-muted [-webkit-tap-highlight-color:transparent]",
                       "[transition:background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint),border-color_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
-                      "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:text-foreground",
+                      "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:text-fg-default",
                       "active:enabled:scale-[.96] active:enabled:[transition-duration:var(--duration-quick),var(--duration-quick),var(--duration-quick),100ms]",
                       "aria-disabled:opacity-45 disabled:cursor-not-allowed disabled:opacity-45",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus",
                       "motion-reduce:transition-none motion-reduce:active:enabled:scale-100"
                     )}
                     disabled={disabled}
@@ -691,7 +691,7 @@ export const MoneyInput = React.forwardRef<HTMLInputElement, MoneyInputProps>(fu
             </div>
           )}
           {range && (
-            <span id={rangeId} className={cn("text-xs tabular-nums text-muted-foreground transition-colors duration-[var(--duration-standard)]", limitFlash > 0 && "text-warning duration-[var(--duration-instant)]")}>{range}</span>
+            <span id={rangeId} className={cn("text-xs tabular-nums text-fg-muted transition-colors duration-[var(--duration-standard)]", limitFlash > 0 && "text-warning-default duration-[var(--duration-instant)]")}>{range}</span>
           )}
         </div>
       )}

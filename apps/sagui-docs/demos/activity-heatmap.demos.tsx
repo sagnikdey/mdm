@@ -23,7 +23,7 @@ export function Selectable() {
   return (
     <div className="grid w-full max-w-3xl gap-3">
       <ActivityHeatmap days={days} label="Deploys in 2026" period="2026" unit={{ one: "deploy", other: "deploys" }} weekStartsOn={1} selectedDate={selected} onSelectDate={setSelected} />
-      <p className="text-sm text-muted-foreground">{selected ? `${selected}: ${count} deploys` : "Pick a day to see its deploys."}</p>
+      <p className="text-sm text-fg-muted">{selected ? `${selected}: ${count} deploys` : "Pick a day to see its deploys."}</p>
     </div>
   );
 }

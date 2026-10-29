@@ -17,7 +17,9 @@ export const Default: Story = {};
 export const Tones: Story = {
   render: () => <div className="flex gap-2">{(["neutral", "success", "info", "warning", "danger"] as const).map((t) => <Badge key={t} tone={t}>{t}</Badge>)}</div>,
 };
-export const WithIcon: Story = { args: { icon: <Check size={12} /> } };
+export const WithIcon: Story = {
+  render: (args) => <Badge {...args} icon={<Check size={12} />} />,
+};
 export const Small: Story = { args: { size: "sm" } };
 export const Morphing: Story = {
   render: function Render() {

@@ -34,14 +34,14 @@ export default function Home() {
     <main className="overflow-x-clip">
       {/* Hero */}
       <section className="mx-auto max-w-[90rem] px-4 pt-4 sm:px-6">
-        <div className="home-hero relative isolate overflow-hidden rounded-[28px] border border-border px-6 py-20 text-center sm:py-28 lg:py-36">
-          <p className="home-rise type-overline inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-muted-foreground backdrop-blur" style={{ animationDelay: "0ms" }}>
+        <div className="home-hero relative isolate overflow-hidden rounded-[28px] border border-border-default px-6 py-20 text-center sm:py-28 lg:py-36">
+          <p className="home-rise type-overline inline-flex items-center gap-2 rounded-full border border-border-default bg-bg-surface/70 px-3 py-1.5 text-fg-muted backdrop-blur" style={{ animationDelay: "0ms" }}>
             <Sparkles size={12} aria-hidden="true" /> {count} components · open source
           </p>
           <h1 className="home-rise type-display mx-auto mt-6 max-w-4xl" style={{ animationDelay: "80ms" }}>
             Interfaces that move<br className="hidden sm:block" /> with intent.
           </h1>
-          <p className="home-rise type-body-lg mx-auto mt-5 max-w-xl text-muted-foreground" style={{ animationDelay: "160ms" }}>
+          <p className="home-rise type-body-lg mx-auto mt-5 max-w-xl text-fg-muted" style={{ animationDelay: "160ms" }}>
             SagUI is a React design system with spring motion, accessible defaults and one token layer. Install it from npm, or point your AI tool at the docs and let it build.
           </p>
           <div className="home-rise mt-8 flex flex-wrap justify-center gap-3" style={{ animationDelay: "240ms" }}>
@@ -56,9 +56,9 @@ export default function Home() {
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 id="live" className="type-h1">Every example is live</h2>
-            <p className="type-body mt-3 max-w-md text-muted-foreground">Switch the period, change the status, delete the files. Nothing here is a recording.</p>
+            <p className="type-body mt-3 max-w-md text-fg-muted">Switch the period, change the status, delete the files. Nothing here is a recording.</p>
           </div>
-          <Link href="/components" className="type-label inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/components" className="type-label inline-flex items-center gap-1.5 text-fg-muted transition-colors hover:text-fg-default">
             Browse all {count} components <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
@@ -68,35 +68,35 @@ export default function Home() {
       {/* Foundations */}
       <section aria-labelledby="foundations" className="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32">
         <h2 id="foundations" className="type-h1 max-w-2xl">Foundations first, then components</h2>
-        <p className="type-body mt-3 max-w-xl text-muted-foreground">Type, corners and elevation are tokens with roles. Change a token and every component follows, in both themes.</p>
+        <p className="type-body mt-3 max-w-xl text-fg-muted">Type, corners and elevation are tokens with roles. Change a token and every component follows, in both themes.</p>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           <Link href="/docs/typography" className="home-card group">
             <div className="home-card-art">
               <span className="type-display leading-none">Aa</span>
-              <span className="type-overline mt-3 text-muted-foreground">Inter · JetBrains Mono</span>
+              <span className="type-overline mt-3 text-fg-muted">Inter · JetBrains Mono</span>
             </div>
             <span className="home-card-title"><Type size={16} aria-hidden="true" /> Typography</span>
-            <span className="type-body-sm text-muted-foreground">A type scale and twelve roles that set size, line height, weight and tracking together.</span>
+            <span className="type-body-sm text-fg-muted">A type scale and twelve roles that set size, line height, weight and tracking together.</span>
           </Link>
           <Link href="/docs/radius" className="home-card group">
             <div className="home-card-art">
-              <div className="rounded-[22px] border border-border bg-muted p-2.5">
-                <div className="rounded-[12px] border border-border bg-surface px-6 py-3"><div className="h-7 w-24 rounded-full bg-primary/15" /></div>
+              <div className="rounded-[22px] border border-border-default bg-bg-muted p-2.5">
+                <div className="rounded-[12px] border border-border-default bg-bg-surface px-6 py-3"><div className="h-7 w-24 rounded-full bg-accent-default/15" /></div>
               </div>
             </div>
             <span className="home-card-title"><SquareRoundCorner size={16} aria-hidden="true" /> Radius</span>
-            <span className="type-body-sm text-muted-foreground">Corners grow with the surface, and nested corners stay concentric.</span>
+            <span className="type-body-sm text-fg-muted">Corners grow with the surface, and nested corners stay concentric.</span>
           </Link>
           <Link href="/docs/elevation" className="home-card group">
             <div className="home-card-art">
               <div className="relative h-24 w-40">
-                <div className="absolute inset-x-6 top-0 h-14 rounded-[var(--radius-lg)] border border-border bg-surface shadow-resting" />
-                <div className="absolute inset-x-3 top-5 h-14 rounded-[var(--radius-lg)] border border-border bg-surface shadow-raised" />
-                <div className="absolute inset-x-0 top-10 h-14 rounded-[var(--radius-lg)] border border-border bg-surface shadow-floating" />
+                <div className="absolute inset-x-6 top-0 h-14 rounded-[var(--radius-lg)] border border-border-default bg-bg-surface shadow-resting" />
+                <div className="absolute inset-x-3 top-5 h-14 rounded-[var(--radius-lg)] border border-border-default bg-bg-surface shadow-raised" />
+                <div className="absolute inset-x-0 top-10 h-14 rounded-[var(--radius-lg)] border border-border-default bg-bg-surface shadow-floating" />
               </div>
             </div>
             <span className="home-card-title"><Layers size={16} aria-hidden="true" /> Shadow and elevation</span>
-            <span className="type-body-sm text-muted-foreground">Five levels, with shadows that stay visible in dark mode.</span>
+            <span className="type-body-sm text-fg-muted">Five levels, with shadows that stay visible in dark mode.</span>
           </Link>
         </div>
       </section>
@@ -105,26 +105,26 @@ export default function Home() {
       <section aria-labelledby="motion" className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-24 sm:px-6 sm:pt-32 md:grid-cols-2">
         <div>
           <h2 id="motion" className="type-h1">Motion with manners</h2>
-          <p className="type-body mt-3 max-w-md text-muted-foreground">Change what a component says and it morphs in place instead of jumping.</p>
+          <p className="type-body mt-3 max-w-md text-fg-muted">Change what a component says and it morphs in place instead of jumping.</p>
           <ul className="type-body-sm mt-6 grid gap-3">
             <li className="flex gap-3"><span className="home-dot" />Labels crossfade while widths spring to fit, so nothing around them shifts.</li>
             <li className="flex gap-3"><span className="home-dot" />Springs are tuned not to overshoot the state a control reports.</li>
             <li className="flex gap-3"><span className="home-dot" />With reduced motion, every spring becomes a short fade.</li>
           </ul>
-          <Link href="/docs/motion" className="type-label mt-6 inline-flex items-center gap-1.5 text-primary">How motion works <ArrowRight size={15} aria-hidden="true" /></Link>
+          <Link href="/docs/motion" className="type-label mt-6 inline-flex items-center gap-1.5 text-accent-default">How motion works <ArrowRight size={15} aria-hidden="true" /></Link>
         </div>
         <div className="flex justify-center md:justify-end"><MotionDemo /></div>
       </section>
 
       {/* Docs for people and AI */}
       <section aria-labelledby="docs" className="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32">
-        <div className="grid gap-10 rounded-[28px] border border-border bg-muted/50 p-6 sm:p-10 md:grid-cols-2 md:items-center">
+        <div className="grid gap-10 rounded-[28px] border border-border-default bg-bg-muted/50 p-6 sm:p-10 md:grid-cols-2 md:items-center">
           <div>
             <h2 id="docs" className="type-h1">Docs for people, and for their AI</h2>
-            <p className="type-body mt-3 max-w-md text-muted-foreground">
+            <p className="type-body mt-3 max-w-md text-fg-muted">
               Every component has when to use it, when not to, the full API, keyboard and accessibility notes. Connect your assistant to the MCP server and it reads them before it writes code.
             </p>
-            <div className="mt-5 flex min-w-0 items-center gap-1 rounded-[var(--radius-md)] border border-border bg-surface py-1 pr-1 pl-3">
+            <div className="mt-5 flex min-w-0 items-center gap-1 rounded-[var(--radius-md)] border border-border-default bg-bg-surface py-1 pr-1 pl-3">
               <code className="type-code min-w-0 flex-1 truncate">claude mcp add --transport http sagui {mcpUrl}</code>
               <CopyButton value={`claude mcp add --transport http sagui ${mcpUrl}`} label="Copy command" variant="plain" iconOnly />
             </div>
@@ -134,13 +134,13 @@ export default function Home() {
             </div>
           </div>
           <div className="min-w-0">
-            <InstallTabs packages={["@sagui/ui"]} className="!my-0 bg-surface" />
+            <InstallTabs packages={["@sagui/ui"]} className="!my-0 bg-bg-surface" />
             <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               {groups.map((group) => (
                 <li key={group.id}>
-                  <Link href={`/components/${group.items[0].slug}`} className="block rounded-[var(--radius-md)] border border-border bg-surface px-3 py-2 transition-colors hover:border-border-strong">
+                  <Link href={`/components/${group.items[0].slug}`} className="block rounded-[var(--radius-md)] border border-border-default bg-bg-surface px-3 py-2 transition-colors hover:border-border-strong">
                     <span className="type-label block truncate">{group.title}</span>
-                    <span className="type-caption text-muted-foreground">{group.items.length} components</span>
+                    <span className="type-caption text-fg-muted">{group.items.length} components</span>
                   </Link>
                 </li>
               ))}
@@ -153,7 +153,7 @@ export default function Home() {
       <section aria-labelledby="faq" className="mx-auto grid max-w-6xl gap-10 px-4 pt-24 sm:px-6 sm:pt-32 md:grid-cols-[1fr_2fr]">
         <div>
           <h2 id="faq" className="type-h1">Good questions</h2>
-          <Link href="/docs/installation" className="type-label mt-4 inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground">Read the docs <ArrowRight size={15} aria-hidden="true" /></Link>
+          <Link href="/docs/installation" className="type-label mt-4 inline-flex items-center gap-1.5 text-fg-muted hover:text-fg-default">Read the docs <ArrowRight size={15} aria-hidden="true" /></Link>
         </div>
         <Accordion size="lg" items={faq} />
       </section>
@@ -161,23 +161,23 @@ export default function Home() {
       {/* Closing CTA */}
       <section className="mx-auto max-w-6xl px-4 py-24 text-center sm:px-6 sm:py-32">
         <h2 className="type-display mx-auto max-w-2xl">Start with one component</h2>
-        <p className="type-body-lg mx-auto mt-4 max-w-md text-muted-foreground">Try it on its page, then install it with one command.</p>
+        <p className="type-body-lg mx-auto mt-4 max-w-md text-fg-muted">Try it on its page, then install it with one command.</p>
         <div className="mt-8 flex justify-center">
           <Button asChild size="lg"><Link href="/components">Explore components <ArrowRight aria-hidden="true" /></Link></Button>
         </div>
       </section>
 
-      <footer className="border-t border-border">
+      <footer className="border-t border-border-default">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="type-title">SagUI</p>
-            <p className="type-caption mt-1 text-muted-foreground">Designed and built by Sagnik Dey. Many components adapted from the open source Arc library.</p>
+            <p className="type-caption mt-1 text-fg-muted">Designed and built by Sagnik Dey. Many components adapted from the open source Arc library.</p>
           </div>
-          <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-            <Link href="/docs/installation" className="hover:text-foreground">Docs</Link>
-            <Link href="/components" className="hover:text-foreground">Components</Link>
-            <a href={storybook} className="hover:text-foreground">Storybook</a>
-            <a href={github} className="inline-flex items-center gap-1.5 hover:text-foreground"><GithubMark /> GitHub</a>
+          <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-fg-muted">
+            <Link href="/docs/installation" className="hover:text-fg-default">Docs</Link>
+            <Link href="/components" className="hover:text-fg-default">Components</Link>
+            <a href={storybook} className="hover:text-fg-default">Storybook</a>
+            <a href={github} className="inline-flex items-center gap-1.5 hover:text-fg-default"><GithubMark /> GitHub</a>
           </nav>
         </div>
       </footer>

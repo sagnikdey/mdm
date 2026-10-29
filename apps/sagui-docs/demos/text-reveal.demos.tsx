@@ -14,7 +14,7 @@ export function Replay() {
   const [run, setRun] = useState(0);
   return (
     <div className="grid justify-items-center gap-6 text-center">
-      <TextReveal key={run} as="p" className="max-w-md text-lg text-muted-foreground" text="Each word rises out of its own clip while it sharpens from a soft blur." delay={0.1} />
+      <TextReveal key={run} as="p" className="max-w-md text-lg text-fg-muted" text="Each word rises out of its own clip while it sharpens from a soft blur." delay={0.1} />
       <Button size="sm" variant="outline" onClick={() => setRun((value) => value + 1)}>Replay</Button>
     </div>
   );

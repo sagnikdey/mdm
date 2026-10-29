@@ -21,7 +21,7 @@ export function Reveal() {
       <Skeleton loading={loading} lines={2}>
         <div>
           <p className="type-title">Acme renewal</p>
-          <p className="type-body-sm text-muted-foreground">$42,000 · closes in 12 days</p>
+          <p className="type-body-sm text-fg-muted">$42,000 · closes in 12 days</p>
         </div>
       </Skeleton>
       <Button size="sm" variant="outline" className="w-fit" onClick={() => setLoading((value) => !value)}>{loading ? "Finish loading" : "Load again"}</Button>

@@ -36,16 +36,16 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
       <main className="min-w-0 flex-1 py-10 lg:py-12">
         <header className="mb-8">
           <nav aria-label="Breadcrumb" className="mb-3">
-            <ol className="flex items-center gap-1 text-sm text-muted-foreground">
-              <li><Link href="/" className="hover:text-foreground">Components</Link></li>
+            <ol className="flex items-center gap-1 text-sm text-fg-muted">
+              <li><Link href="/" className="hover:text-fg-default">Components</Link></li>
               <li aria-hidden="true"><ChevronRight size={14} /></li>
               <li>{category?.title}</li>
               <li aria-hidden="true"><ChevronRight size={14} /></li>
-              <li aria-current="page" className="text-foreground">{doc.title}</li>
+              <li aria-current="page" className="text-fg-default">{doc.title}</li>
             </ol>
           </nav>
           <h1 className="type-h1">{doc.title}</h1>
-          <p className="type-body-lg mt-3 max-w-[60ch] text-muted-foreground">{doc.description}</p>
+          <p className="type-body-lg mt-3 max-w-[60ch] text-fg-muted">{doc.description}</p>
           <div className="mt-5">
             <PageActions importLine={`import { ${doc.component} } from "@sagui/ui";`} markdown={componentMarkdown(doc)} markdownHref={markdownHref} />
           </div>
@@ -66,16 +66,16 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
             </ul>
           </section>
         )}
-        <nav aria-label="Previous and next" className="mt-14 grid gap-3 border-t border-border pt-6 sm:grid-cols-2">
+        <nav aria-label="Previous and next" className="mt-14 grid gap-3 border-t border-border-default pt-6 sm:grid-cols-2">
           {previous ? (
-            <Link href={`/components/${previous.slug}`} className="group rounded-[var(--radius-lg)] border border-border p-4 transition-colors hover:bg-muted">
-              <span className="flex items-center gap-1 text-xs text-muted-foreground"><ArrowLeft size={14} aria-hidden="true" /> Previous</span>
+            <Link href={`/components/${previous.slug}`} className="group rounded-[var(--radius-lg)] border border-border-default p-4 transition-colors hover:bg-bg-muted">
+              <span className="flex items-center gap-1 text-xs text-fg-muted"><ArrowLeft size={14} aria-hidden="true" /> Previous</span>
               <span className="mt-1 block font-medium">{previous.title}</span>
             </Link>
           ) : <span />}
           {next ? (
-            <Link href={`/components/${next.slug}`} className="group rounded-[var(--radius-lg)] border border-border p-4 text-right transition-colors hover:bg-muted">
-              <span className="flex items-center justify-end gap-1 text-xs text-muted-foreground">Next <ArrowRight size={14} aria-hidden="true" /></span>
+            <Link href={`/components/${next.slug}`} className="group rounded-[var(--radius-lg)] border border-border-default p-4 text-right transition-colors hover:bg-bg-muted">
+              <span className="flex items-center justify-end gap-1 text-xs text-fg-muted">Next <ArrowRight size={14} aria-hidden="true" /></span>
               <span className="mt-1 block font-medium">{next.title}</span>
             </Link>
           ) : null}

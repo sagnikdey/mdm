@@ -140,11 +140,11 @@ export function TagInput({ label, value, defaultValue = [], onValueChange, place
       <motion.div
         ref={scope}
         className={cn(
-          "box-content overflow-hidden rounded-[var(--radius-md)] border bg-surface transition-[border-color,box-shadow] duration-[var(--duration-quick)] motion-reduce:transition-none",
+          "box-content overflow-hidden rounded-[var(--radius-md)] border bg-bg-surface transition-[border-color,box-shadow] duration-[var(--duration-quick)] motion-reduce:transition-none",
           focusRing,
           error
-            ? "border-destructive focus-within:border-destructive focus-within:ring-destructive/25"
-            : "border-border [@media(hover:hover)_and_(pointer:fine)]:hover:not-focus-within:border-border-strong"
+            ? "border-danger-default focus-within:border-danger-default focus-within:ring-danger-border"
+            : "border-border-default [@media(hover:hover)_and_(pointer:fine)]:hover:not-focus-within:border-border-strong"
         )}
         initial={false}
         animate={{ height }}
@@ -153,13 +153,13 @@ export function TagInput({ label, value, defaultValue = [], onValueChange, place
         {/* Equal 7px padding makes one row fill the minimum height exactly, so existing tags hold their line when a second row opens. */}
         <div ref={contentRef} className="relative box-border flex min-h-[calc(2.5rem-2px)] cursor-text flex-wrap content-start items-center gap-1.5 p-[7px]" onClick={(event) => { if (event.target === event.currentTarget) inputRef.current?.focus(); }}>
           {/* The pick ring rides above the pills and sizes itself to the picked tag, so it can glide between tags without scaling its border. */}
-          <span ref={ringRef} className="pointer-events-none absolute top-0 left-0 z-1 box-border rounded-full border border-primary bg-primary/10 opacity-0" aria-hidden="true" />
+          <span ref={ringRef} className="pointer-events-none absolute top-0 left-0 z-1 box-border rounded-full border border-accent-default bg-accent-default/10 opacity-0" aria-hidden="true" />
           {/* The visible placeholder is drawn here so it can rise in when the last tag leaves. The native one stays for assistive tech. */}
           <AnimatePresence initial={false}>
             {!draft && !tags.length && (
               <motion.span
                 key="placeholder"
-                className="pointer-events-none absolute inset-0 flex items-center overflow-hidden px-3 text-sm whitespace-nowrap text-muted-foreground"
+                className="pointer-events-none absolute inset-0 flex items-center overflow-hidden px-3 text-sm whitespace-nowrap text-fg-muted"
                 aria-hidden="true"
                 initial={reduced ? { opacity: 0 } : { opacity: 0, y: "0.3em", filter: `blur(${blur.soft}px)` }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -174,7 +174,7 @@ export function TagInput({ label, value, defaultValue = [], onValueChange, place
             {tags.map((tag) => (
               <motion.span
                 layout={reduced ? false : "position"}
-                className="group/tag relative box-border inline-flex min-h-7 cursor-default items-center gap-[3px] rounded-full border border-border bg-muted pr-1 pl-[9px] text-sm whitespace-nowrap text-foreground"
+                className="group/tag relative box-border inline-flex min-h-7 cursor-default items-center gap-[3px] rounded-full border border-border-default bg-bg-muted pr-1 pl-[9px] text-sm whitespace-nowrap text-fg-default"
                 key={tag}
                 data-tag={tag}
                 data-picked={tag === active || undefined}
@@ -190,11 +190,11 @@ export function TagInput({ label, value, defaultValue = [], onValueChange, place
                 <button
                   type="button"
                   className={cn(
-                    "relative z-2 grid size-[22px] cursor-pointer place-items-center rounded-full border-0 bg-transparent text-muted-foreground group-data-[picked]/tag:text-foreground",
+                    "relative z-2 grid size-[22px] cursor-pointer place-items-center rounded-full border-0 bg-transparent text-fg-muted group-data-[picked]/tag:text-fg-default",
                     "[transition:background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
-                    "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-surface [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground",
+                    "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-bg-surface [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default",
                     "active:scale-[.96] active:[transition-duration:var(--duration-quick),var(--duration-quick),var(--duration-instant)]",
-                    "focus-visible:bg-surface focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "focus-visible:bg-bg-surface focus-visible:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus",
                     "motion-reduce:transition-none motion-reduce:active:scale-100"
                   )}
                   onClick={() => remove(tag)}
@@ -210,7 +210,7 @@ export function TagInput({ label, value, defaultValue = [], onValueChange, place
             transition={{ layout: move }}
             ref={inputRef}
             id={inputId}
-            className="box-border min-h-7 min-w-20 flex-[1_1_100px] border-0 bg-transparent px-[5px] font-[inherit] text-sm text-foreground outline-none placeholder:text-transparent"
+            className="box-border min-h-7 min-w-20 flex-[1_1_100px] border-0 bg-transparent px-[5px] font-[inherit] text-sm text-fg-default outline-none placeholder:text-transparent"
             value={draft}
             onChange={(event) => { setDraft(event.currentTarget.value); setPicked(null); }}
             onKeyDown={onKeyDown}

@@ -35,16 +35,16 @@ export function EmptyState({ title, description, action, icon, className, label 
   return (
     <section className={cn("flex w-full flex-col items-center px-5 py-[clamp(2rem,8vw,3rem)] text-center", className)} aria-label={label}>
       {/* The icon settles in once when the state first appears; later changes crossfade in place. */}
-      <div className="relative grid size-12 animate-[sg-settle_var(--duration-considered,480ms)_var(--ease-enter)_both] place-items-center rounded-[var(--radius-xl)] border border-border bg-muted text-muted-foreground motion-reduce:animate-none" aria-hidden="true">
+      <div className="relative grid size-12 animate-[sg-settle_var(--duration-considered,480ms)_var(--ease-enter)_both] place-items-center rounded-[var(--radius-xl)] border border-border-default bg-bg-muted text-fg-muted motion-reduce:animate-none" aria-hidden="true">
         <AnimatePresence mode="popLayout" initial={false}>
           <Swap key={iconKey(glyph)} className="grid place-items-center" initial={reduce ? { opacity: 0 } : iconIn} animate={shown} exit={reduce ? fadeOut : { ...iconIn, transition: exitFast }} transition={reduce ? enter : (spring.snappy as never)}>{glyph}</Swap>
         </AnimatePresence>
       </div>
       <HeightFrame className="w-full max-w-full" contentClassName="flow-root" reduce={reduce} morphKey={`${title}\n${description}`}>
-        <h3 className="relative m-0 mt-5 text-base font-medium leading-snug text-foreground">
+        <h3 className="relative m-0 mt-5 text-base font-medium leading-snug text-fg-default">
           <AnimatePresence mode="popLayout" initial={false}><Swap key={title} className="block [text-wrap:balance]" {...swap}>{title}</Swap></AnimatePresence>
         </h3>
-        <p className="relative mx-auto mt-2 mb-0 max-w-72 text-sm leading-snug text-muted-foreground">
+        <p className="relative mx-auto mt-2 mb-0 max-w-72 text-sm leading-snug text-fg-muted">
           <AnimatePresence mode="popLayout" initial={false}><Swap key={description} className="block [text-wrap:balance]" {...swap}>{description}</Swap></AnimatePresence>
         </p>
       </HeightFrame>

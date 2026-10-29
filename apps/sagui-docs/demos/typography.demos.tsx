@@ -20,14 +20,14 @@ const roles = [
 
 export function Roles() {
   return (
-    <div className="grid w-full divide-y divide-border">
+    <div className="grid w-full divide-y divide-border-default">
       {roles.map(({ role, spec, sample }) => (
         <div key={role} className="grid gap-1 py-3 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-6">
           <div>
-            <code className="type-code text-foreground">{role}</code>
-            <p className="type-caption text-muted-foreground">{spec}</p>
+            <code className="type-code text-fg-default">{role}</code>
+            <p className="type-caption text-fg-muted">{spec}</p>
           </div>
-          <p className={`${role} min-w-0 truncate text-foreground`}>{sample}</p>
+          <p className={`${role} min-w-0 truncate text-fg-default`}>{sample}</p>
         </div>
       ))}
     </div>
@@ -53,7 +53,7 @@ export function Scale() {
     <div className="grid w-full gap-3">
       {steps.map(([step, size, leading]) => (
         <div key={step} className="flex items-baseline gap-4">
-          <span className="type-caption w-28 flex-none text-muted-foreground tabular-nums">{step} · {size} / {leading}</span>
+          <span className="type-caption w-28 flex-none text-fg-muted tabular-nums">{step} · {size} / {leading}</span>
           <span className={`${step} truncate font-medium`}>Aa Quiet type</span>
         </div>
       ))}
@@ -67,10 +67,10 @@ export function Weights() {
   return (
     <div className="grid w-full gap-2 sm:grid-cols-4">
       {[["font-normal", "400", "Regular"], ["font-medium", "500", "Medium"], ["font-semibold", "600", "Semibold"], ["font-bold", "700", "Bold"]].map(([cls, weight, name]) => (
-        <div key={cls} className="rounded-[var(--radius-container)] border border-border p-4">
+        <div key={cls} className="rounded-[var(--radius-container)] border border-border-default p-4">
           <p className={`${cls} text-3xl`}>Ag</p>
-          <p className="type-caption mt-2 text-muted-foreground">{name} · {weight}</p>
-          <code className="type-code text-foreground">{cls}</code>
+          <p className="type-caption mt-2 text-fg-muted">{name} · {weight}</p>
+          <code className="type-code text-fg-default">{cls}</code>
         </div>
       ))}
     </div>
@@ -82,16 +82,16 @@ export function Weights() {
 export function Composition() {
   return (
     <article className="w-full max-w-lg">
-      <p className="type-overline text-muted-foreground">Billing</p>
+      <p className="type-overline text-fg-muted">Billing</p>
       <h2 className="type-h2 mt-2">Upgrade to Pro</h2>
-      <p className="type-body mt-3 max-w-[60ch] text-muted-foreground">
+      <p className="type-body mt-3 max-w-[60ch] text-fg-muted">
         Unlimited projects, priority support and an audit log for every workspace. You can cancel at any time.
       </p>
       <div className="mt-5 flex items-center gap-3">
         <Button>Upgrade</Button>
         <Badge tone="info">Save 20% yearly</Badge>
       </div>
-      <p className="type-caption mt-4 text-muted-foreground">Prices exclude tax.</p>
+      <p className="type-caption mt-4 text-fg-muted">Prices exclude tax.</p>
     </article>
   );
 }

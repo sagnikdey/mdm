@@ -10,7 +10,7 @@ export const Default: Story = {
     <Dialog>
       <DialogTrigger asChild><Button>Delete project</Button></DialogTrigger>
       <DialogContent title="Delete Atlas redesign?" description="This removes the project and its 14 files for everyone.">
-        <p className="mb-5 text-muted-foreground">You can restore it from the trash for 30 days.</p>
+        <p className="mb-5 text-fg-muted">You can restore it from the trash for 30 days.</p>
         <div className="flex justify-end gap-2">
           <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
           <DialogClose asChild><Button variant="danger">Delete</Button></DialogClose>

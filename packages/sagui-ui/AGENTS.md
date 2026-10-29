@@ -9,7 +9,7 @@ These rules are always on. For anything not covered here, ask the `sagui` MCP se
 
 ## Non-negotiables
 - Import from the package: `import { Button } from "@sagui/ui";` and load `@sagui/ui/styles.css` once.
-- Never hardcode color (hex, rgb, oklch). Use semantic tokens: `bg-background`, `bg-surface`, `bg-muted`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-primary text-primary-foreground`, `bg-destructive`, `text-success`, `text-warning`, `ring-ring`. Charts use `var(--color-chart-1…4)`.
+- Never hardcode color (hex, rgb, oklch). Use semantic tokens: `bg-bg-canvas`, `bg-bg-surface`, `bg-bg-muted`, `text-fg-default`, `text-fg-muted`, `border-border-default`, `bg-accent-default text-fg-on-accent`, `bg-danger-default`, `text-success-default`, `text-warning-default`, `ring-border-focus`. Charts use `var(--color-chart-1…4)`.
 - Components use semantic tokens only, never `--sg-*` primitives.
 - Radius: use roles: `--radius-control` (inputs, buttons), `--radius-container` (cards), `--radius-overlay` (dialogs, popovers), `--radius-pill`. Nested corners stay concentric: inner = outer − padding.
 - Elevation: `--shadow-resting | raised | floating | overlay`. No custom box-shadows.

@@ -303,7 +303,7 @@ export function Ridgeline({ series, label, unit = "", formatValue, domain, overl
 
   const empty = !series.length || series.every(entry => !entry.values.length);
   /** Ridge tone: one hue, the first series color, from a light tint (low median) to full strength (high median), so the scale never passes through a muddy middle. */
-  const toneOf = (t: number) => `color-mix(in oklab, var(--color-chart-1) ${Math.round(38 + clamp(t, 0, 1) * 62)}%, var(--color-surface))`;
+  const toneOf = (t: number) => `color-mix(in oklab, var(--color-chart-1) ${Math.round(38 + clamp(t, 0, 1) * 62)}%, var(--color-bg-surface))`;
   const ridgeColor = (value: number) => tint ? toneOf((value - model.lo) / (model.hi - model.lo || 1)) : "var(--color-chart-1)";
   const describe = (entry: RidgelineSeries) => { const s = model.stats.get(entry.id)!; return `${entry.label}: median ${format(s.median)}, middle half ${format(s.q1)} to ${format(s.q3)}, range ${format(s.min)} to ${format(s.max)}, ${s.n} values`; };
 

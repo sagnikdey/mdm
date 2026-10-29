@@ -10,12 +10,12 @@ Corners grow with the surface. Pick by role: `control` for buttons and fields, `
 
 export const scale = [["xs", "4px"], ["sm", "6px"], ["md", "10px"], ["lg", "14px"], ["xl", "20px"], ["2xl", "28px"], ["pill", "9999px"]];
 
-<div className="sb-unstyled flex flex-wrap gap-6 text-foreground">
+<div className="sb-unstyled flex flex-wrap gap-6 text-fg-default">
   {scale.map(([name, value]) => (
     <div key={name} className="grid justify-items-center gap-1">
-      <div className="size-16 border-2 border-primary bg-secondary" style={{ borderRadius: `var(--radius-${name})` }} />
+      <div className="size-16 border-2 border-accent-default bg-secondary-default" style={{ borderRadius: `var(--radius-${name})` }} />
       <code className="type-caption">--radius-{name}</code>
-      <span className="type-caption text-muted-foreground">{value}</span>
+      <span className="type-caption text-fg-muted">{value}</span>
     </div>
   ))}
 </div>
@@ -24,12 +24,12 @@ export const scale = [["xs", "4px"], ["sm", "6px"], ["md", "10px"], ["lg", "14px
 
 export const roleList = [["control", "md · 10px", "Buttons, inputs, selects"], ["container", "lg · 14px", "Cards, alerts, groups"], ["overlay", "xl · 20px", "Menus, popovers, dialogs"], ["pill", "9999px", "Badges, chips, avatars"]];
 
-<div className="sb-unstyled grid grid-cols-4 gap-4 text-foreground">
+<div className="sb-unstyled grid grid-cols-4 gap-4 text-fg-default">
   {roleList.map(([role, step, use]) => (
     <div key={role} className="grid gap-2">
-      <div className="h-16 border border-border bg-surface shadow-resting" style={{ borderRadius: `var(--radius-${role})` }} />
+      <div className="h-16 border border-border-default bg-bg-surface shadow-resting" style={{ borderRadius: `var(--radius-${role})` }} />
       <code className="type-code">rounded-{role}</code>
-      <span className="type-caption text-muted-foreground">{step} — {use}</span>
+      <span className="type-caption text-fg-muted">{step} — {use}</span>
     </div>
   ))}
 </div>
@@ -38,7 +38,7 @@ export const roleList = [["control", "md · 10px", "Buttons, inputs, selects"], 
 
 Inner radius = outer radius − padding.
 
-<div className="sb-unstyled grid max-w-xl grid-cols-2 gap-6 text-foreground">
-  <div className="rounded-[20px] border border-border bg-muted p-2"><div className="rounded-[12px] border border-border bg-surface p-4 type-body-sm">20 − 8 = 12px</div></div>
-  <div className="rounded-[20px] border border-border bg-muted p-2"><div className="rounded-[20px] border border-border bg-surface p-4 type-body-sm">20px inside 20px</div></div>
+<div className="sb-unstyled grid max-w-xl grid-cols-2 gap-6 text-fg-default">
+  <div className="rounded-[20px] border border-border-default bg-bg-muted p-2"><div className="rounded-[12px] border border-border-default bg-bg-surface p-4 type-body-sm">20 − 8 = 12px</div></div>
+  <div className="rounded-[20px] border border-border-default bg-bg-muted p-2"><div className="rounded-[20px] border border-border-default bg-bg-surface p-4 type-body-sm">20px inside 20px</div></div>
 </div>

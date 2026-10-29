@@ -104,7 +104,7 @@ server.registerTool("validate_usage", {
 }, async ({ code }) => {
   const issues = [];
   const add = (rule, match, fix) => issues.push({ rule, match, fix });
-  for (const m of code.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch)\([^)]*\)/g)) add("no-hardcoded-color", m[0], "Use a color token, e.g. bg-primary / text-muted-foreground / var(--color-border).");
+  for (const m of code.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch)\([^)]*\)/g)) add("no-hardcoded-color", m[0], "Use a color token, e.g. bg-accent-default / text-fg-muted / var(--color-border-default).");
   for (const m of code.matchAll(/\b(?:p|px|py|m|mx|my|gap|w|h|rounded|text)-\[\d+px\]/g)) add("no-arbitrary-px", m[0], "Use the Tailwind scale or a radius role (rounded-[var(--radius-control)]).");
   for (const m of code.matchAll(/box-shadow:\s*[^;]+|shadow-\[[^\]]+\]/g)) add("no-raw-shadow", m[0], "Use --shadow-resting | raised | floating | overlay.");
   for (const m of code.matchAll(/<([A-Z]\w*)\s([^>]*?)\/?>/g)) {

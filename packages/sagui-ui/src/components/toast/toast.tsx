@@ -86,7 +86,7 @@ export function Toast({ title, description, open = true, onOpenChange, duration:
         <motion.div
           key="toast"
           ref={surface}
-          className={cn("flex w-[min(100%,26rem)] min-w-0 items-start gap-3 rounded-[var(--radius-xl)] border border-border bg-surface py-3.5 pr-3.5 pl-4 tracking-[-0.01em] text-foreground shadow-floating", className)}
+          className={cn("flex w-[min(100%,26rem)] min-w-0 items-start gap-3 rounded-[var(--radius-xl)] border border-border-default bg-bg-surface py-3.5 pr-3.5 pl-4 tracking-[-0.01em] text-fg-default shadow-floating", className)}
           role="status"
           aria-live="polite"
           aria-atomic="true"
@@ -101,7 +101,7 @@ export function Toast({ title, description, open = true, onOpenChange, duration:
           dragMomentum={false}
           onDragEnd={handleDragEnd}
         >
-          <span className="grid size-[30px] flex-none place-items-center rounded-full border border-[color-mix(in_oklab,var(--color-success)_24%,var(--color-border))] bg-[color-mix(in_oklab,var(--color-success)_10%,var(--color-surface))] text-success" aria-hidden="true">
+          <span className="grid size-[30px] flex-none place-items-center rounded-full border border-[color-mix(in_oklab,var(--color-success-default)_24%,var(--color-border-default))] bg-[color-mix(in_oklab,var(--color-success-default)_10%,var(--color-bg-surface))] text-success-default" aria-hidden="true">
             <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round">
               <motion.path d="M4 12.5l5 5L20 6.5" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: duration.standard, ease: easeEnter, delay: 0.12 }} />
             </svg>
@@ -112,11 +112,11 @@ export function Toast({ title, description, open = true, onOpenChange, duration:
               <AnimatePresence mode="popLayout" initial={false}><Swap key={title} className="block truncate" {...swap}>{title}</Swap></AnimatePresence>
             </strong>
             <AnimatePresence mode="popLayout" initial={false}>
-              {description ? <Swap key={description} className="block text-sm leading-snug text-muted-foreground" {...swap}>{description}</Swap> : null}
+              {description ? <Swap key={description} className="block text-sm leading-snug text-fg-muted" {...swap}>{description}</Swap> : null}
             </AnimatePresence>
           </HeightFrame>
           <button
-            className="-mt-px -mr-0.5 grid size-8 flex-none cursor-pointer place-items-center rounded-full border-0 bg-transparent text-muted-foreground [transition:transform_var(--duration-spring)_var(--ease-spring),background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint)] active:scale-[.96] active:[transition-duration:var(--duration-instant)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none motion-reduce:active:scale-100"
+            className="-mt-px -mr-0.5 grid size-8 flex-none cursor-pointer place-items-center rounded-full border-0 bg-transparent text-fg-muted [transition:transform_var(--duration-spring)_var(--ease-spring),background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint)] active:scale-[.96] active:[transition-duration:var(--duration-instant)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus motion-reduce:transition-none motion-reduce:active:scale-100"
             type="button"
             aria-label="Dismiss notification"
             onClick={() => dismiss(0)}

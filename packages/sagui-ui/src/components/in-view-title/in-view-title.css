@@ -1,5 +1,5 @@
 /* in-view-title: ported from Arc (uiarc.dev). Classes are prefixed sg-in-view-title-*; see src/lib/css-module.ts. */
-.sg-in-view-title-wrap { min-width: 0; color: var(--color-foreground); }
+.sg-in-view-title-wrap { min-width: 0; color: var(--color-fg-default); }
 /* Clips hide the rise; padding with matching negative margins leaves room for descenders and blur without changing layout. */
 .sg-in-view-title-clip { display: inline-block; overflow: hidden; vertical-align: top; padding: .08em .14em .2em; margin: -.08em -.14em -.2em; }
 .sg-in-view-title-lineClip { display: block; overflow: hidden; padding: .06em .12em .18em; margin: -.06em -.12em -.18em; }

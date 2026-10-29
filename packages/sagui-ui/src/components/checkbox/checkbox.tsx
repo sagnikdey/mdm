@@ -40,24 +40,24 @@ export const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimiti
         ref={ref}
         checked={state}
         onCheckedChange={change}
-        className={cn("group/cb relative grid size-10 flex-none cursor-pointer place-items-center rounded-[var(--radius-md)] border-0 bg-transparent p-0 text-primary-foreground [-webkit-tap-highlight-color:transparent] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50", className)}
+        className={cn("group/cb relative grid size-10 flex-none cursor-pointer place-items-center rounded-[var(--radius-md)] border-0 bg-transparent p-0 text-fg-on-accent [-webkit-tap-highlight-color:transparent] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50", className)}
         aria-describedby={description ? `${controlId}-description` : undefined}
         aria-label={props["aria-label"] ?? (label ? undefined : "Checkbox")}
       >
         {/* The square is the only part that reacts to a press, so the hit area and label never move. */}
         <span
           className={cn(
-            "relative block size-[18px] rounded-[5px] border border-border-strong bg-surface",
+            "relative block size-[18px] rounded-[5px] border border-border-strong bg-bg-surface",
             "[transition:border-color_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
-            "group-data-[state=checked]/cb:border-primary group-data-[state=indeterminate]/cb:border-primary",
-            "[@media(hover:hover)_and_(pointer:fine)]:group-hover/cb:group-enabled/cb:group-data-[state=unchecked]/cb:border-muted-foreground",
+            "group-data-[state=checked]/cb:border-accent-default group-data-[state=indeterminate]/cb:border-accent-default",
+            "[@media(hover:hover)_and_(pointer:fine)]:group-hover/cb:group-enabled/cb:group-data-[state=unchecked]/cb:border-fg-muted",
             "group-active/cb:group-enabled/cb:scale-95 group-active/cb:group-enabled/cb:[transition-duration:var(--duration-quick),var(--duration-instant)]",
-            "group-focus-visible/cb:ring-2 group-focus-visible/cb:ring-ring group-focus-visible/cb:ring-offset-2 group-focus-visible/cb:ring-offset-background",
+            "group-focus-visible/cb:ring-2 group-focus-visible/cb:ring-border-focus group-focus-visible/cb:ring-offset-2 group-focus-visible/cb:ring-offset-bg-canvas",
             "motion-reduce:transition-none motion-reduce:group-active/cb:scale-100"
           )}
           aria-hidden="true"
         >
-          <motion.span className="absolute -inset-px rounded-[inherit] bg-primary" initial={false} animate={{ opacity: on ? 1 : 0, scale: on ? 1 : 0.6 }} transition={reduced ? { duration: 0 } : ({ scale: spring.snappy, opacity: fade } as Transition)} />
+          <motion.span className="absolute -inset-px rounded-[inherit] bg-accent-default" initial={false} animate={{ opacity: on ? 1 : 0, scale: on ? 1 : 0.6 }} transition={reduced ? { duration: 0 } : ({ scale: spring.snappy, opacity: fade } as Transition)} />
           <svg className="absolute -inset-px size-[18px] overflow-visible" viewBox="0 0 18 18" fill="none" focusable="false">
             <motion.path
               initial={false}
@@ -74,8 +74,8 @@ export const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimiti
       {label || description ? (
         // The label's first line centers on the square: (40px box - 19.6px line) / 2.
         <div className="ml-px grid min-w-0 gap-0.5 pt-[10.2px]">
-          {label ? <label htmlFor={controlId} className="cursor-pointer text-sm font-medium leading-snug text-foreground">{label}</label> : null}
-          {description ? <span id={`${controlId}-description`} className="text-xs leading-snug text-muted-foreground">{description}</span> : null}
+          {label ? <label htmlFor={controlId} className="cursor-pointer text-sm font-medium leading-snug text-fg-default">{label}</label> : null}
+          {description ? <span id={`${controlId}-description`} className="text-xs leading-snug text-fg-muted">{description}</span> : null}
         </div>
       ) : null}
     </div>

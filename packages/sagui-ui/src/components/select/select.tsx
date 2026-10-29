@@ -65,13 +65,13 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(function 
           aria-describedby={describedBy(hintId, errorId)}
           aria-invalid={error ? true : undefined}
           className={cn(
-            "relative box-border flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-[var(--radius-md)] border bg-surface px-3 text-left text-sm text-foreground",
+            "relative box-border flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-[var(--radius-md)] border bg-bg-surface px-3 text-left text-sm text-fg-default",
             "transition-[border-color,background-color,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-            "[@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[disabled]:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[disabled]:border-border-strong",
-            "data-[state=open]:border-border-strong data-[state=open]:bg-muted",
-            "focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/25",
+            "[@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[disabled]:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[disabled]:border-border-strong",
+            "data-[state=open]:border-border-strong data-[state=open]:bg-bg-muted",
+            "focus-visible:border-border-focus focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-border-focus-soft",
             "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
-            error ? "border-destructive focus-visible:ring-destructive/25" : "border-border",
+            error ? "border-danger-default focus-visible:ring-danger-border" : "border-border-default",
             className
           )}
         >
@@ -81,7 +81,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(function 
             <AnimatePresence initial={false} custom={direction}>
               <motion.span
                 key={currentValue ? `value-${currentValue}` : "placeholder"}
-                className={cn("min-w-0 truncate [grid-area:1/1]", !currentValue && "text-muted-foreground")}
+                className={cn("min-w-0 truncate [grid-area:1/1]", !currentValue && "text-fg-muted")}
                 custom={direction}
                 variants={reduceMotion ? valueFade : valueRoll}
                 initial="enter"
@@ -92,29 +92,29 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(function 
               </motion.span>
             </AnimatePresence>
           </span>
-          <SelectPrimitive.Icon className="inline-flex flex-none text-muted-foreground [transition:transform_var(--duration-spring)_var(--ease-spring)] in-data-[state=open]:rotate-180 motion-reduce:transition-none">
+          <SelectPrimitive.Icon className="inline-flex flex-none text-fg-muted [transition:transform_var(--duration-spring)_var(--ease-spring)] in-data-[state=open]:rotate-180 motion-reduce:transition-none">
             <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" />
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>
           <SelectPrimitive.Content className={selectContent} position="popper" sideOffset={4} collisionPadding={12}>
-            <SelectPrimitive.ScrollUpButton className="grid h-7 place-items-center text-muted-foreground"><ChevronUp size={16} strokeWidth={1.75} aria-hidden="true" /></SelectPrimitive.ScrollUpButton>
+            <SelectPrimitive.ScrollUpButton className="grid h-7 place-items-center text-fg-muted"><ChevronUp size={16} strokeWidth={1.75} aria-hidden="true" /></SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport className="py-0.5">
               {options.map((option) => (
                 <SelectPrimitive.Item
                   key={option.value}
                   value={option.value}
                   disabled={option.disabled}
-                  className="relative flex min-h-9 cursor-default select-none items-center rounded-[calc(var(--radius-xl)-6px)] py-0 pr-[34px] pl-[11px] text-sm text-foreground outline-none transition-colors duration-[var(--duration-instant)] data-[disabled]:opacity-45 data-[highlighted]:bg-muted"
+                  className="relative flex min-h-9 cursor-default select-none items-center rounded-[calc(var(--radius-xl)-6px)] py-0 pr-[34px] pl-[11px] text-sm text-fg-default outline-none transition-colors duration-[var(--duration-instant)] data-[disabled]:opacity-45 data-[highlighted]:bg-bg-muted"
                 >
                   <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
-                  <SelectPrimitive.ItemIndicator className="absolute right-2.5 inline-flex items-center text-foreground [animation:sg-pop-in_var(--duration-standard)_var(--ease-enter)_40ms_both] motion-reduce:animate-none">
+                  <SelectPrimitive.ItemIndicator className="absolute right-2.5 inline-flex items-center text-fg-default [animation:sg-pop-in_var(--duration-standard)_var(--ease-enter)_40ms_both] motion-reduce:animate-none">
                     <Check size={16} strokeWidth={1.75} aria-hidden="true" />
                   </SelectPrimitive.ItemIndicator>
                 </SelectPrimitive.Item>
               ))}
             </SelectPrimitive.Viewport>
-            <SelectPrimitive.ScrollDownButton className="grid h-7 place-items-center text-muted-foreground"><ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" /></SelectPrimitive.ScrollDownButton>
+            <SelectPrimitive.ScrollDownButton className="grid h-7 place-items-center text-fg-muted"><ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" /></SelectPrimitive.ScrollDownButton>
           </SelectPrimitive.Content>
         </SelectPrimitive.Portal>
       </SelectPrimitive.Root>

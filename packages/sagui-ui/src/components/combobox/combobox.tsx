@@ -174,19 +174,19 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
         className={cn(
           fieldShell(!!error),
           "relative z-2 gap-2 px-3",
-          open && "border-border-strong bg-muted",
+          open && "border-border-strong bg-bg-muted",
           disabled && "cursor-not-allowed opacity-50",
           className
         )}
       >
-        <Search className="flex-none text-muted-foreground" size={16} strokeWidth={1.75} aria-hidden="true" />
+        <Search className="flex-none text-fg-muted" size={16} strokeWidth={1.75} aria-hidden="true" />
         <input
           {...inputProps}
           ref={inputRef}
           id={controlId}
           type="text"
           role="combobox"
-          className="w-full min-w-0 border-0 bg-transparent p-0 font-[inherit] text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+          className="w-full min-w-0 border-0 bg-transparent p-0 font-[inherit] text-sm text-fg-default outline-none placeholder:text-fg-muted disabled:cursor-not-allowed"
           value={inputValue}
           // While searching, the chosen label stays in place as muted placeholder copy instead of vanishing.
           placeholder={selectedOption?.label ?? placeholder}
@@ -219,14 +219,14 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
             </motion.button>
           )}
         </AnimatePresence>
-        <ChevronDown className={cn("flex-none text-muted-foreground [transition:transform_var(--duration-spring)_var(--ease-spring)] motion-reduce:transition-none", open && "rotate-180")} size={16} strokeWidth={1.75} aria-hidden="true" />
+        <ChevronDown className={cn("flex-none text-fg-muted [transition:transform_var(--duration-spring)_var(--ease-spring)] motion-reduce:transition-none", open && "rotate-180")} size={16} strokeWidth={1.75} aria-hidden="true" />
       </div>
       <FieldMessage id={hintId} text={description} rollNumbers={false} />
       <FieldMessage id={errorId} text={error} tone="error" rollNumbers={false} />
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
-            className="absolute inset-x-0 top-[calc(100%+8px)] z-80 origin-top overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface p-[5px] text-foreground shadow-floating will-change-[transform,opacity]"
+            className="absolute inset-x-0 top-[calc(100%+8px)] z-80 origin-top overflow-hidden rounded-[var(--radius-xl)] border border-border-default bg-bg-surface p-[5px] text-fg-default shadow-floating will-change-[transform,opacity]"
             initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1, transition: reduceMotion ? { duration: duration.instant } : ({ ...spring.snappy, opacity: { duration: duration.fast, ease: easeEnter } } as never) }}
             exit={{ opacity: 0, ...(reduceMotion ? {} : { y: -4, scale: 0.98 }), transition: { duration: duration.instant, ease: easeStandard } }}
@@ -241,7 +241,7 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
                       ref={(element) => { optionRefs.current[option.value] = element; }}
                       id={`${controlId}-option-${option.value}`}
                       // Arrow keys move the highlight often, so it changes almost instantly.
-                      className="flex min-h-9 cursor-pointer select-none items-center justify-between gap-3 rounded-[calc(var(--radius-xl)-5px)] px-3 text-sm text-foreground outline-none transition-colors duration-75 data-[active=true]:bg-muted data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-40 motion-reduce:transition-none"
+                      className="flex min-h-9 cursor-pointer select-none items-center justify-between gap-3 rounded-[calc(var(--radius-xl)-5px)] px-3 text-sm text-fg-default outline-none transition-colors duration-75 data-[active=true]:bg-bg-muted data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-40 motion-reduce:transition-none"
                       data-active={index === activeIndex ? "true" : undefined}
                       data-disabled={option.disabled ? "true" : undefined}
                       role="option"
@@ -252,12 +252,12 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
                       onClick={() => choose(option)}
                     >
                       <span className="min-w-0 truncate">{option.label}</span>
-                      {option.value === selectedValue && <Check className="flex-none text-foreground" size={16} strokeWidth={1.75} aria-hidden="true" />}
+                      {option.value === selectedValue && <Check className="flex-none text-fg-default" size={16} strokeWidth={1.75} aria-hidden="true" />}
                     </div>
                   ))
                 ) : (
                   <motion.div
-                    className="p-3 text-sm text-muted-foreground"
+                    className="p-3 text-sm text-fg-muted"
                     role="status"
                     initial={reduceMotion ? false : { opacity: 0, y: 4, filter: `blur(${blur.soft}px)` }}
                     animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}

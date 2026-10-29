@@ -15,16 +15,16 @@ export function MotionDemo() {
   const [step, setStep] = React.useState(0);
   const current = steps[step];
   return (
-    <div className="grid w-full max-w-sm gap-6 rounded-[var(--radius-xl)] border border-border bg-surface p-6 shadow-raised">
+    <div className="grid w-full max-w-sm gap-6 rounded-[var(--radius-xl)] border border-border-default bg-bg-surface p-6 shadow-raised">
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="type-title">sagui-docs</p>
-          <p className="type-caption text-muted-foreground">main · ae8d0ea</p>
+          <p className="type-caption text-fg-muted">main · ae8d0ea</p>
         </div>
         <Badge tone={current.tone} icon={current.icon}>{current.label}</Badge>
       </div>
       <Button onClick={() => setStep((value) => (value + 1) % steps.length)}>{current.action}</Button>
-      <p className="type-caption text-muted-foreground">Click through the steps: the badge and the button keep their place while their content morphs.</p>
+      <p className="type-caption text-fg-muted">Click through the steps: the badge and the button keep their place while their content morphs.</p>
     </div>
   );
 }

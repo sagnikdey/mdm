@@ -82,11 +82,11 @@ export function ActionButton({ label, successLabel = "Saved", pendingLabel = "Sa
       type={props.type ?? "button"}
       className={cn(
         "relative inline-flex h-10 items-center justify-center overflow-hidden px-4 select-none cursor-pointer",
-        "rounded-[var(--radius-md)] border border-primary bg-primary text-primary-foreground text-sm font-medium",
+        "rounded-[var(--radius-md)] border border-accent-default bg-accent-default text-fg-on-accent text-sm font-medium",
         "transition-[box-shadow,opacity] duration-[var(--duration-quick)]",
         "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:shadow-resting",
         "disabled:cursor-not-allowed disabled:opacity-70 data-[state=pending]:cursor-progress",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg-canvas",
         className
       )}
       disabled={disabled}

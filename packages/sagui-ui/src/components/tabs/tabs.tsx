@@ -48,7 +48,7 @@ export function Tabs({ value, defaultValue, onValueChange, className, ...props }
   );
 }
 
-const scrollButton = "absolute inset-y-0 z-[2] grid w-[33px] place-items-center border-0 bg-muted text-foreground focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-0";
+const scrollButton = "absolute inset-y-0 z-[2] grid w-[33px] place-items-center border-0 bg-bg-muted text-fg-default focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-border-focus disabled:pointer-events-none disabled:opacity-0";
 
 export function TabsList({ className, ...props }: React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
   const { active } = React.useContext(TabsContext);
@@ -96,7 +96,7 @@ export function TabsList({ className, ...props }: React.ComponentPropsWithoutRef
     : edges.left ? "[mask-image:linear-gradient(to_right,transparent,black_35px,black)]"
     : edges.right ? "[mask-image:linear-gradient(to_right,black,black_calc(100%-35px),transparent)]" : "";
   return (
-    <div ref={shell} className="relative isolate inline-flex min-w-0 max-w-full items-center rounded-[var(--radius-lg)] border border-border bg-muted">
+    <div ref={shell} className="relative isolate inline-flex min-w-0 max-w-full items-center rounded-[var(--radius-lg)] border border-border-default bg-bg-muted">
       {edges.overflow && <button type="button" className={cn(scrollButton, "left-0 rounded-l-[var(--radius-lg)]")} aria-label="Scroll tabs left" disabled={!edges.left} onClick={() => scrollTabs(-1)}><ChevronLeft size={17} aria-hidden="true" /></button>}
       <motion.div
         ref={viewport}
@@ -122,13 +122,13 @@ export function TabsTrigger({ className, children, value, ...props }: React.Comp
       value={value}
       data-value={value}
       className={cn(
-        "relative inline-grid min-h-8 min-w-[5.5rem] flex-none cursor-pointer place-items-center whitespace-nowrap rounded-[calc(var(--radius-lg)-3px)] border-0 bg-transparent px-3 text-sm font-medium text-muted-foreground [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground active:text-foreground data-[state=active]:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50",
+        "relative inline-grid min-h-8 min-w-[5.5rem] flex-none cursor-pointer place-items-center whitespace-nowrap rounded-[calc(var(--radius-lg)-3px)] border-0 bg-transparent px-3 text-sm font-medium text-fg-muted [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default active:text-fg-default data-[state=active]:text-accent-default focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
     >
       {active === value && (
         <motion.span
-          className="absolute inset-0 -z-10 rounded-[inherit] border border-border bg-surface shadow-resting will-change-transform"
+          className="absolute inset-0 -z-10 rounded-[inherit] border border-border-default bg-bg-surface shadow-resting will-change-transform"
           layoutId="selection"
           layoutDependency={active}
           transition={reduced ? { duration: 0 } : spring.morph}
@@ -158,7 +158,7 @@ export function TabsContent({ className, value, forceMount, children, ...props }
   const panel = React.useRef<HTMLDivElement>(null);
   const selected = active === value;
   // Positioned and margin-free while leaving, so an outgoing panel pops out exactly where it was.
-  const classes = cn("mt-4 text-sm leading-relaxed text-muted-foreground data-[motion-pop-id]:mt-0 data-[state=inactive]:pointer-events-none focus-visible:rounded-[var(--radius-lg)] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring [&[data-motion-pop-id]]:mt-0", className);
+  const classes = cn("mt-4 text-sm leading-relaxed text-fg-muted data-[motion-pop-id]:mt-0 data-[state=inactive]:pointer-events-none focus-visible:rounded-[var(--radius-lg)] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-border-focus [&[data-motion-pop-id]]:mt-0", className);
   // The incoming panel starts at the outgoing panel's height and settles at its own, so content below glides instead of jumping.
   React.useLayoutEffect(() => {
     const node = panel.current;

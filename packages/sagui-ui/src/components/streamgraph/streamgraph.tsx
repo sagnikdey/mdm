@@ -72,7 +72,7 @@ const PAD = 10, GAP = 14;
 /** Neutral steps by layer. Stacked from the centre out, neighbours always sit at least ten steps apart; the accent is kept for the layer in focus. */
 /** The first four layers take the chart series in order (the first in the accent); later layers fall back to neutral steps that alternate in lightness. */
 const SHADES = [30, 18, 24, 14];
-const colorOf = (item: StreamgraphSeries, index: number) => item.color ?? (index < 4 ? `var(--color-chart-${index + 1})` : `color-mix(in oklab, var(--color-foreground) ${SHADES[(index - 4) % SHADES.length]}%, var(--color-surface))`);
+const colorOf = (item: StreamgraphSeries, index: number) => item.color ?? (index < 4 ? `var(--color-chart-${index + 1})` : `color-mix(in oklab, var(--color-fg-default) ${SHADES[(index - 4) % SHADES.length]}%, var(--color-bg-surface))`);
 /** The first layer sits in the middle of the stream and the rest alternate above and below it; a flat baseline stacks them in order. */
 function stackOrder(count: number, mode: StreamgraphProps["offset"]) {
   const order = Array.from({ length: count }, (_, index) => index);

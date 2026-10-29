@@ -8,7 +8,7 @@ export function Hero() {
     <BottomSheet title="Trip details" description="Lisbon, 12 to 16 May" trigger={<Button>Open sheet</Button>}>
       <div className="grid gap-3">
         {Array.from({ length: 12 }, (_, index) => (
-          <div key={index} className="rounded-[var(--radius-md)] border border-border p-3">Itinerary item {index + 1}</div>
+          <div key={index} className="rounded-[var(--radius-md)] border border-border-default p-3">Itinerary item {index + 1}</div>
         ))}
         <BottomSheetClose asChild><Button variant="outline">Done</Button></BottomSheetClose>
       </div>
@@ -21,7 +21,7 @@ export function Hero() {
 export function ThreeDetents() {
   return (
     <BottomSheet title="Filters" detents={[0.3, 0.6, 0.92]} initialDetent={1} trigger={<Button variant="outline">Three detents</Button>}>
-      <p className="text-muted-foreground">Drag the handle, flick, or use the arrow keys on the grabber to move between heights.</p>
+      <p className="text-fg-muted">Drag the handle, flick, or use the arrow keys on the grabber to move between heights.</p>
     </BottomSheet>
   );
 }

@@ -21,7 +21,7 @@ export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
 type AlertBoxProps = Omit<AlertProps, "open"> & { reduce: boolean | null; animateIcon?: boolean };
 
 const icons = { info: Info, success: Check, warning: TriangleAlert, danger: CircleX };
-const iconColor = { info: "text-primary", success: "text-success", warning: "text-warning", danger: "text-destructive" };
+const iconColor = { info: "text-accent-default", success: "text-success-default", warning: "text-warning-default", danger: "text-danger-default" };
 const exitFast: Transition = { duration: duration.quick, ease: easeStandard };
 const textIn = { opacity: 0, y: "0.3em", filter: `blur(${blur.soft}px)` };
 const textOut: TargetAndTransition = { opacity: 0, y: "-0.3em", filter: `blur(${blur.subtle}px)`, transition: exitFast };
@@ -36,7 +36,7 @@ function AlertBox({ tone = "info", title, children, className, reduce, onDismiss
   const enter: Transition = reduce ? { duration: duration.instant } : { duration: duration.standard, ease: easeEnter };
   const swap: MotionProps = { initial: reduce ? { opacity: 0 } : textIn, animate: shown, exit: reduce ? fadeOut : textOut, transition: enter };
   return (
-    <div {...props} className={cn("flex items-start gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4 shadow-resting", className)} role={tone === "danger" ? "alert" : "status"}>
+    <div {...props} className={cn("flex items-start gap-3 rounded-[var(--radius-lg)] border border-border-default bg-bg-surface p-4 shadow-resting", className)} role={tone === "danger" ? "alert" : "status"}>
       {/* A new tone morphs its icon in place; a newly shown alert gives the icon a small settle. */}
       <motion.span className={cn("relative mt-px grid size-[18px] flex-none place-items-center", iconColor[tone])} initial={animateIcon && !reduce ? iconIn : false} animate={shown} transition={spring.snappy as never}>
         <AnimatePresence mode="popLayout" initial={false}>
@@ -52,7 +52,7 @@ function AlertBox({ tone = "info", title, children, className, reduce, onDismiss
         </strong>
         <AnimatePresence mode="popLayout" initial={false}>
           {hasDetails && (
-            <motion.p key="details" className="relative m-0 mt-1 text-xs leading-snug text-muted-foreground" {...swap}>
+            <motion.p key="details" className="relative m-0 mt-1 text-xs leading-snug text-fg-muted" {...swap}>
               {text === null ? children : <AnimatePresence mode="popLayout" initial={false}><Swap key={text} className="block" {...swap}>{text}</Swap></AnimatePresence>}
             </motion.p>
           )}
@@ -61,7 +61,7 @@ function AlertBox({ tone = "info", title, children, className, reduce, onDismiss
       {onDismiss && (
         <button
           type="button"
-          className="-my-[5px] -mr-1.5 grid size-7 flex-none cursor-pointer place-items-center rounded-full border-0 bg-transparent text-muted-foreground [transition:transform_var(--duration-spring)_var(--ease-spring),background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint)] active:scale-[.96] active:[transition-duration:var(--duration-instant)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none motion-reduce:active:scale-100"
+          className="-my-[5px] -mr-1.5 grid size-7 flex-none cursor-pointer place-items-center rounded-full border-0 bg-transparent text-fg-muted [transition:transform_var(--duration-spring)_var(--ease-spring),background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint)] active:scale-[.96] active:[transition-duration:var(--duration-instant)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus motion-reduce:transition-none motion-reduce:active:scale-100"
           aria-label={`Dismiss: ${title}`}
           onClick={onDismiss}
         >

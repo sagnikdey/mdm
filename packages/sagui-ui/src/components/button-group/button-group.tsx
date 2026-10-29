@@ -75,11 +75,11 @@ const tones = {
   outline: "",
   // Solid is the primary group: the primary fill, with the highlight and dividers mixed from the page color.
   solid: [
-    "border-primary bg-primary text-primary-foreground",
-    "[--bg-divider:color-mix(in_oklab,var(--color-background)_20%,var(--color-primary))]",
-    "[--bg-highlight:color-mix(in_oklab,var(--color-background)_13%,var(--color-primary))]",
-    "[--bg-highlight-pressed:color-mix(in_oklab,var(--color-background)_22%,var(--color-primary))]",
-    "[--bg-muted-ink:color-mix(in_oklab,var(--color-background)_72%,var(--color-primary))]",
+    "border-accent-default bg-accent-default text-fg-on-accent",
+    "[--bg-divider:color-mix(in_oklab,var(--color-bg-canvas)_20%,var(--color-accent-default))]",
+    "[--bg-highlight:color-mix(in_oklab,var(--color-bg-canvas)_13%,var(--color-accent-default))]",
+    "[--bg-highlight-pressed:color-mix(in_oklab,var(--color-bg-canvas)_22%,var(--color-accent-default))]",
+    "[--bg-muted-ink:color-mix(in_oklab,var(--color-bg-canvas)_72%,var(--color-accent-default))]",
   ].join(" "),
 } as const;
 
@@ -155,7 +155,7 @@ const segmentBase = [
   "aria-disabled:cursor-not-allowed disabled:cursor-not-allowed",
   "group-data-[orientation=vertical]/bg:w-full group-data-[orientation=vertical]/bg:justify-start",
   "group-data-[compact]/bg:data-[collapsible]:w-[calc(var(--bg-h)-2px)] group-data-[compact]/bg:data-[collapsible]:px-0",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus",
 ].join(" ");
 const iconOnlySegment = "w-[calc(var(--bg-h)-2px)] px-0 group-data-[orientation=vertical]/bg:justify-center";
 const triggerSegment = "w-[calc(var(--bg-h)-6px)] min-w-0 px-0 text-[var(--bg-muted-ink)] transition-colors duration-[var(--duration-quick)] data-[state=open]:text-inherit group-data-[orientation=vertical]/bg:justify-center";
@@ -364,9 +364,9 @@ export function ButtonGroup({ items, menu, label, variant = "outline", size = "m
       ref={root}
       className={cn(
         "group/bg relative isolate inline-flex max-w-full items-stretch overflow-x-auto overscroll-x-contain align-middle [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-        "border border-border rounded-[var(--bg-radius)] bg-surface text-foreground aria-disabled:opacity-50",
-        "[--bg-h:40px] [--bg-pad-x:14px] [--bg-inset:3px] [--bg-radius:var(--radius-lg)] [--bg-divider:var(--color-border)] [--bg-divider-inset:11px]",
-        "[--bg-highlight:var(--color-muted)] [--bg-highlight-pressed:color-mix(in_oklab,var(--color-muted),var(--color-border-strong)_30%)] [--bg-muted-ink:var(--color-muted-foreground)]",
+        "border border-border-default rounded-[var(--bg-radius)] bg-bg-surface text-fg-default aria-disabled:opacity-50",
+        "[--bg-h:40px] [--bg-pad-x:14px] [--bg-inset:3px] [--bg-radius:var(--radius-lg)] [--bg-divider:var(--color-border-default)] [--bg-divider-inset:11px]",
+        "[--bg-highlight:var(--color-bg-muted)] [--bg-highlight-pressed:color-mix(in_oklab,var(--color-bg-muted),var(--color-border-strong)_30%)] [--bg-muted-ink:var(--color-fg-muted)]",
         sizes[size],
         tones[variant],
         vertical && "flex-col overflow-visible [--bg-divider-inset:10px]",
@@ -429,7 +429,7 @@ export function ButtonGroup({ items, menu, label, variant = "outline", size = "m
             const itemClass = cn(menuItem, action.destructive && menuItemDestructive);
             const body = (
               <>
-                {action.icon ? <span className={cn("inline-flex flex-none text-muted-foreground [&_svg]:size-4 [&_svg]:stroke-[1.75]", action.destructive && "text-destructive")} aria-hidden="true">{action.icon}</span> : null}
+                {action.icon ? <span className={cn("inline-flex flex-none text-fg-muted [&_svg]:size-4 [&_svg]:stroke-[1.75]", action.destructive && "text-danger-default")} aria-hidden="true">{action.icon}</span> : null}
                 <span className="min-w-0 truncate">{action.label}</span>
               </>
             );

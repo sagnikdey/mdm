@@ -75,7 +75,7 @@ function groupBy(list: ExpandingSearchItem[], source: ExpandingSearchItem[]): Gr
 function Match({ text, query }: { text: string; query: string }) {
   const at = query ? text.toLocaleLowerCase().indexOf(query.toLocaleLowerCase()) : -1;
   if (at < 0) return <>{text}</>;
-  return <>{text.slice(0, at)}<mark className="bg-transparent font-medium text-foreground">{text.slice(at, at + query.length)}</mark>{text.slice(at + query.length)}</>;
+  return <>{text.slice(0, at)}<mark className="bg-transparent font-medium text-fg-default">{text.slice(at, at + query.length)}</mark>{text.slice(at + query.length)}</>;
 }
 
 /** The panel shares the field's width value, so on first open it unfolds out of the field; afterwards only its height follows the content. */
@@ -99,7 +99,7 @@ function Panel({ width, reduced, children }: { width: MotionValue<number>; reduc
   return (
     <motion.div
       ref={panelRef}
-      className="pointer-events-auto absolute top-[calc(100%+8px)] right-0 z-40 overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface shadow-floating group-data-[anchor=start]/esr:right-auto group-data-[anchor=start]/esr:left-0"
+      className="pointer-events-auto absolute top-[calc(100%+8px)] right-0 z-40 overflow-hidden rounded-[var(--radius-xl)] border border-border-default bg-bg-surface shadow-floating group-data-[anchor=start]/esr:right-auto group-data-[anchor=start]/esr:left-0"
       style={{ width, height: reduced ? "auto" : height }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: reduced ? 0.15 : duration.quick, ease: easeEnter } }}
@@ -182,7 +182,7 @@ function Listbox({ id, label, groups, query, activeIndex, optionId, reduced, key
               exit={{ opacity: 0, transition: { duration: 0.08 } }}
               transition={{ opacity: { duration: duration.quick, ease: easeEnter }, layout: spring.smooth }}
             >
-              {group.name && <div id={headingId} className="px-3 pt-2 pb-1 text-xs font-medium leading-snug text-muted-foreground" role="presentation">{group.name}</div>}
+              {group.name && <div id={headingId} className="px-3 pt-2 pb-1 text-xs font-medium leading-snug text-fg-muted" role="presentation">{group.name}</div>}
               <AnimatePresence mode="popLayout" initial={false}>
                 {group.items.map((item) => {
                   const position = flat.indexOf(item);
@@ -194,7 +194,7 @@ function Listbox({ id, label, groups, query, activeIndex, optionId, reduced, key
                       role="option"
                       aria-selected={active}
                       data-active={active || undefined}
-                      className="group/option relative flex min-h-12 cursor-pointer select-none items-center gap-3 rounded-[calc(var(--radius-xl)-6px)] px-3 py-1.5 text-foreground [-webkit-tap-highlight-color:transparent]"
+                      className="group/option relative flex min-h-12 cursor-pointer select-none items-center gap-3 rounded-[calc(var(--radius-xl)-6px)] px-3 py-1.5 text-fg-default [-webkit-tap-highlight-color:transparent]"
                       layout={reduced ? false : "position"}
                       layoutDependency={layoutKey}
                       initial={{ opacity: 0 }}
@@ -206,11 +206,11 @@ function Listbox({ id, label, groups, query, activeIndex, optionId, reduced, key
                       onClick={() => onChoose(item)}
                     >
                       {/* The highlight paints under every row's content, so text never hides while it travels. */}
-                      {active && <motion.span className="pointer-events-none absolute inset-0 -z-1 rounded-[inherit] bg-[color-mix(in_oklab,var(--color-foreground)_6%,transparent)]" style={{ y: travel, opacity: fade }} aria-hidden="true" />}
-                      {item.icon && <span className="grid w-[18px] flex-none place-items-center text-muted-foreground transition-colors duration-[var(--duration-quick)] group-data-[active]/option:text-foreground motion-reduce:transition-none" aria-hidden="true">{item.icon}</span>}
+                      {active && <motion.span className="pointer-events-none absolute inset-0 -z-1 rounded-[inherit] bg-[color-mix(in_oklab,var(--color-fg-default)_6%,transparent)]" style={{ y: travel, opacity: fade }} aria-hidden="true" />}
+                      {item.icon && <span className="grid w-[18px] flex-none place-items-center text-fg-muted transition-colors duration-[var(--duration-quick)] group-data-[active]/option:text-fg-default motion-reduce:transition-none" aria-hidden="true">{item.icon}</span>}
                       <span className="grid min-w-0">
-                        <span className="truncate text-sm leading-snug text-foreground"><Match text={item.title} query={query} /></span>
-                        {item.meta && <span className="truncate text-xs leading-snug text-muted-foreground">{item.meta}</span>}
+                        <span className="truncate text-sm leading-snug text-fg-default"><Match text={item.title} query={query} /></span>
+                        {item.meta && <span className="truncate text-xs leading-snug text-fg-muted">{item.meta}</span>}
                       </span>
                     </motion.div>
                   );
@@ -344,15 +344,15 @@ export function ExpandingSearch({ label, items, suggestions = [], suggestionsLab
       <motion.div
         ref={shellRef}
         className={cn(
-          "pointer-events-auto absolute top-0 right-0 h-full overflow-hidden border border-border bg-surface text-muted-foreground",
+          "pointer-events-auto absolute top-0 right-0 h-full overflow-hidden border border-border-default bg-bg-surface text-fg-muted",
           "rounded-[calc(var(--es-h)/2-(var(--es-h)/2-var(--radius-md))*var(--es-open,0))]",
           "[transition:border-color_var(--duration-quick)_var(--ease-out-quint),background-color_var(--duration-quick)_var(--ease-out-quint),color_var(--duration-quick)_var(--ease-out-quint),box-shadow_var(--duration-standard)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
           "group-data-[anchor=start]/esr:right-auto group-data-[anchor=start]/esr:left-0",
-          "data-[expanded]:border-border-strong data-[expanded]:text-foreground",
-          "has-[>button:focus-visible]:border-ring has-[>button:focus-visible]:text-foreground has-[>button:focus-visible]:ring-[3px] has-[>button:focus-visible]:ring-ring/25",
-          "has-[>input:focus]:border-ring has-[>input:focus]:text-foreground has-[>input:focus]:ring-[3px] has-[>input:focus]:ring-ring/25",
-          "[@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[expanded]:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[expanded]:text-foreground",
-          "[@media(hover:hover)_and_(pointer:fine)]:hover:data-[expanded]:not-has-[>input:focus]:border-foreground",
+          "data-[expanded]:border-border-strong data-[expanded]:text-fg-default",
+          "has-[>button:focus-visible]:border-border-focus has-[>button:focus-visible]:text-fg-default has-[>button:focus-visible]:ring-[3px] has-[>button:focus-visible]:ring-border-focus-soft",
+          "has-[>input:focus]:border-border-focus has-[>input:focus]:text-fg-default has-[>input:focus]:ring-[3px] has-[>input:focus]:ring-border-focus-soft",
+          "[@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[expanded]:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:not-data-[expanded]:text-fg-default",
+          "[@media(hover:hover)_and_(pointer:fine)]:hover:data-[expanded]:not-has-[>input:focus]:border-fg-default",
           // A compact press while it is still a button; the morph takes over on release.
           "not-data-[expanded]:has-[>button:active]:scale-[.97] not-data-[expanded]:has-[>button:active]:[transition-duration:var(--duration-quick),var(--duration-quick),var(--duration-quick),var(--duration-standard),var(--duration-instant)]",
           "motion-reduce:transition-none motion-reduce:has-[>button:active]:scale-100"
@@ -366,7 +366,7 @@ export function ExpandingSearch({ label, items, suggestions = [], suggestionsLab
         {/* The placeholder waits for the shape to start moving, then fades in; on close it leaves first. */}
         <motion.input
           ref={inputRef}
-          className="absolute inset-0 m-0 size-full border-0 bg-transparent py-0 pr-10 pl-[38px] font-[inherit] text-sm tracking-[-0.01em] text-ellipsis text-foreground outline-none placeholder:text-muted-foreground placeholder:opacity-100 inert:pointer-events-none"
+          className="absolute inset-0 m-0 size-full border-0 bg-transparent py-0 pr-10 pl-[38px] font-[inherit] text-sm tracking-[-0.01em] text-ellipsis text-fg-default outline-none placeholder:text-fg-muted placeholder:opacity-100 inert:pointer-events-none"
           type="text"
           role="combobox"
           inert={!expanded}
@@ -428,8 +428,8 @@ export function ExpandingSearch({ label, items, suggestions = [], suggestionsLab
               >
                 {mode === "empty" ? (
                   <div className="grid gap-0.5 px-3 pt-3 pb-3.5">
-                    <p className="m-0 text-sm font-medium leading-snug text-foreground [overflow-wrap:anywhere]">No results for “{trimmed}”</p>
-                    <p className="m-0 text-xs leading-snug text-muted-foreground">{emptyHint}</p>
+                    <p className="m-0 text-sm font-medium leading-snug text-fg-default [overflow-wrap:anywhere]">No results for “{trimmed}”</p>
+                    <p className="m-0 text-xs leading-snug text-fg-muted">{emptyHint}</p>
                   </div>
                 ) : (
                   <Listbox id={listboxId} label={mode === "suggestions" ? suggestionsLabel : `Results for ${trimmed}`} groups={groups} query={mode === "results" ? trimmed : ""} activeIndex={activeIndex} optionId={optionId} reduced={reduced} keyboard={keyboard} onHover={setActive} onChoose={choose} />

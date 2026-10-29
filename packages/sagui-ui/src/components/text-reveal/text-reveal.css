@@ -1,5 +1,5 @@
 /* text-reveal: ported from Arc (uiarc.dev). Classes are prefixed sg-text-reveal-*; see src/lib/css-module.ts. */
-.sg-text-reveal-reveal { max-width: 24ch; margin: 0; overflow: visible; color: var(--color-foreground); text-wrap: balance; }
+.sg-text-reveal-reveal { max-width: 24ch; margin: 0; overflow: visible; color: var(--color-fg-default); text-wrap: balance; }
 .sg-text-reveal-line { display: block; }
 /* The clip hides the sg-text-reveal-rise below the line through a feathered bottom edge, so a blurred word surfaces softly instead of being cut by a hard line.
    Padding with matching negative margins leaves room for descenders and the blur without changing layout; the feather sits below the descenders, so resting words are never dimmed. */

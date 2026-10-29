@@ -24,8 +24,8 @@ export function WithAccessory() {
       label="Status"
       defaultValue="all"
       options={[
-        { value: "all", label: "All", accessory: <span className="text-xs text-muted-foreground">24</span> },
-        { value: "open", label: "Open", accessory: <span className="text-xs text-muted-foreground">9</span> },
+        { value: "all", label: "All", accessory: <span className="text-xs text-fg-muted">24</span> },
+        { value: "open", label: "Open", accessory: <span className="text-xs text-fg-muted">9</span> },
         { value: "closed", label: "Closed" },
       ]}
     />

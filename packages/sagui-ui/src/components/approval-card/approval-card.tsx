@@ -169,28 +169,28 @@ export function ApprovalCard({ questions, onSubmit, onDismiss, showResult = true
     <AnimatePresence mode="popLayout" initial={false}>
       {status === "sent" ? (
         <motion.div key="sent" className={cn("inline-flex items-center gap-3", className)} role="status" initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.94, filter: `blur(${blur.soft}px)` }} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={reduce ? { duration: duration.instant } : { ...spring.snappy, opacity: settle, filter: settle }}>
-          <span className="inline-flex h-7 items-center gap-1.5 rounded-full bg-success/12 pr-3 pl-1 text-sm font-medium text-success">
-            <motion.span className="grid size-5 place-items-center rounded-full bg-success text-background" initial={reduce ? false : iconIn} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ ...iconEnter, delay: reduce ? 0 : 0.06 }}>
+          <span className="inline-flex h-7 items-center gap-1.5 rounded-full bg-success-default/12 pr-3 pl-1 text-sm font-medium text-success-default">
+            <motion.span className="grid size-5 place-items-center rounded-full bg-success-default text-fg-on-emphasis" initial={reduce ? false : iconIn} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ ...iconEnter, delay: reduce ? 0 : 0.06 }}>
               <Check className="size-3" strokeWidth={3} aria-hidden="true" />
             </motion.span>
             {sentLabel}
           </span>
-          <button type="button" className="rounded-[var(--radius-sm)] text-sm text-muted-foreground transition-colors duration-[var(--duration-quick)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={reset}>{resetLabel}</button>
+          <button type="button" className="rounded-[var(--radius-sm)] text-sm text-fg-muted transition-colors duration-[var(--duration-quick)] hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus" onClick={reset}>{resetLabel}</button>
         </motion.div>
       ) : current ? (
-        <motion.section ref={cardRef} key="card" aria-labelledby={`${id}-q`} className={cn("w-full max-w-[22rem] rounded-[var(--radius-xl)] border border-border bg-surface text-foreground shadow-floating", className)} onKeyDown={onKeyDown} exit={reduce ? { opacity: 0, transition: { duration: duration.instant } } : { opacity: 0, scale: 0.96, filter: `blur(${blur.soft}px)`, transition: { duration: duration.fast, ease: easeStandard } }}>
+        <motion.section ref={cardRef} key="card" aria-labelledby={`${id}-q`} className={cn("w-full max-w-[22rem] rounded-[var(--radius-xl)] border border-border-default bg-bg-surface text-fg-default shadow-floating", className)} onKeyDown={onKeyDown} exit={reduce ? { opacity: 0, transition: { duration: duration.instant } } : { opacity: 0, scale: 0.96, filter: `blur(${blur.soft}px)`, transition: { duration: duration.fast, ease: easeStandard } }}>
           <HeightFrame reduce={reduce} morphKey={current.id}>
             <AnimatePresence mode="popLayout" initial={false} custom={direction}>
               <motion.div key={current.id} {...content} transition={reduce ? { duration: duration.instant } : { ...spring.smooth, opacity: settle, filter: settle }}>
                 <div className="flex items-start gap-3 px-4 pt-4 pb-2">
                   <h3 id={`${id}-q`} className="flex-1 text-[15px] leading-snug font-medium tracking-[-0.01em]">{current.question}</h3>
-                  {onDismiss ? <button type="button" aria-label="Dismiss" className="-mt-0.5 -mr-1.5 grid size-7 flex-none place-items-center rounded-[var(--radius-sm)] text-muted-foreground transition-colors duration-[var(--duration-quick)] hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4" onClick={onDismiss}><X aria-hidden="true" /></button> : null}
+                  {onDismiss ? <button type="button" aria-label="Dismiss" className="-mt-0.5 -mr-1.5 grid size-7 flex-none place-items-center rounded-[var(--radius-sm)] text-fg-muted transition-colors duration-[var(--duration-quick)] hover:bg-bg-muted hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus [&_svg]:size-4" onClick={onDismiss}><X aria-hidden="true" /></button> : null}
                 </div>
                 <div data-list={current.id} role={multiple ? "group" : "radiogroup"} aria-labelledby={`${id}-q`} className="grid px-2 pb-2">
                   {current.options.map((option, index) => {
                     const on = answer.values.includes(option.value);
                     return (
-                      <label key={option.value} className="group/opt flex h-8 cursor-pointer items-center gap-2.5 rounded-[var(--radius-md)] px-2 text-sm text-foreground/85 transition-colors duration-[var(--duration-quick)] hover:bg-muted has-[:checked]:text-foreground has-[:focus-visible]:bg-muted">
+                      <label key={option.value} className="group/opt flex h-8 cursor-pointer items-center gap-2.5 rounded-[var(--radius-md)] px-2 text-sm text-fg-default/85 transition-colors duration-[var(--duration-quick)] hover:bg-bg-muted has-[:checked]:text-fg-default has-[:focus-visible]:bg-bg-muted">
                         <input data-option="" type={multiple ? "checkbox" : "radio"} name={`${id}-${current.id}`} value={option.value} checked={on} onChange={() => pick(option.value)} aria-keyshortcuts={index < 9 ? String(index + 1) : undefined} className="peer sr-only" />
                         <Mark kind={multiple ? "checkbox" : "radio"} on={on} reduce={reduce} />
                         <span className="min-w-0 flex-1 truncate">{option.label}</span>
@@ -198,7 +198,7 @@ export function ApprovalCard({ questions, onSubmit, onDismiss, showResult = true
                     );
                   })}
                   {current.allowOther !== false ? (
-                    <input type="text" value={answer.other} placeholder={current.otherPlaceholder ?? "Something else…"} aria-label={`${current.question} Other answer`} onChange={event => type(event.target.value)} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); proceed(); } }} className="h-8 w-full rounded-[var(--radius-md)] bg-transparent px-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/70 focus-visible:bg-muted" />
+                    <input type="text" value={answer.other} placeholder={current.otherPlaceholder ?? "Something else…"} aria-label={`${current.question} Other answer`} onChange={event => type(event.target.value)} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); proceed(); } }} className="h-8 w-full rounded-[var(--radius-md)] bg-transparent px-2 text-sm text-fg-default outline-none placeholder:text-fg-muted/70 focus-visible:bg-bg-muted" />
                   ) : null}
                 </div>
               </motion.div>
@@ -206,7 +206,7 @@ export function ApprovalCard({ questions, onSubmit, onDismiss, showResult = true
           </HeightFrame>
           <div className="flex items-center gap-2 px-3 pt-6 pb-3">
             {total > 1 ? (
-              <div className="flex items-center gap-0.5 text-xs text-muted-foreground tabular-nums">
+              <div className="flex items-center gap-0.5 text-xs text-fg-muted tabular-nums">
                 <StepButton label="Previous question" disabled={step === 0} onClick={() => go(step - 1)}><ChevronUp aria-hidden="true" /></StepButton>
                 <span aria-live="polite" aria-label={`Question ${step + 1} of ${total}`}>{step + 1}/{total}</span>
                 <StepButton label="Next question" disabled={step >= reached} onClick={() => go(step + 1)}><ChevronDown aria-hidden="true" /></StepButton>
@@ -224,14 +224,14 @@ export function ApprovalCard({ questions, onSubmit, onDismiss, showResult = true
 }
 
 function StepButton({ label, disabled, onClick, children }: { label: string; disabled: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button type="button" aria-label={label} disabled={disabled} onClick={onClick} className="grid size-6 place-items-center rounded-[var(--radius-sm)] transition-colors duration-[var(--duration-quick)] hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-3.5">{children}</button>;
+  return <button type="button" aria-label={label} disabled={disabled} onClick={onClick} className="grid size-6 place-items-center rounded-[var(--radius-sm)] transition-colors duration-[var(--duration-quick)] hover:bg-bg-muted hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-3.5">{children}</button>;
 }
 
 /** The radio fills with a dot and the checkbox draws its check; both spring in and fade out quickly. */
 function Mark({ kind, on, reduce }: { kind: "radio" | "checkbox"; on: boolean; reduce: boolean | null }) {
   const off = { duration: duration.instant };
   return (
-    <span aria-hidden="true" className={cn("relative grid size-4 flex-none place-items-center border transition-colors duration-[var(--duration-quick)] peer-focus-visible:ring-2 peer-focus-visible:ring-ring", kind === "radio" ? "rounded-full" : "rounded-[4px]", on ? "border-primary bg-primary text-primary-foreground" : "border-border-strong group-hover/opt:border-muted-foreground")}>
+    <span aria-hidden="true" className={cn("relative grid size-4 flex-none place-items-center border transition-colors duration-[var(--duration-quick)] peer-focus-visible:ring-2 peer-focus-visible:ring-border-focus", kind === "radio" ? "rounded-full" : "rounded-[4px]", on ? "border-accent-default bg-accent-default text-fg-on-accent" : "border-border-strong group-hover/opt:border-fg-muted")}>
       {kind === "radio" ? (
         <motion.span className="size-1.5 rounded-full bg-current" initial={false} animate={{ scale: on ? 1 : 0, opacity: on ? 1 : 0 }} transition={reduce ? off : on ? spring.snappy : off} />
       ) : (

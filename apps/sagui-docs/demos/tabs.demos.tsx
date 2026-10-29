@@ -38,7 +38,7 @@ export function Controlled() {
         <TabsContent value="monthly">$12 per seat, billed every month.</TabsContent>
         <TabsContent value="yearly">$120 per seat, billed once a year.</TabsContent>
       </Tabs>
-      <p className="mt-4 text-sm text-muted-foreground">Selected: {tab}</p>
+      <p className="mt-4 text-sm text-fg-muted">Selected: {tab}</p>
     </div>
   );
 }

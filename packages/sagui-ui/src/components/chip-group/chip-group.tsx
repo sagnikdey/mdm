@@ -44,7 +44,7 @@ const textOut: TargetAndTransition = { opacity: 0, y: "-0.3em", filter: `blur(${
 const chipBase = "group/chip relative inline-flex max-w-full rounded-full border-0 bg-none p-0 text-sm font-medium leading-5 tracking-[-0.01em] cursor-pointer [-webkit-tap-highlight-color:transparent] transition-colors duration-[var(--duration-quick)] focus-visible:outline-none motion-reduce:transition-none";
 // The button is only the hit area and the layout box. What you see is the surface, which trails the box on a spring while the width morphs.
 const bodyBase = "relative isolate inline-flex h-8 min-w-0 items-center px-[14px] [transition:scale_var(--duration-spring)_var(--ease-spring)] group-active/chip:scale-[.97] group-active/chip:[transition-duration:var(--duration-instant)] motion-reduce:transition-none motion-reduce:group-active/chip:scale-100";
-const surfaceBase = "absolute inset-y-0 left-0 -z-1 rounded-full border transition-[background-color,border-color] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] group-focus-visible/chip:ring-2 group-focus-visible/chip:ring-ring group-focus-visible/chip:ring-offset-2 group-focus-visible/chip:ring-offset-background motion-reduce:transition-none";
+const surfaceBase = "absolute inset-y-0 left-0 -z-1 rounded-full border transition-[background-color,border-color] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] group-focus-visible/chip:ring-2 group-focus-visible/chip:ring-border-focus group-focus-visible/chip:ring-offset-2 group-focus-visible/chip:ring-offset-bg-canvas motion-reduce:transition-none";
 const hoverFine = "[@media(hover:hover)_and_(pointer:fine)]";
 
 /**
@@ -180,7 +180,7 @@ function Chip({ option, selected, tabbable, reduce, delay, onToggle, onFocusChip
     <motion.button
       ref={ref}
       type="button"
-      className={cn(chipBase, selected ? "text-foreground" : cn("text-muted-foreground", hoverFine + ":hover:text-foreground"))}
+      className={cn(chipBase, selected ? "text-fg-default" : cn("text-fg-muted", hoverFine + ":hover:text-fg-default"))}
       data-chip={option.value}
       aria-pressed={selected}
       aria-hidden={present ? undefined : true}
@@ -198,14 +198,14 @@ function Chip({ option, selected, tabbable, reduce, delay, onToggle, onFocusChip
           className={cn(
             surfaceBase,
             selected
-              ? cn("border-[color-mix(in_oklab,var(--color-primary)_42%,var(--color-border))] bg-[color-mix(in_oklab,var(--color-primary)_11%,var(--color-surface))]", hoverFine + ":group-hover/chip:border-[color-mix(in_oklab,var(--color-primary)_60%,var(--color-border))]", hoverFine + ":group-hover/chip:bg-[color-mix(in_oklab,var(--color-primary)_16%,var(--color-surface))]")
-              : cn("border-border bg-surface", hoverFine + ":group-hover/chip:border-border-strong")
+              ? cn("border-[color-mix(in_oklab,var(--color-accent-default)_42%,var(--color-border-default))] bg-[color-mix(in_oklab,var(--color-accent-default)_11%,var(--color-bg-surface))]", hoverFine + ":group-hover/chip:border-[color-mix(in_oklab,var(--color-accent-default)_60%,var(--color-border-default))]", hoverFine + ":group-hover/chip:bg-[color-mix(in_oklab,var(--color-accent-default)_16%,var(--color-bg-surface))]")
+              : cn("border-border-default bg-bg-surface", hoverFine + ":group-hover/chip:border-border-strong")
           )}
           style={{ right: edge }}
           aria-hidden="true"
         />
         {/* The check grows from its left edge where the label started; the slot hands its width to the label in one layout step, and the label's offset springs it over. */}
-        <motion.span className="absolute top-[calc(50%-7px)] left-3 grid size-3.5 origin-[0_50%] place-items-center text-primary" style={{ scale: checkScale, opacity: checkOpacity, filter: checkBlur }} aria-hidden="true">
+        <motion.span className="absolute top-[calc(50%-7px)] left-3 grid size-3.5 origin-[0_50%] place-items-center text-accent-default" style={{ scale: checkScale, opacity: checkOpacity, filter: checkBlur }} aria-hidden="true">
           <svg className="block overflow-visible" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
             <motion.path d="M4 12.5 9.5 18 20 6.5" style={{ pathLength: checkDraw }} />
           </svg>
@@ -230,7 +230,7 @@ function MoreChip({ hidden, expanded, tabbable, reduce, onToggle, onFocusChip, r
     <motion.button
       ref={ref}
       type="button"
-      className={cn(chipBase, "text-muted-foreground")}
+      className={cn(chipBase, "text-fg-muted")}
       data-more=""
       aria-expanded={expanded}
       tabIndex={tabbable ? 0 : -1}
@@ -241,7 +241,7 @@ function MoreChip({ hidden, expanded, tabbable, reduce, onToggle, onFocusChip, r
     >
       <span ref={body} className={bodyBase}>
         {/* The overflow chip travels under the chips it reveals, so they seem to come out of it. */}
-        <motion.span className={cn(surfaceBase, "border-border bg-muted")} style={{ right: edge }} aria-hidden="true" />
+        <motion.span className={cn(surfaceBase, "border-border-default bg-bg-muted")} style={{ right: edge }} aria-hidden="true" />
         <span className="relative inline-flex justify-center tabular-nums">
           <AnimatePresence mode="popLayout" initial={false}>
             <Swap key={text} follow={centre} className="block whitespace-nowrap" initial={reduce ? { opacity: 0 } : textIn} animate={shown} exit={reduce ? { opacity: 0, transition: reducedFade } : textOut} transition={reduce ? reducedFade : { duration: duration.standard, ease: enterEase }}>{text}</Swap>

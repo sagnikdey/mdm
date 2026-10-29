@@ -29,14 +29,14 @@ Each role is a single utility class. It sets the `font` shorthand from a token, 
 Display and h1 scale with the viewport through `clamp()`, so a page title never needs breakpoint classes. Headings use `text-wrap: balance` and body copy uses `text-wrap: pretty`, which avoids single-word last lines.
 
 ```tsx
-<p className="type-overline text-muted-foreground">Billing</p>
+<p className="type-overline text-fg-muted">Billing</p>
 <h2 className="type-h2">Upgrade to Pro</h2>
-<p className="type-body text-muted-foreground">Unlimited projects and priority support.</p>
+<p className="type-body text-fg-muted">Unlimited projects and priority support.</p>
 ```
 
 ## In context
 
-Roles combine with color utilities. Hierarchy comes from size and weight first, then from `text-muted-foreground` for secondary copy, never from color alone.
+Roles combine with color utilities. Hierarchy comes from size and weight first, then from `text-fg-muted` for secondary copy, never from color alone.
 
 <!-- demo: Composition -->
 
@@ -100,12 +100,12 @@ Without a loaded font, text falls back to the system UI font, which keeps the sa
 - Use one `type-display` or `type-h1` per page, and do not skip heading levels for size. Pick the element for structure and the role for looks.
 - Do not set interface text below 12px. Captions are the floor.
 - Inputs on touch devices should be at least 16px, or iOS zooms the page on focus. SagUI fields use 14px, so use `text-base` on fields in mobile-first forms.
-- Prefer weight and size over color for hierarchy, and use `text-muted-foreground`, not lowered opacity, for secondary text so contrast stays predictable.
+- Prefer weight and size over color for hierarchy, and use `text-fg-muted`, not lowered opacity, for secondary text so contrast stays predictable.
 
 ## Accessibility
 
 - All sizes are in `rem`, so text follows the reader's browser font size and zoom.
-- `foreground` and `muted-foreground` meet WCAG AA contrast (4.5:1) on `background` and `surface` in both themes.
+- `fg-default` and `fg-muted` meet WCAG AA contrast (4.5:1) on `bg-canvas` and `bg-surface` in both themes.
 - Uppercase overlines use wide tracking to stay legible. Keep them to a few words, since all caps slows reading.
 
 ## Tokens

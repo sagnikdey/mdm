@@ -22,7 +22,7 @@ export function Controlled() {
   const format = (time: number) => new Date(time).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
   return (
     <div className="grid w-full max-w-3xl gap-3">
-      <p className="text-sm text-muted-foreground">Showing {format(range[0])} to {format(range[1])}</p>
+      <p className="text-sm text-fg-muted">Showing {format(range[0])} to {format(range[1])}</p>
       <BrushChart data={days} label="Daily active users" unit="users" range={range} onRangeChange={setRange} height={200} />
     </div>
   );

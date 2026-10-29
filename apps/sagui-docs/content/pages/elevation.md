@@ -18,7 +18,7 @@ Elevation tells people what sits above what. SagUI uses five levels. Each level 
 | 4 | `shadow-overlay` | Dialogs and drawers, above a scrim. |
 
 ```tsx
-<div className="rounded-container border border-border bg-surface shadow-resting">…</div>
+<div className="rounded-container border border-border-default bg-bg-surface shadow-resting">…</div>
 ```
 
 ## How the shadows are built

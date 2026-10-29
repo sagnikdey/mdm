@@ -9,7 +9,7 @@ const meta = {
   tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: { title: "No projects yet", description: "Create your first project to start collaborating with your team.", action: <Button>New project</Button> },
-  decorators: [(Story) => <div className="w-[420px] rounded-[var(--radius-xl)] border border-dashed border-border"><Story /></div>],
+  decorators: [(Story) => <div className="w-[420px] rounded-[var(--radius-xl)] border border-dashed border-border-default"><Story /></div>],
 } satisfies Meta<typeof EmptyState>;
 export default meta;
 type Story = StoryObj<typeof meta>;

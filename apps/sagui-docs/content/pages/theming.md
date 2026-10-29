@@ -7,37 +7,65 @@ Components only read semantic tokens, never raw colors. Change a token and every
 
 ## How tokens are layered
 
-Tokens come in two layers. Raw values live in `--sg-*` custom properties on `:root` (and `[data-theme="dark"]`). Tailwind's `@theme` block maps them to named theme values such as `--color-primary`, which is what utility classes like `bg-primary` read.
+Tokens come in two tiers, generated from `packages/tokens/tokens.json`, the same structure as the Figma variables.
 
-To restyle the system, override the `--sg-*` values.
+1. **Primitives** are raw values with no meaning attached: color ramps such as `--sg-blue-600` and `--sg-neutral-warm-100`, plus sizes, radii and font values. Components never read them.
+2. **Semantic tokens** say what a value is for, such as `--sg-accent-default` or `--sg-fg-muted`. Each points at a primitive, and color tokens point at a different primitive in dark mode. Tailwind exposes them as utilities: `bg-accent-default`, `text-fg-muted`, `border-border-default`.
+
+To restyle the system, point semantic tokens at other primitives, or override them directly.
 
 ```css
 :root {
-  --sg-primary: oklch(0.55 0.2 300);
-  --sg-primary-foreground: oklch(0.99 0 0);
+  --sg-accent-default: var(--sg-violet-600);
+  --sg-accent-hover: var(--sg-violet-700);
 }
 
 [data-theme="dark"] {
-  --sg-primary: oklch(0.72 0.16 300);
+  --sg-accent-default: var(--sg-violet-400);
 }
 ```
 
 ## Colors
 
-| Token | Use |
-| --- | --- |
-| `background` / `foreground` | Page background and default text. |
-| `surface` | Raised surfaces: fields, cards, menus. |
-| `muted` / `muted-foreground` | Quiet fills and secondary text. |
-| `border` / `border-strong` | Hairlines, and the stronger border of inputs. |
-| `ring` | Focus ring. |
-| `primary` / `primary-foreground` | The main action. |
-| `secondary` / `secondary-foreground` | Secondary actions. |
-| `destructive` / `destructive-foreground` | Destructive actions and error text. |
-| `success` | Confirmations and met requirements. |
-| `warning` | Soft limits and caution. |
+| Group | Tokens | Use |
+| --- | --- | --- |
+| `bg` | `canvas`, `surface`, `muted`, `emphasis` | Page background, raised surfaces (fields, cards, menus), quiet fills, and inverted fills such as tooltips. |
+| `fg` | `default`, `subtle`, `muted`, `on-accent`, `on-danger`, `on-emphasis` | Text and icons, and text on top of filled colors. |
+| `border` | `subtle`, `default`, `strong`, `focus`, `focus-soft` | Dividers, hairlines, input borders and focus rings. |
+| `accent` | `default`, `hover`, `active`, `subtle`, `subtle-hover`, `border` | The main action and selected states. |
+| `secondary` | `default`, `hover`, `fg` | Secondary actions. |
+| `success` / `warning` / `danger` | `default`, `subtle`, `border` (danger adds `hover`) | Status: solid color, tinted fill, and tinted border. |
+| `interactive` | `hover`, `pressed`, `track`, `track-hover`, `thumb` | Translucent overlays for rows and ghost controls, and switch parts. |
+| `on-accent` | `hover`, `divider`, `muted` | Overlays on top of an accent fill, such as split button dividers. |
+| `chart` | `1` to `4` | Data series. |
+| `elevation` | `resting`, `raised-*`, `floating-*`, `overlay-*` | Shadow colors, denser in dark mode. |
 
-Foreground pairs keep their contrast in both themes. When you override a fill, override its foreground too.
+Tints are solid ramp steps, not opacity, so they look the same on any background. Alpha is used only for overlays and shadows.
+
+### Spacing, radius and type
+
+- **Spacing** follows Tailwind's scale on a 4px base (`--sg-space-3` is 12px, the same as `gap-3`), plus `--sg-space-neg-1_5` for overlaps.
+- **Radius roles**: `rounded-inner`, `rounded-control-sm`, `rounded-control`, `rounded-container`, `rounded-overlay`, `rounded-pill`.
+- **Border widths**: `--sg-border-width-{default, thick, focus}`.
+- **Controls**: `--sg-control-height-{xs, sm, md, lg}` and `--sg-control-padding-x-{sm, md, lg}`.
+- **Type**: `--sg-text-{step}-{size, line-height, tracking}` and the `type-*` roles.
+
+### Older names
+
+The names from before the two tiers (`bg-primary`, `text-muted-foreground`, `--sg-primary` and so on) still work. They now point at the new tokens and will be removed in a future major version.
+
+| Old | New |
+| --- | --- |
+| `background` / `foreground` | `bg-canvas` / `fg-default` |
+| `surface` / `muted` | `bg-surface` / `bg-muted` |
+| `muted-foreground` | `fg-muted` |
+| `border` / `border-strong` / `ring` | `border-default` / `border-strong` / `border-focus` |
+| `primary` / `primary-foreground` | `accent-default` / `fg-on-accent` |
+| `secondary` / `secondary-foreground` | `secondary-default` / `secondary-fg` |
+| `destructive` / `destructive-foreground` | `danger-default` / `fg-on-danger` |
+| `success` / `warning` | `success-default` / `warning-default` |
+
+The `fg-on-*` tokens keep their contrast on their fills in both themes. When you override a fill, override its `fg-on-*` pair too.
 
 ## Typography, radius and elevation
 
@@ -65,12 +93,12 @@ Every duration token is set to 0 under `prefers-reduced-motion: reduce`. See [Mo
 
 ## Dark mode
 
-Dark values are defined under `[data-theme="dark"]`. Tailwind's `dark:` variant is wired to the same attribute, so `dark:bg-muted` works in your own classes too.
+Dark values are defined under `[data-theme="dark"]`. Tailwind's `dark:` variant is wired to the same attribute, so `dark:bg-bg-muted` works in your own classes too.
 
 ## Using tokens in your own code
 
 ```tsx
-<div className="rounded-[var(--radius-lg)] border border-border bg-surface p-4 shadow-raised">
-  <p className="text-sm text-muted-foreground">Uses the same tokens as the components.</p>
+<div className="rounded-[var(--radius-lg)] border border-border-default bg-bg-surface p-4 shadow-raised">
+  <p className="text-sm text-fg-muted">Uses the same tokens as the components.</p>
 </div>
 ```

@@ -23,7 +23,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
     <>
       <main className="min-w-0 flex-1 py-10 lg:py-12">
         <h1 className="mb-3 text-4xl font-semibold tracking-tight">{page.title}</h1>
-        <p className="mb-8 text-lg text-muted-foreground">{page.description}</p>
+        <p className="mb-8 text-lg text-fg-muted">{page.description}</p>
         <Blocks blocks={blocks} slug={demos} />
       </main>
       <Toc items={tocOf(page.body)} />

@@ -69,7 +69,7 @@ export function DrawerContent({ title, description, children, side = "right", co
   const contained = !!container;
   const draggable = drawer !== null && !reduced;
   const classes = cn(
-    "fixed z-51 flex w-[var(--drawer-size)] max-w-screen max-h-dvh flex-col overflow-hidden border-border bg-surface text-foreground shadow-overlay focus:outline-none data-[state=closed]:!pointer-events-none",
+    "fixed z-51 flex w-[var(--drawer-size)] max-w-screen max-h-dvh flex-col overflow-hidden border-border-default bg-bg-surface text-fg-default shadow-overlay focus:outline-none data-[state=closed]:!pointer-events-none",
     "[--drawer-size:min(30rem,calc(100vw-1rem))] max-sm:[--drawer-size:calc(100vw-.75rem)]",
     sides[side],
     contained && cn("absolute z-2 max-h-full shadow-none [--drawer-size:min(22rem,calc(100%-2rem))]", containedSides[side], (side === "top" || side === "bottom") && "max-h-[min(32rem,calc(100%-2rem))]"),
@@ -104,10 +104,10 @@ export function DrawerContent({ title, description, children, side = "right", co
 
   const inner = (
     <>
-      <motion.div className={cn("flex flex-none items-start justify-between gap-5 border-b border-border p-6 max-sm:p-5", draggable && "touch-none select-none", draggable && (side === "bottom" || side === "top") && "cursor-grab")} onPanStart={panStart} onPan={panMove} onPanEnd={panEnd}>
+      <motion.div className={cn("flex flex-none items-start justify-between gap-5 border-b border-border-default p-6 max-sm:p-5", draggable && "touch-none select-none", draggable && (side === "bottom" || side === "top") && "cursor-grab")} onPanStart={panStart} onPan={panMove} onPanEnd={panEnd}>
         <div>
           <DialogPrimitive.Title className="relative m-0 text-lg font-medium leading-snug tracking-[-0.01em]"><SwapText text={title} /></DialogPrimitive.Title>
-          {description ? <DialogPrimitive.Description className="relative mt-2 max-w-lg text-sm leading-snug text-muted-foreground"><SwapText text={description} /></DialogPrimitive.Description> : null}
+          {description ? <DialogPrimitive.Description className="relative mt-2 max-w-lg text-sm leading-snug text-fg-muted"><SwapText text={description} /></DialogPrimitive.Description> : null}
         </div>
         <DialogPrimitive.Close className={cn(closeButtonClass, "my-[-3.4px]")} aria-label="Close drawer"><X size={16} strokeWidth={1.75} aria-hidden="true" /></DialogPrimitive.Close>
       </motion.div>

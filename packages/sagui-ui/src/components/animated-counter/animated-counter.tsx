@@ -93,9 +93,9 @@ export function AnimatedCounter({ value, label, prefix = "", suffix = "", decima
   const text = `${prefix}${parts.map((part) => ("text" in part ? part.text : part.digit)).join("")}${suffix}`;
   const armed = animateOnView && !inView;
   return (
-    <span ref={ref} className={cn("relative inline-flex flex-col text-4xl font-medium leading-none tracking-[-0.03em] tabular-nums text-foreground", className)}>
+    <span ref={ref} className={cn("relative inline-flex flex-col text-4xl font-medium leading-none tracking-[-0.03em] tabular-nums text-fg-default", className)}>
       {label && (
-        <span className="mb-2 text-xs font-normal leading-snug tracking-[-0.01em] text-muted-foreground">
+        <span className="mb-2 text-xs font-normal leading-snug tracking-[-0.01em] text-fg-muted">
           <span className="relative block">
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.span key={label} className="inline-block" variants={reduceMotion ? fade : rise} initial="hidden" animate="shown" exit="gone">{label}</motion.span>

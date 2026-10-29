@@ -10,7 +10,7 @@ export const Default: Story = {
   render: (args) => (
     <BottomSheet {...args}>
       <div className="grid gap-3">
-        {Array.from({ length: 14 }, (_, index) => <div key={index} className="rounded-[var(--radius-md)] border border-border p-3">Itinerary item {index + 1}</div>)}
+        {Array.from({ length: 14 }, (_, index) => <div key={index} className="rounded-[var(--radius-md)] border border-border-default p-3">Itinerary item {index + 1}</div>)}
         <BottomSheetClose asChild><Button variant="outline">Done</Button></BottomSheetClose>
       </div>
     </BottomSheet>

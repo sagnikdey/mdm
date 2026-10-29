@@ -84,7 +84,7 @@ function NavList({ nav, current, rail, Link, label, layoutId, onNavigate }: {
       {nav.map((section, sectionIndex) => (
         <div key={section.label ?? sectionIndex} className="grid gap-0.5">
           {section.label && (
-            <p className={cn("type-overline truncate px-3 pb-1 text-muted-foreground transition-opacity duration-[var(--duration-fast)]", rail && "pointer-events-none opacity-0")} aria-hidden={rail || undefined}>
+            <p className={cn("type-overline truncate px-3 pb-1 text-fg-muted transition-opacity duration-[var(--duration-fast)]", rail && "pointer-events-none opacity-0")} aria-hidden={rail || undefined}>
               {section.label}
             </p>
           )}
@@ -97,23 +97,23 @@ function NavList({ nav, current, rail, Link, label, layoutId, onNavigate }: {
                   aria-current={active ? "page" : undefined}
                   onClick={onNavigate}
                   className={cn(
-                    "group/item relative isolate flex h-9 items-center gap-3 rounded-control px-3 text-sm text-muted-foreground outline-none transition-colors duration-[var(--duration-fast)] ease-out-quint [-webkit-tap-highlight-color:transparent]",
-                    "[@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:font-medium aria-[current=page]:text-foreground"
+                    "group/item relative isolate flex h-9 items-center gap-3 rounded-control px-3 text-sm text-fg-muted outline-none transition-colors duration-[var(--duration-fast)] ease-out-quint [-webkit-tap-highlight-color:transparent]",
+                    "[@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:ring-2 focus-visible:ring-border-focus aria-[current=page]:font-medium aria-[current=page]:text-fg-default"
                   )}
                 >
                   {active && (
                     <motion.span
                       layoutId={layoutId}
-                      className="absolute inset-0 -z-10 rounded-[inherit] bg-muted"
+                      className="absolute inset-0 -z-10 rounded-[inherit] bg-bg-muted"
                       transition={reduced ? { duration: 0 } : (spring.morph as never)}
                       aria-hidden="true"
                     />
                   )}
                   {/* Hover tint for items that are not current; the current item keeps the gliding highlight. */}
-                  {!active && <span className="absolute inset-0 -z-10 rounded-[inherit] bg-muted opacity-0 transition-opacity duration-[var(--duration-fast)] [@media(hover:hover)_and_(pointer:fine)]:group-hover/item:opacity-60" aria-hidden="true" />}
+                  {!active && <span className="absolute inset-0 -z-10 rounded-[inherit] bg-bg-muted opacity-0 transition-opacity duration-[var(--duration-fast)] [@media(hover:hover)_and_(pointer:fine)]:group-hover/item:opacity-60" aria-hidden="true" />}
                   {item.icon && <span className="grid size-5 flex-none place-items-center [&_svg]:size-[18px]" aria-hidden="true">{item.icon}</span>}
                   <span className={cn("min-w-0 flex-1 truncate transition-opacity duration-[var(--duration-fast)]", rail && "sr-only")}>{item.label}</span>
-                  {item.badge && !rail && <span className="flex-none text-xs tabular-nums text-muted-foreground">{item.badge}</span>}
+                  {item.badge && !rail && <span className="flex-none text-xs tabular-nums text-fg-muted">{item.badge}</span>}
                 </Link>
               );
               return (
@@ -195,7 +195,7 @@ export function AppShell({
         aria-controls={sidebarId}
         aria-expanded={!collapsed}
         className={cn(
-          "grid size-9 cursor-pointer place-items-center rounded-control text-muted-foreground transition-colors duration-[var(--duration-fast)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "grid size-9 cursor-pointer place-items-center rounded-control text-fg-muted transition-colors duration-[var(--duration-fast)] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus",
           inset && "-ml-1.5 hidden flex-none lg:grid"
         )}
       >
@@ -205,10 +205,10 @@ export function AppShell({
   );
 
   return (
-    <div className={cn("grid min-h-[var(--app-shell-height,100dvh)] bg-background text-foreground lg:grid-cols-[auto_minmax(0,1fr)]", className)}>
+    <div className={cn("grid min-h-[var(--app-shell-height,100dvh)] bg-bg-canvas text-fg-default lg:grid-cols-[auto_minmax(0,1fr)]", className)}>
       <a
         href={`#${mainId}`}
-        className="sr-only z-50 rounded-control bg-surface px-3 py-2 text-sm font-medium shadow-floating focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:outline-none focus:ring-2 focus:ring-ring"
+        className="sr-only z-50 rounded-control bg-bg-surface px-3 py-2 text-sm font-medium shadow-floating focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:outline-none focus:ring-2 focus:ring-border-focus"
       >
         Skip to content
       </a>
@@ -218,7 +218,7 @@ export function AppShell({
         id={sidebarId}
         className={cn(
           "sticky top-0 hidden h-[var(--app-shell-height,100dvh)] overflow-hidden lg:flex",
-          inset ? "py-2 pl-2" : "flex-col border-r border-border bg-background"
+          inset ? "py-2 pl-2" : "flex-col border-r border-border-default bg-bg-canvas"
         )}
         initial={false}
         animate={{ width: inset ? railWidth + INSET_GAP : railWidth }}
@@ -226,7 +226,7 @@ export function AppShell({
         data-collapsed={collapsed || undefined}
         data-variant={variant}
       >
-        <div className={cn("flex min-w-0 flex-1 flex-col", inset && "overflow-hidden rounded-container border border-border bg-surface shadow-resting")}>
+        <div className={cn("flex min-w-0 flex-1 flex-col", inset && "overflow-hidden rounded-container border border-border-default bg-bg-surface shadow-resting")}>
         <div className={cn("flex h-14 flex-none items-center gap-2 px-4", collapsed && "justify-center px-0")}>
           {collapsed ? brandMark ?? brand : brand}
         </div>
@@ -237,7 +237,7 @@ export function AppShell({
         </LayoutGroup>
         {/* The inset variant keeps the toggle in the top bar, so its footer only exists when there is footer content. */}
         {(!inset || sidebarFooter) && (
-          <div className={cn("grid flex-none gap-2 border-t border-border p-3", collapsed && "justify-items-center", inset && collapsed && "hidden")}>
+          <div className={cn("grid flex-none gap-2 border-t border-border-default p-3", collapsed && "justify-items-center", inset && collapsed && "hidden")}>
             {sidebarFooter && <div className={cn(collapsed && "hidden")}>{sidebarFooter}</div>}
             {!inset && toggle}
           </div>
@@ -246,13 +246,13 @@ export function AppShell({
       </motion.aside>
 
       <div className="flex min-w-0 flex-col">
-        <header className={cn("sticky top-0 z-30 flex h-14 flex-none items-center gap-3 bg-background/85 px-4 backdrop-blur sm:px-6", !inset && "border-b border-border")}>
+        <header className={cn("sticky top-0 z-30 flex h-14 flex-none items-center gap-3 bg-bg-canvas/85 px-4 backdrop-blur sm:px-6", !inset && "border-b border-border-default")}>
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
             aria-label="Open navigation"
             aria-expanded={mobileOpen}
-            className="-ml-1.5 grid size-9 flex-none cursor-pointer place-items-center rounded-control text-muted-foreground transition-colors duration-[var(--duration-fast)] hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
+            className="-ml-1.5 grid size-9 flex-none cursor-pointer place-items-center rounded-control text-fg-muted transition-colors duration-[var(--duration-fast)] hover:bg-bg-muted hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus lg:hidden"
           >
             <Menu size={18} aria-hidden="true" />
           </button>
@@ -273,7 +273,7 @@ export function AppShell({
             <LayoutGroup id={`${id}-narrow`}>
               <NavList nav={nav} current={current} rail={false} Link={Link} label={label} layoutId="current" onNavigate={() => setMobileOpen(false)} />
             </LayoutGroup>
-            {sidebarFooter && <div className="border-t border-border pt-4">{sidebarFooter}</div>}
+            {sidebarFooter && <div className="border-t border-border-default pt-4">{sidebarFooter}</div>}
           </div>
         </DrawerContent>
       </Drawer>

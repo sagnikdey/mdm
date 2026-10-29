@@ -35,7 +35,7 @@ Most code should not pick a step directly. Pick the role of the surface instead,
 Each role is also a utility: `rounded-control`, `rounded-container`, `rounded-overlay`, `rounded-pill`.
 
 ```tsx
-<div className="rounded-container border border-border bg-surface p-4">…</div>
+<div className="rounded-container border border-border-default bg-bg-surface p-4">…</div>
 ```
 
 ## Concentric corners

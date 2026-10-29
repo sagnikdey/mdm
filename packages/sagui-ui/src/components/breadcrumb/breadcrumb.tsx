@@ -21,7 +21,7 @@ export interface BreadcrumbProps {
 
 /** Each crumb reserves the width of its medium weight label, so becoming the current page never shifts the path. */
 const crumb = "inline-flex flex-col rounded-[7px] px-0.5 py-1 after:invisible after:pointer-events-none after:h-0 after:overflow-hidden after:font-medium after:select-none after:content-[attr(data-label)]";
-const interactive = "text-muted-foreground underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-primary [@media(hover:hover)_and_(pointer:fine)]:hover:decoration-[color-mix(in_oklab,currentColor_45%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring";
+const interactive = "text-fg-muted underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-[var(--duration-fast)] ease-out-quint [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent-default [@media(hover:hover)_and_(pointer:fine)]:hover:decoration-[color-mix(in_oklab,currentColor_45%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus";
 
 /** Crumbs present on first render stay still; crumbs added later slide in from the path before them. */
 export function Breadcrumb({ items, ariaLabel = "Breadcrumb", className, linkComponent: Link = "a" }: BreadcrumbProps) {
@@ -37,7 +37,7 @@ export function Breadcrumb({ items, ariaLabel = "Breadcrumb", className, linkCom
             return (
               <motion.li
                 key={`${item.label}-${index}`}
-                className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm leading-relaxed text-muted-foreground"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm leading-relaxed text-fg-muted"
                 layout={reduced ? false : "position"}
                 layoutDependency={path}
                 initial={reduced ? false : { opacity: 0, x: -8, filter: `blur(${blur.subtle}px)` }}
@@ -51,7 +51,7 @@ export function Breadcrumb({ items, ariaLabel = "Breadcrumb", className, linkCom
                 ) : !current && item.onClick ? (
                   <button type="button" data-label={item.label} onClick={item.onClick} className={cn(crumb, interactive, "m-0 cursor-pointer border-0 bg-transparent text-start [font:inherit] text-sm leading-[inherit]")}>{item.label}</button>
                 ) : (
-                  <span aria-current={current ? "page" : undefined} data-label={item.label} className={cn(crumb, current && "font-medium text-primary")}>{item.label}</span>
+                  <span aria-current={current ? "page" : undefined} data-label={item.label} className={cn(crumb, current && "font-medium text-accent-default")}>{item.label}</span>
                 )}
               </motion.li>
             );

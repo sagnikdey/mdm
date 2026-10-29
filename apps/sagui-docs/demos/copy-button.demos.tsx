@@ -24,7 +24,7 @@ export function IconOnly() {
 export function InCodeBlock() {
   const command = "npm install @sagui/ui";
   return (
-    <div className="flex items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-border bg-muted py-1.5 pr-1.5 pl-4 font-mono text-sm">
+    <div className="flex items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-border-default bg-bg-muted py-1.5 pr-1.5 pl-4 font-mono text-sm">
       <code>{command}</code>
       <CopyButton value={command} variant="plain" />
     </div>

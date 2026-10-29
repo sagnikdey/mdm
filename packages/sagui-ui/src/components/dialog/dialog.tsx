@@ -35,7 +35,7 @@ const leave: Transition = { duration: duration.quick, ease: easeStandard };
 
 const overlayClass = "fixed inset-0 z-50 bg-[oklch(10%_0_0/.46)] backdrop-blur-[7px] data-[state=closed]:!pointer-events-none";
 // Centered with auto margins (like a native modal dialog) so transform stays free for the entrance spring.
-const contentClass = "fixed inset-0 z-51 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[min(calc(100vw-2rem),440px)] overflow-auto rounded-[var(--radius-xl)] border border-border bg-surface text-foreground shadow-overlay focus:outline-none data-[state=closed]:!pointer-events-none";
+const contentClass = "fixed inset-0 z-51 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[min(calc(100vw-2rem),440px)] overflow-auto rounded-[var(--radius-xl)] border border-border-default bg-bg-surface text-fg-default shadow-overlay focus:outline-none data-[state=closed]:!pointer-events-none";
 
 /** A focused surface for decisions that need attention. Focus is trapped, Escape closes, and the page behind is inert. */
 export function DialogContent({ title, description, children, className, onPointerDownOutside, ...props }: DialogContentProps) {
@@ -52,10 +52,10 @@ export function DialogContent({ title, description, children, className, onPoint
   const classes = cn(contentClass, className);
   const inner = (
     <>
-      <div className="flex items-start justify-between gap-5 border-b border-border p-6">
+      <div className="flex items-start justify-between gap-5 border-b border-border-default p-6">
         <div>
           <DialogPrimitive.Title className="relative m-0 text-lg font-medium leading-snug tracking-[-0.01em] [overflow-wrap:anywhere]"><SwapText text={title} /></DialogPrimitive.Title>
-          {description ? <DialogPrimitive.Description className="relative mt-2 text-sm leading-snug text-muted-foreground [overflow-wrap:anywhere]"><SwapText text={description} /></DialogPrimitive.Description> : null}
+          {description ? <DialogPrimitive.Description className="relative mt-2 text-sm leading-snug text-fg-muted [overflow-wrap:anywhere]"><SwapText text={description} /></DialogPrimitive.Description> : null}
         </div>
         {/* Centred on the title's first line: (line height - button) / 2. */}
         <DialogPrimitive.Close className={cn(closeButtonClass, "my-[-3.4px]")} aria-label="Close dialog"><X size={16} strokeWidth={1.75} aria-hidden="true" /></DialogPrimitive.Close>

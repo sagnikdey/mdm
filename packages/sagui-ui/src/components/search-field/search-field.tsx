@@ -33,7 +33,7 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
     <div className="grid min-w-0 gap-2">
       <label className={cn(fieldLabel, "mb-0")} htmlFor={controlId}>{label}</label>
       <div className={cn(fieldShell(), "group/search gap-2 px-3")} data-filled={value ? "true" : undefined}>
-        <Search className="flex-none text-muted-foreground transition-colors duration-[var(--duration-quick)] group-focus-within/search:text-foreground group-data-[filled]/search:text-foreground" width={18} height={18} aria-hidden="true" />
+        <Search className="flex-none text-fg-muted transition-colors duration-[var(--duration-quick)] group-focus-within/search:text-fg-default group-data-[filled]/search:text-fg-default" width={18} height={18} aria-hidden="true" />
         <input {...props} ref={setRefs} id={controlId} type="search" value={value} onChange={(event) => onValueChange(event.target.value)} className={cn(bareInput, "[&::-webkit-search-cancel-button]:hidden", className)} />
         <span className="grid size-6 flex-none place-items-center">
           <AnimatePresence initial={false}>

@@ -155,7 +155,7 @@ function Digits({ value, format, direction, instant }: { value: number; format: 
 function AffixText({ text, direction }: { text: string; direction: number }) {
   const reduced = useReducedMotion();
   return (
-    <span className="inline-flex font-normal text-muted-foreground">
+    <span className="inline-flex font-normal text-fg-muted">
       <AnimatePresence initial={false} custom={direction}>
         {[...text].map((char, index) => (
           <motion.span key={`${index}:${char}`} className="inline-block overflow-x-clip whitespace-pre" custom={direction} variants={reduced ? still : slot} initial="enter" animate="center" exit="exit">{char}</motion.span>
@@ -196,14 +196,14 @@ function StepButton({ toward, label, disabled, controls, limit, pressed, iconRef
     <button
       type="button"
       className={cn(
-        "group/step grid size-[var(--nf-step)] flex-[0_0_var(--nf-step)] cursor-pointer select-none place-items-center rounded-[calc(var(--radius-md)-var(--nf-inset)-1px)] border-0 bg-transparent p-0 text-muted-foreground",
+        "group/step grid size-[var(--nf-step)] flex-[0_0_var(--nf-step)] cursor-pointer select-none place-items-center rounded-[calc(var(--radius-md)-var(--nf-inset)-1px)] border-0 bg-transparent p-0 text-fg-muted",
         "touch-manipulation [-webkit-touch-callout:none] [-webkit-tap-highlight-color:transparent]",
         "transition-[background-color,color,opacity] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)]",
-        "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:not-aria-disabled:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:not-aria-disabled:text-foreground",
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:enabled:not-aria-disabled:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:not-aria-disabled:text-fg-default",
         // Quick press, spring release: the fill deepens and the glyph sinks. A held button stays pressed for as long as it repeats.
-        "active:enabled:not-aria-disabled:bg-[color-mix(in_oklab,var(--color-foreground)_10%,var(--color-surface))] active:enabled:not-aria-disabled:text-foreground active:enabled:not-aria-disabled:[transition-duration:60ms]",
-        "data-[pressed]:enabled:not-aria-disabled:bg-[color-mix(in_oklab,var(--color-foreground)_10%,var(--color-surface))] data-[pressed]:enabled:not-aria-disabled:text-foreground",
-        "focus-visible:bg-muted focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+        "active:enabled:not-aria-disabled:bg-[color-mix(in_oklab,var(--color-fg-default)_10%,var(--color-bg-surface))] active:enabled:not-aria-disabled:text-fg-default active:enabled:not-aria-disabled:[transition-duration:60ms]",
+        "data-[pressed]:enabled:not-aria-disabled:bg-[color-mix(in_oklab,var(--color-fg-default)_10%,var(--color-bg-surface))] data-[pressed]:enabled:not-aria-disabled:text-fg-default",
+        "focus-visible:bg-bg-muted focus-visible:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus",
         // At a limit the button dims and refuses, but stays in the tab order; pressing it strains the value toward the limit and it shakes once.
         "aria-disabled:cursor-not-allowed aria-disabled:opacity-30 disabled:cursor-not-allowed disabled:opacity-35",
         "group-data-[strain=max]/ctl:last:aria-disabled:text-[var(--nf-limit)] group-data-[strain=max]/ctl:last:aria-disabled:opacity-60",
@@ -481,7 +481,7 @@ export function NumberField({ label, value, defaultValue = 0, onValueChange, min
     // No row gap: grid tracks clamp a negative margin at zero, so a closed message row would still pay the gap.
     <div
       className={cn(
-        "grid min-w-0 [--nf-limit:color-mix(in_oklab,var(--color-warning)_72%,var(--color-foreground))] dark:[--nf-limit:color-mix(in_oklab,var(--color-warning)_88%,var(--color-foreground))]",
+        "grid min-w-0 [--nf-limit:color-mix(in_oklab,var(--color-warning-default)_72%,var(--color-fg-default))] dark:[--nf-limit:color-mix(in_oklab,var(--color-warning-default)_88%,var(--color-fg-default))]",
         sizes[size],
         className
       )}
@@ -505,15 +505,15 @@ export function NumberField({ label, value, defaultValue = 0, onValueChange, min
       <div
         ref={controlRef}
         className={cn(
-          "group/ctl flex min-h-[var(--nf-height)] w-[min(100%,var(--nf-width))] items-center gap-0.5 rounded-[var(--radius-md)] border bg-surface p-[var(--nf-inset)]",
+          "group/ctl flex min-h-[var(--nf-height)] w-[min(100%,var(--nf-width))] items-center gap-0.5 rounded-[var(--radius-md)] border bg-bg-surface p-[var(--nf-inset)]",
           "transition-[border-color,background-color,opacity,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-          "has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/25",
+          "has-[input:focus]:border-border-focus has-[input:focus]:ring-[3px] has-[input:focus]:ring-border-focus-soft",
           outside
-            ? "border-[color-mix(in_oklab,var(--color-warning)_55%,var(--color-border))] bg-[color-mix(in_oklab,var(--color-warning)_5%,var(--color-surface))] has-[input:focus]:border-[color-mix(in_oklab,var(--color-warning)_80%,var(--color-border))]"
+            ? "border-[color-mix(in_oklab,var(--color-warning-default)_55%,var(--color-border-default))] bg-[color-mix(in_oklab,var(--color-warning-default)_5%,var(--color-bg-surface))] has-[input:focus]:border-[color-mix(in_oklab,var(--color-warning-default)_80%,var(--color-border-default))]"
             : scrubbing
-              ? "border-foreground"
-              : "border-border [@media(hover:hover)_and_(pointer:fine)]:hover:border-border-strong",
-          disabled && "bg-muted opacity-50"
+              ? "border-fg-default"
+              : "border-border-default [@media(hover:hover)_and_(pointer:fine)]:hover:border-border-strong",
+          disabled && "bg-bg-muted opacity-50"
         )}
         data-scrubbing={scrubbing || undefined}
         data-disabled={disabled || undefined}
@@ -528,7 +528,7 @@ export function NumberField({ label, value, defaultValue = 0, onValueChange, min
           {/* The number, its prefix, and its suffix travel as one centered group. Tabular digits keep every column the same width. */}
           <motion.span
             ref={groupRef}
-            className="inline-flex items-center text-[length:var(--nf-text)] font-medium leading-snug tracking-[-0.01em] whitespace-nowrap tabular-nums text-foreground transition-colors duration-[var(--duration-standard)] motion-reduce:group-data-[strain]/ctl:text-[var(--nf-limit)] motion-reduce:transition-none"
+            className="inline-flex items-center text-[length:var(--nf-text)] font-medium leading-snug tracking-[-0.01em] whitespace-nowrap tabular-nums text-fg-default transition-colors duration-[var(--duration-standard)] motion-reduce:group-data-[strain]/ctl:text-[var(--nf-limit)] motion-reduce:transition-none"
             style={{ x, y: bumpY }}
           >
             <AffixText text={affixText(prefix, shown)} direction={direction} />
@@ -542,7 +542,7 @@ export function NumberField({ label, value, defaultValue = 0, onValueChange, min
               <input
                 ref={inputRef}
                 id={inputId}
-                className="absolute top-0 left-0 z-1 m-0 h-full w-[calc(100%+1em)] border-0 bg-transparent p-0 text-left text-transparent caret-foreground outline-none [font:inherit] [font-variant-numeric:inherit] [letter-spacing:inherit] [line-height:inherit] selection:bg-[color-mix(in_oklab,var(--color-foreground)_16%,transparent)] selection:text-transparent disabled:cursor-not-allowed"
+                className="absolute top-0 left-0 z-1 m-0 h-full w-[calc(100%+1em)] border-0 bg-transparent p-0 text-left text-transparent caret-fg-default outline-none [font:inherit] [font-variant-numeric:inherit] [letter-spacing:inherit] [line-height:inherit] selection:bg-[color-mix(in_oklab,var(--color-fg-default)_16%,transparent)] selection:text-transparent disabled:cursor-not-allowed"
                 type="text"
                 role="spinbutton"
                 inputMode={min < 0 ? "text" : decimals || maxFraction ? "decimal" : "numeric"}

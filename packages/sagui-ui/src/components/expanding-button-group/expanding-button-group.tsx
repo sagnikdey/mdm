@@ -144,19 +144,19 @@ function Item({ item, size, expanded, done, busy, tabStop, reduced, onPointerDow
       type="button"
       className={cn(
         "group/ebi relative inline-flex h-[var(--ebg-h)] min-w-[var(--ebg-h)] flex-none items-center justify-start gap-[var(--ebg-gap)] overflow-clip",
-        "border-0 rounded-full pr-0 pl-[var(--ebg-start)] bg-transparent text-muted-foreground font-[inherit] font-medium leading-none tracking-[-0.01em]",
+        "border-0 rounded-full pr-0 pl-[var(--ebg-start)] bg-transparent text-fg-muted font-[inherit] font-medium leading-none tracking-[-0.01em]",
         "text-sm group-data-[size=sm]/ebg:text-xs whitespace-nowrap cursor-pointer touch-manipulation [-webkit-tap-highlight-color:transparent]",
         "[transition:color_var(--duration-quick)_var(--ease-out-quint),background-color_var(--duration-standard)_var(--ease-out-quint)]",
-        "data-[expanded]:bg-muted data-[expanded]:text-foreground",
-        danger && "data-[expanded]:bg-[color-mix(in_oklab,var(--color-destructive)_10%,var(--color-surface))] data-[expanded]:text-destructive dark:data-[expanded]:bg-[color-mix(in_oklab,var(--color-destructive)_14%,var(--color-surface))]",
+        "data-[expanded]:bg-bg-muted data-[expanded]:text-fg-default",
+        danger && "data-[expanded]:bg-[color-mix(in_oklab,var(--color-danger-default)_10%,var(--color-bg-surface))] data-[expanded]:text-danger-default dark:data-[expanded]:bg-[color-mix(in_oklab,var(--color-danger-default)_14%,var(--color-bg-surface))]",
         // The confirmation carries its meaning on the check, with a faint tint behind the whole button.
-        showDone && !danger && "bg-[color-mix(in_oklab,var(--color-success)_10%,var(--color-surface))] dark:bg-[color-mix(in_oklab,var(--color-success)_14%,var(--color-surface))]",
+        showDone && !danger && "bg-[color-mix(in_oklab,var(--color-success-default)_10%,var(--color-bg-surface))] dark:bg-[color-mix(in_oklab,var(--color-success-default)_14%,var(--color-bg-surface))]",
         "aria-busy:cursor-progress",
-        "aria-disabled:cursor-not-allowed aria-disabled:text-muted-foreground aria-disabled:opacity-50 aria-disabled:data-[expanded]:bg-muted aria-disabled:data-[expanded]:text-muted-foreground",
+        "aria-disabled:cursor-not-allowed aria-disabled:text-fg-muted aria-disabled:opacity-50 aria-disabled:data-[expanded]:bg-bg-muted aria-disabled:data-[expanded]:text-fg-muted",
         // Before the first measurement (the server render), the expanded action takes its natural width, which is exactly the
         // width the spring later targets, so hydration never moves anything.
         "data-[unmeasured]:data-[expanded]:!w-auto data-[unmeasured]:data-[expanded]:pr-[var(--ebg-end)]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus",
         "motion-reduce:[transition-duration:var(--duration-instant)]"
       )}
       style={{ width }}
@@ -178,7 +178,7 @@ function Item({ item, size, expanded, done, busy, tabStop, reduced, onPointerDow
         className={cn(
           "relative grid size-[var(--ebg-icon)] flex-none place-items-center [transition:transform_320ms_var(--ease-spring)]",
           !item.disabled && "group-active/ebi:scale-[.86] group-active/ebi:[transition-duration:90ms] group-active/ebi:[transition-timing-function:var(--ease-out-quint)]",
-          showDone && !danger && "text-success",
+          showDone && !danger && "text-success-default",
           busy && "animate-[sg-busy_1.1s_var(--ease-in-out)_infinite] motion-reduce:animate-none motion-reduce:opacity-60",
           "motion-reduce:!transform-none motion-reduce:transition-none"
         )}
@@ -383,7 +383,7 @@ export function ExpandingButtonGroup({ items, label, size = "md", defaultExpande
       aria-orientation="horizontal"
       data-size={size}
       // A flat pill on the surface. Geometry comes from the component as --ebg-* variables, so the measured widths and the CSS agree.
-      className={cn("group/ebg relative isolate inline-flex max-w-full flex-none items-center gap-0.5 p-[3px] rounded-full border border-border bg-surface", className)}
+      className={cn("group/ebg relative isolate inline-flex max-w-full flex-none items-center gap-0.5 p-[3px] rounded-full border border-border-default bg-bg-surface", className)}
       style={vars}
       onKeyDown={onKeyDown}
       onBlur={onBlur}

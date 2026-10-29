@@ -34,7 +34,7 @@ export function Readout() {
   const shown = active ?? data[data.length - 1];
   return (
     <div className="grid w-full max-w-2xl gap-2">
-      <p className="text-sm text-muted-foreground">{shown.label}</p>
+      <p className="text-sm text-fg-muted">{shown.label}</p>
       <p className="text-3xl font-semibold tabular-nums">{shown.values.signups} signups</p>
       <LineChart label="Signups" data={data} series={signupSeries} onActiveChange={(_, datum) => setActive(datum)} />
     </div>

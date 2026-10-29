@@ -9,7 +9,7 @@ export function Hero() {
       <DrawerTrigger asChild><Button variant="outline">Filters</Button></DrawerTrigger>
       <DrawerContent title="Filters" description="Narrow the list of projects.">
         <div className="grid gap-4">
-          <p className="text-muted-foreground">Drag the header toward the edge to dismiss, or press Escape.</p>
+          <p className="text-fg-muted">Drag the header toward the edge to dismiss, or press Escape.</p>
           <DrawerClose asChild><Button>Apply filters</Button></DrawerClose>
         </div>
       </DrawerContent>
@@ -25,7 +25,7 @@ export function Left() {
       <DrawerTrigger asChild><Button variant="outline">Menu</Button></DrawerTrigger>
       <DrawerContent side="left" title="Navigation">
         <nav className="grid gap-1 text-sm">
-          {["Overview", "Projects", "Members", "Billing"].map((item) => <a key={item} href="#" className="rounded-md px-3 py-2 hover:bg-muted">{item}</a>)}
+          {["Overview", "Projects", "Members", "Billing"].map((item) => <a key={item} href="#" className="rounded-md px-3 py-2 hover:bg-bg-muted">{item}</a>)}
         </nav>
       </DrawerContent>
     </Drawer>

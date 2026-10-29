@@ -7,7 +7,7 @@ type Story = StoryObj<typeof meta>;
 
 const body = (
   <div className="grid gap-4">
-    <p className="text-muted-foreground">Drag the header toward the edge to dismiss, or press Escape.</p>
+    <p className="text-fg-muted">Drag the header toward the edge to dismiss, or press Escape.</p>
     <DrawerClose asChild><Button>Apply filters</Button></DrawerClose>
   </div>
 );

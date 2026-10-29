@@ -368,7 +368,7 @@ function Sheet({ title, description, detents = [.45, .92], initialDetent = 0, on
           ref={sheetRef}
           className={cn(
             "group/sheet fixed inset-x-0 bottom-[calc(var(--sheet-extension)*-1)] z-51 mx-auto flex h-[calc(var(--sheet-max)*100dvh+var(--sheet-extension))] w-[min(100%,36rem)] flex-col overflow-hidden",
-            "rounded-t-[var(--radius-xl)] border border-b-0 border-border bg-surface pb-[calc(var(--sheet-extension)+env(safe-area-inset-bottom,0px))] text-foreground shadow-floating outline-none will-change-transform",
+            "rounded-t-[var(--radius-xl)] border border-b-0 border-border-default bg-bg-surface pb-[calc(var(--sheet-extension)+env(safe-area-inset-bottom,0px))] text-fg-default shadow-floating outline-none will-change-transform",
             "data-[state=closed]:!pointer-events-none",
             className
           )}
@@ -378,19 +378,19 @@ function Sheet({ title, description, detents = [.45, .92], initialDetent = 0, on
         >
           {/* The whole header is the handle, so a drag can start anywhere above the content. A hairline appears only once the content scrolls under it. */}
           <div
-            className="relative flex-none cursor-grab touch-none select-none px-5 pt-2 pb-4 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-border after:opacity-0 after:transition-opacity after:duration-[var(--duration-quick)] after:content-[''] group-data-[dragging]/sheet:cursor-grabbing group-data-[scrolled]/sheet:after:opacity-100 max-sm:px-4 motion-reduce:after:transition-none"
+            className="relative flex-none cursor-grab touch-none select-none px-5 pt-2 pb-4 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-border-default after:opacity-0 after:transition-opacity after:duration-[var(--duration-quick)] after:content-[''] group-data-[dragging]/sheet:cursor-grabbing group-data-[scrolled]/sheet:after:opacity-100 max-sm:px-4 motion-reduce:after:transition-none"
             onPointerDown={headerDown}
             onPointerMove={headerMove}
             onPointerUp={headerUp}
             onPointerCancel={headerUp}
           >
-            <button type="button" className="group/grab mx-auto mb-1 flex h-5 w-14 cursor-[inherit] items-center justify-center rounded-full border-0 bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" data-grabber="" aria-label={expanded ? "Collapse sheet" : "Expand sheet"} aria-expanded={expanded} onClick={grabberClick} onKeyDown={grabberKey}>
-              <span className="h-[5px] w-9 rounded-full bg-border-strong transition-colors duration-[var(--duration-quick)] group-data-[dragging]/sheet:bg-muted-foreground [@media(hover:hover)_and_(pointer:fine)]:group-hover/grab:bg-muted-foreground motion-reduce:transition-none" aria-hidden="true" />
+            <button type="button" className="group/grab mx-auto mb-1 flex h-5 w-14 cursor-[inherit] items-center justify-center rounded-full border-0 bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus" data-grabber="" aria-label={expanded ? "Collapse sheet" : "Expand sheet"} aria-expanded={expanded} onClick={grabberClick} onKeyDown={grabberKey}>
+              <span className="h-[5px] w-9 rounded-full bg-border-strong transition-colors duration-[var(--duration-quick)] group-data-[dragging]/sheet:bg-fg-muted [@media(hover:hover)_and_(pointer:fine)]:group-hover/grab:bg-fg-muted motion-reduce:transition-none" aria-hidden="true" />
             </button>
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <DialogPrimitive.Title className="m-0 text-lg font-medium leading-snug tracking-[-0.01em]">{title}</DialogPrimitive.Title>
-                {description ? <DialogPrimitive.Description className="mt-0.5 text-sm leading-snug text-muted-foreground">{description}</DialogPrimitive.Description> : null}
+                {description ? <DialogPrimitive.Description className="mt-0.5 text-sm leading-snug text-fg-muted">{description}</DialogPrimitive.Description> : null}
               </div>
               <DialogPrimitive.Close className={cn(closeButtonClass, "-mt-0.5 rounded-full")} aria-label={closeLabel}>
                 <X size={16} strokeWidth={1.75} aria-hidden="true" />

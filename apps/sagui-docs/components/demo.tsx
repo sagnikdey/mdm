@@ -86,12 +86,12 @@ function Live({ slug, name }: { slug: string; name: string }) {
   const Component = React.useMemo(
     () => React.lazy(async () => {
       const mod = await loaders[slug]();
-      return { default: mod[name] ?? (() => <p className="text-sm text-muted-foreground">Missing demo: {name}</p>) };
+      return { default: mod[name] ?? (() => <p className="text-sm text-fg-muted">Missing demo: {name}</p>) };
     }),
     [slug, name]
   );
   return (
-    <React.Suspense fallback={<span className="text-sm text-muted-foreground">Loading demo</span>}>
+    <React.Suspense fallback={<span className="text-sm text-fg-muted">Loading demo</span>}>
       <Component />
     </React.Suspense>
   );
@@ -102,8 +102,8 @@ export function Demo({ slug, name, code, codeHtml, bare = false }: { slug: strin
   const [tab, setTab] = React.useState<"preview" | "code">("preview");
   const id = React.useId();
   return (
-    <figure className="demo not-prose my-6 overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface">
-      <div className="flex items-center justify-between border-b border-border px-2 py-1.5">
+    <figure className="demo not-prose my-6 overflow-hidden rounded-[var(--radius-xl)] border border-border-default bg-bg-surface">
+      <div className="flex items-center justify-between border-b border-border-default px-2 py-1.5">
         <div role="tablist" aria-label="Demo view" className="flex gap-1">
           {(["preview", "code"] as const).map((value) => (
             <button
@@ -114,7 +114,7 @@ export function Demo({ slug, name, code, codeHtml, bare = false }: { slug: strin
               aria-controls={`${id}-panel`}
               type="button"
               onClick={() => setTab(value)}
-              className="cursor-pointer rounded-[var(--radius-sm)] px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors aria-selected:bg-muted aria-selected:text-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="cursor-pointer rounded-[var(--radius-sm)] px-2.5 py-1 text-xs font-medium text-fg-muted transition-colors aria-selected:bg-bg-muted aria-selected:text-fg-default hover:text-fg-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
             >
               {value === "preview" ? "Preview" : "Code"}
             </button>

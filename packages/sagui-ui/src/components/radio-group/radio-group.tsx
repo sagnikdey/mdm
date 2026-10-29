@@ -71,10 +71,10 @@ export function RadioGroup({ label, options, value: valueProp, defaultValue, onV
   };
   return (
     <fieldset className={cn("m-0 grid min-w-0 border-0 p-0", className)} disabled={disabled}>
-      <legend className="mb-2 p-0 text-sm font-medium leading-snug text-foreground">{label}</legend>
+      <legend className="mb-2 p-0 text-sm font-medium leading-snug text-fg-default">{label}</legend>
       <div ref={listRef} className="group/opts relative grid gap-2">
         {/* One highlight travels between the rows: above their borders and fills, below their text, so it never crosses a label. */}
-        <span ref={highlightRef} className="pointer-events-none absolute inset-x-0 top-0 z-1 box-border rounded-[var(--radius-md)] border border-primary bg-primary/5 opacity-0" aria-hidden="true" />
+        <span ref={highlightRef} className="pointer-events-none absolute inset-x-0 top-0 z-1 box-border rounded-[var(--radius-md)] border border-accent-default bg-accent-subtle opacity-0" aria-hidden="true" />
         {options.map((option, index) => {
           const checked = value === option.value;
           return (
@@ -82,12 +82,12 @@ export function RadioGroup({ label, options, value: valueProp, defaultValue, onV
               key={option.value}
               ref={(node) => { rows.current[index] = node; }}
               className={cn(
-                "group/opt relative flex cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border border-border p-3 [-webkit-tap-highlight-color:transparent]",
+                "group/opt relative flex cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border border-border-default p-3 [-webkit-tap-highlight-color:transparent]",
                 "transition-[background-color,border-color] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:transition-none",
-                "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-muted active:bg-muted",
+                "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-bg-muted active:bg-bg-muted",
                 // Until the highlight is placed (server paint or no script), the checked row carries the same look itself.
-                "group-not-data-[ready]/opts:has-[input:checked]:border-primary group-not-data-[ready]/opts:has-[input:checked]:bg-primary/5",
-                "has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2 has-[input:focus-visible]:ring-offset-background",
+                "group-not-data-[ready]/opts:has-[input:checked]:border-accent-default group-not-data-[ready]/opts:has-[input:checked]:bg-accent-subtle",
+                "has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-border-focus has-[input:focus-visible]:ring-offset-2 has-[input:focus-visible]:ring-offset-bg-canvas",
                 "has-[input:disabled]:cursor-not-allowed has-[input:disabled]:opacity-50"
               )}
             >
@@ -97,9 +97,9 @@ export function RadioGroup({ label, options, value: valueProp, defaultValue, onV
                 className={cn(
                   "relative z-2 grid size-[17px] flex-none place-items-center rounded-full border border-border-strong",
                   "[transition:border-color_var(--duration-quick)_var(--ease-out-quint),background-color_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
-                  "group-has-[input:checked]/opt:border-primary group-has-[input:checked]/opt:bg-primary",
+                  "group-has-[input:checked]/opt:border-accent-default group-has-[input:checked]/opt:bg-accent-default",
                   // A faint dot previews the choice while the pointer is down, then the real dot springs in on release.
-                  "after:size-[7px] after:rounded-full after:bg-foreground after:opacity-0 after:transition-opacity after:duration-[var(--duration-instant)] after:content-[''] after:[grid-area:1/1]",
+                  "after:size-[7px] after:rounded-full after:bg-bg-emphasis after:opacity-0 after:transition-opacity after:duration-[var(--duration-instant)] after:content-[''] after:[grid-area:1/1]",
                   "group-active/opt:group-not-has-[input:checked]/opt:after:opacity-20",
                   "group-active/opt:scale-[.88] group-active/opt:[transition-duration:var(--duration-quick),var(--duration-quick),100ms]",
                   "motion-reduce:transition-none motion-reduce:group-active/opt:scale-100"
@@ -107,15 +107,15 @@ export function RadioGroup({ label, options, value: valueProp, defaultValue, onV
                 aria-hidden="true"
               >
                 <motion.span
-                  className="size-[7px] rounded-full bg-foreground [grid-area:1/1] group-has-[input:checked]/opt:bg-primary-foreground"
+                  className="size-[7px] rounded-full bg-bg-emphasis [grid-area:1/1] group-has-[input:checked]/opt:bg-fg-on-accent"
                   initial={false}
                   animate={checked ? { scale: 1, opacity: 1 } : { scale: 0.4, opacity: 0 }}
                   transition={reduced ? { duration: 0 } : ({ ...spring.snappy, opacity: { duration: checked ? duration.fast : duration.instant } } as never)}
                 />
               </span>
               <span className="relative z-2 min-w-0">
-                <span className={cn("block text-sm font-medium text-muted-foreground transition-colors duration-[var(--duration-standard)] group-has-[input:checked]/opt:text-foreground motion-reduce:transition-none")}>{option.label}</span>
-                {option.description && <span className="mt-0.5 block text-xs text-muted-foreground">{option.description}</span>}
+                <span className={cn("block text-sm font-medium text-fg-muted transition-colors duration-[var(--duration-standard)] group-has-[input:checked]/opt:text-fg-default motion-reduce:transition-none")}>{option.label}</span>
+                {option.description && <span className="mt-0.5 block text-xs text-fg-muted">{option.description}</span>}
               </span>
             </label>
           );

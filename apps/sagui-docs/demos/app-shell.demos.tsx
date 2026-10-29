@@ -64,12 +64,12 @@ export function Hero() {
   }, []);
 
   return (
-    <div onClickCapture={stayHere} className="h-[560px] w-full overflow-y-auto rounded-[var(--radius-lg)] border border-border" style={{ "--app-shell-height": "558px" } as CSSProperties}>
+    <div onClickCapture={stayHere} className="h-[560px] w-full overflow-y-auto rounded-[var(--radius-lg)] border border-border-default" style={{ "--app-shell-height": "558px" } as CSSProperties}>
       <AppShell
         nav={nav}
         currentHref={current}
-        brand={<span className="flex items-center gap-2 font-semibold"><span className="grid size-7 place-items-center rounded-control bg-primary text-xs text-primary-foreground">S</span>Sales</span>}
-        brandMark={<span className="grid size-7 place-items-center rounded-control bg-primary text-xs font-semibold text-primary-foreground">S</span>}
+        brand={<span className="flex items-center gap-2 font-semibold"><span className="grid size-7 place-items-center rounded-control bg-accent-default text-xs text-fg-on-accent">S</span>Sales</span>}
+        brandMark={<span className="grid size-7 place-items-center rounded-control bg-accent-default text-xs font-semibold text-fg-on-accent">S</span>}
         header={<Breadcrumb items={[{ label: "Acme Inc.", href: "/app" }, { label: titles[current] }]} />}
         actions={
           <>
@@ -88,7 +88,7 @@ export function Hero() {
             <MetricCard label="Deals won" value={42} change="+6" context="vs last month" />
             <MetricCard label="Win rate" value={31.5} suffix="%" decimals={1} change="+2.1 pts" context="vs last month" />
           </div>
-          <p className="type-body-sm text-muted-foreground">Press ⌘B to fold the sidebar into a rail, and ⌘K to search. Narrow the window to see the drawer.</p>
+          <p className="type-body-sm text-fg-muted">Press ⌘B to fold the sidebar into a rail, and ⌘K to search. Narrow the window to see the drawer.</p>
         </div>
       </AppShell>
 
@@ -114,9 +114,9 @@ export function Hero() {
 // #region StartFolded
 export function StartFolded() {
   return (
-    <div className="h-[360px] w-full overflow-hidden rounded-[var(--radius-lg)] border border-border" style={{ "--app-shell-height": "358px" } as CSSProperties}>
+    <div className="h-[360px] w-full overflow-hidden rounded-[var(--radius-lg)] border border-border-default" style={{ "--app-shell-height": "358px" } as CSSProperties}>
       <AppShell nav={nav} currentHref="/app/deals" defaultCollapsed brand={<span className="font-semibold">Sales</span>} brandMark={<span className="font-semibold">S</span>} header={<span className="type-title">Deals</span>}>
-        <p className="p-6 text-sm text-muted-foreground">Point at an icon to see its label.</p>
+        <p className="p-6 text-sm text-fg-muted">Point at an icon to see its label.</p>
       </AppShell>
     </div>
   );
@@ -126,7 +126,7 @@ export function StartFolded() {
 // #region Inset
 export function Inset() {
   return (
-    <div className="h-[360px] w-full overflow-hidden rounded-[var(--radius-lg)] border border-border" style={{ "--app-shell-height": "358px" } as CSSProperties}>
+    <div className="h-[360px] w-full overflow-hidden rounded-[var(--radius-lg)] border border-border-default" style={{ "--app-shell-height": "358px" } as CSSProperties}>
       <AppShell
         nav={nav}
         variant="inset"
@@ -134,9 +134,9 @@ export function Inset() {
         brand={<span className="font-semibold">Sales</span>}
         brandMark={<span className="font-semibold">S</span>}
         header={<span className="type-title">Deals</span>}
-        sidebarFooter={<span className="type-body-sm text-muted-foreground">Acme workspace</span>}
+        sidebarFooter={<span className="type-body-sm text-fg-muted">Acme workspace</span>}
       >
-        <p className="p-6 text-sm text-muted-foreground">The toggle beside the title folds the floating sidebar into a rail.</p>
+        <p className="p-6 text-sm text-fg-muted">The toggle beside the title folds the floating sidebar into a rail.</p>
       </AppShell>
     </div>
   );

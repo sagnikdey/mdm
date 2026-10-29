@@ -39,7 +39,7 @@ export function Avatar({ name, src, size = "md", status, className, ...props }: 
   return (
     <span
       {...props}
-      className={cn("relative inline-grid flex-none place-items-center overflow-visible rounded-full border border-border bg-muted font-medium text-foreground", sizes[size], className)}
+      className={cn("relative inline-grid flex-none place-items-center overflow-visible rounded-full border border-border-default bg-bg-muted font-medium text-fg-default", sizes[size], className)}
       role="img"
       aria-label={`${name}${status ? `, ${status}` : ""}`}
     >
@@ -61,7 +61,7 @@ export function Avatar({ name, src, size = "md", status, className, ...props }: 
         {status && (
           <motion.i
             key={status}
-            className={cn("absolute right-0 bottom-0 z-[2] rounded-full border-surface shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-border)_70%,transparent)]", dots[size], status === "online" ? "bg-success" : "bg-muted-foreground")}
+            className={cn("absolute right-0 bottom-0 z-[2] rounded-full border-bg-surface shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-border-default)_70%,transparent)]", dots[size], status === "online" ? "bg-success-default" : "bg-fg-muted")}
             aria-hidden="true"
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}

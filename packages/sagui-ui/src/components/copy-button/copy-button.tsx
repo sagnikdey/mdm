@@ -59,15 +59,15 @@ export function CopyButton({ value, label = "Copy", className, iconOnly = false,
         type="button"
         className={cn(
           "inline-flex w-max max-w-full h-8 items-center justify-center gap-2 px-3 cursor-pointer select-none",
-          "rounded-[var(--radius-md)] border text-sm font-medium text-foreground",
+          "rounded-[var(--radius-md)] border text-sm font-medium text-fg-default",
           "[transition:background-color_var(--duration-quick)_var(--ease-out-quint),border-color_var(--duration-quick)_var(--ease-out-quint),transform_var(--duration-spring)_var(--ease-spring)]",
           "active:enabled:scale-[.97] active:enabled:[transition-duration:var(--duration-quick),var(--duration-quick),var(--duration-fast)]",
           "disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none motion-reduce:active:enabled:scale-100",
           variant === "plain"
-            ? "border-transparent bg-transparent text-muted-foreground [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:text-foreground"
-            : "border-border bg-surface [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:border-border-strong",
+            ? "border-transparent bg-transparent text-fg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:text-fg-default"
+            : "border-border-default bg-bg-surface [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:bg-bg-muted [@media(hover:hover)_and_(pointer:fine)]:hover:enabled:border-border-strong",
           iconOnly && "w-8 px-0 active:enabled:scale-[.96]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg-canvas",
           className
         )}
         onClick={() => void handleCopy()}
@@ -79,7 +79,7 @@ export function CopyButton({ value, label = "Copy", className, iconOnly = false,
           <AnimatePresence initial={false}>
             <motion.span
               key={state}
-              className={cn("absolute inset-0 grid place-items-center", state === "copied" && "text-success", state === "error" && "text-destructive")}
+              className={cn("absolute inset-0 grid place-items-center", state === "copied" && "text-success-default", state === "error" && "text-danger-default")}
               initial={reduced ? fadeIn : iconIn}
               animate={rest}
               exit={reduced ? fadeOut : iconOut}

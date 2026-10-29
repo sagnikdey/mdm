@@ -8,7 +8,10 @@ const meta = {
   component: Avatar,
   tags: ["autodocs"],
   args: { name: "Ada Lovelace", size: "md" },
-  argTypes: { size: { control: "inline-radio", options: ["sm", "md", "lg", "xl"] }, status: { control: "inline-radio", options: [undefined, "online", "offline"] } },
+  argTypes: {
+    size: { control: "inline-radio", options: ["sm", "md", "lg", "xl"] },
+    status: { control: "inline-radio", options: ["online", "offline"] },
+  },
 } satisfies Meta<typeof Avatar>;
 export default meta;
 type Story = StoryObj<typeof meta>;

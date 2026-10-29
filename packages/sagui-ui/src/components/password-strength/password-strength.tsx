@@ -127,9 +127,9 @@ function EyeMorph({ slashed, reduced }: { slashed: boolean; reduced: boolean }) 
 /** The tint grows under the tick while the tick draws from its short stroke; unchecking retracts it faster than it drew. */
 function RuleMark({ met, delay, reduced }: { met: boolean; delay: number; reduced: boolean }) {
   return (
-    <span className="relative block size-4 flex-[0_0_16px] rounded-full border-[1.25px] border-border-strong text-success transition-colors duration-[var(--duration-quick)] group-data-[met]/rule:border-transparent motion-reduce:transition-none" aria-hidden="true">
+    <span className="relative block size-4 flex-[0_0_16px] rounded-full border-[1.25px] border-border-strong text-success-default transition-colors duration-[var(--duration-quick)] group-data-[met]/rule:border-transparent motion-reduce:transition-none" aria-hidden="true">
       <motion.span
-        className="absolute -inset-[1.25px] rounded-[inherit] bg-[color-mix(in_oklab,var(--color-success)_16%,transparent)]"
+        className="absolute -inset-[1.25px] rounded-[inherit] bg-[color-mix(in_oklab,var(--color-success-default)_16%,transparent)]"
         initial={false}
         animate={{ scale: met ? 1 : 0.5, opacity: met ? 1 : 0 }}
         transition={reduced ? { duration: 0 } : ({ scale: { ...spring.snappy, delay }, opacity: { duration: met ? duration.quick : duration.instant, delay } } as Transition)}
@@ -213,7 +213,7 @@ export const PasswordStrength = React.forwardRef<HTMLInputElement, PasswordStren
 
   return (
     <div
-      className="grid min-w-0 [--tone:var(--color-border-strong)] data-[level=1]:[--tone:var(--color-destructive)] data-[level=2]:[--tone:var(--color-warning)] data-[level=3]:[--tone:var(--color-success)] data-[level=4]:[--tone:var(--color-success)]"
+      className="grid min-w-0 [--tone:var(--color-border-strong)] data-[level=1]:[--tone:var(--color-danger-default)] data-[level=2]:[--tone:var(--color-warning-default)] data-[level=3]:[--tone:var(--color-success-default)] data-[level=4]:[--tone:var(--color-success-default)]"
       data-level={strength.level}
     >
       <label className={fieldLabel} htmlFor={controlId}>{label}</label>
@@ -241,7 +241,7 @@ export const PasswordStrength = React.forwardRef<HTMLInputElement, PasswordStren
           // Touch keyboards zoom into fields under 16px, so coarse pointers get the larger size.
           className={cn(bareInput, "h-[38px] data-[reveal]:animate-[sg-resolve_var(--duration-standard)_var(--ease-enter)] [@media(pointer:coarse)]:text-base motion-reduce:animate-none", className)}
         />
-        <button type="button" className={cn(adornmentButton, "size-[34px]", revealed && "text-foreground")} onClick={toggleReveal} aria-label="Show password" aria-pressed={revealed} aria-controls={controlId}>
+        <button type="button" className={cn(adornmentButton, "size-[34px]", revealed && "text-fg-default")} onClick={toggleReveal} aria-label="Show password" aria-pressed={revealed} aria-controls={controlId}>
           <EyeMorph slashed={revealed} reduced={reduced} />
         </button>
       </motion.div>
@@ -254,7 +254,7 @@ export const PasswordStrength = React.forwardRef<HTMLInputElement, PasswordStren
             const wave = on ? index - track.previousLevel : track.previousLevel - 1 - index;
             return (
               // Each fill slides in from the left inside its clipped track, so the rounded ends keep their shape at every frame.
-              <span key={index} className="relative isolate h-1 overflow-hidden rounded-full bg-border">
+              <span key={index} className="relative isolate h-1 overflow-hidden rounded-full bg-border-default">
                 <motion.span
                   className="absolute inset-0 rounded-[inherit] bg-[var(--tone)] transition-colors duration-[var(--duration-standard)] motion-reduce:transition-none"
                   initial={false}
@@ -266,7 +266,7 @@ export const PasswordStrength = React.forwardRef<HTMLInputElement, PasswordStren
           })}
         </div>
         {/* A fixed slot: the meter never resizes when the word changes, and the word stays flush with the field's edge. */}
-        <span className="relative block h-[1.4em] flex-[0_0_4.5rem] text-right text-sm font-medium leading-snug whitespace-nowrap text-foreground" aria-hidden="true">
+        <span className="relative block h-[1.4em] flex-[0_0_4.5rem] text-right text-sm font-medium leading-snug whitespace-nowrap text-fg-default" aria-hidden="true">
           <AnimatePresence mode="popLayout" initial={false} custom={track.direction}>
             {strength.level ? (
               <motion.span key={strength.label} className="inline-block" custom={track.direction} variants={reduced ? fade : rise} initial="enter" animate="center" exit="exit">
@@ -282,13 +282,13 @@ export const PasswordStrength = React.forwardRef<HTMLInputElement, PasswordStren
           const remaining = value && !ok ? rule.remaining?.(value) ?? 0 : 0;
           const order = changed.indexOf(rule.id);
           return (
-            <li key={rule.id} className="group/rule flex min-h-5 items-center gap-2.5 text-sm leading-snug text-muted-foreground transition-colors duration-[var(--duration-standard)] data-[met]:text-foreground motion-reduce:transition-none" data-met={ok || undefined}>
+            <li key={rule.id} className="group/rule flex min-h-5 items-center gap-2.5 text-sm leading-snug text-fg-muted transition-colors duration-[var(--duration-standard)] data-[met]:text-fg-default motion-reduce:transition-none" data-met={ok || undefined}>
               <RuleMark met={ok} delay={order > 0 ? order * 0.05 : 0} reduced={reduced} />
               <span className="min-w-0">
                 {rule.label}
                 <span className="sr-only">{ok ? ", met" : ", not met"}</span>
               </span>
-              <span className="relative ml-auto block pl-2 text-xs whitespace-nowrap text-muted-foreground" aria-hidden="true">
+              <span className="relative ml-auto block pl-2 text-xs whitespace-nowrap text-fg-muted" aria-hidden="true">
                 <AnimatePresence mode="popLayout" initial={false} custom={1}>
                   {remaining > 0 ? (
                     <motion.span key="remaining" className="inline-flex items-baseline gap-[.28em]" custom={1} variants={reduced ? fade : rise} initial="enter" animate="center" exit="exit">

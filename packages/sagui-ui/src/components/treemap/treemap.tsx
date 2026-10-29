@@ -50,7 +50,7 @@ const reveal = physical({ visualDuration: .9, bounce: 0 });
 const glide = physical(spring.snappy, .01);
 const follow = { stiffness: glide.stiffness, damping: glide.damping, restDelta: .01 };
 /** Top level branches take the four series hues in order; a fifth and beyond stay neutral rather than reuse a hue. */
-const hueOf = (index: number) => index < 0 ? "var(--color-chart-1)" : index < 4 ? `var(--color-chart-${index + 1})` : "var(--color-foreground)";
+const hueOf = (index: number) => index < 0 ? "var(--color-chart-1)" : index < 4 ? `var(--color-chart-${index + 1})` : "var(--color-fg-default)";
 const GAP = 2, PAD = 3, HEADER = 22, TIP = 14, STEPS = 5;
 const grouped = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
@@ -300,7 +300,7 @@ export function Treemap({ data, label, formatValue = value => grouped.format(val
       onKeyDown={onKeyDown} onBlur={() => setActive(null)} onPointerLeave={() => { setActive(null); setPointer(null); }}>
       {nodes.map(node => { const top = topOf(node); return <div key={node.id} ref={element => { if (element) tiles.current.set(node.id, element); else tiles.current.delete(node.id); }} className={styles.tile}
         data-branch={node.children.length > 0 || undefined} data-active={active === node.id || undefined} data-lineage={focusTop?.id === node.id && active !== node.id || undefined} data-dim={focusTop !== null && top !== null && focusTop.id !== top.id || undefined}
-        style={{ "--hue": hueOf(branchOf.get(node.id) ?? -1), "--fill": `color-mix(in oklab, ${hueOf(branchOf.get(node.id) ?? -1)} ${shade(node.color)}%, var(--color-surface))`, zIndex: node.depth } as CSSProperties}
+        style={{ "--hue": hueOf(branchOf.get(node.id) ?? -1), "--fill": `color-mix(in oklab, ${hueOf(branchOf.get(node.id) ?? -1)} ${shade(node.color)}%, var(--color-bg-surface))`, zIndex: node.depth } as CSSProperties}
         onPointerMove={event => { event.stopPropagation(); onPointerMove(event, node.id); }} onClick={event => { event.stopPropagation(); onTileClick(node); }}>
         <span className={styles.tileLabel}>{node.label}</span>
         <span className={styles.tileValue}>{formatValue(node.value)}</span>
@@ -318,7 +318,7 @@ export function Treemap({ data, label, formatValue = value => grouped.format(val
     {colored && <div className={styles.scale} aria-hidden="true">
       <span className={styles.scaleLabel}>{colorLabel}</span>
       <span className={styles.scaleEnd}>{formatColor(lo)}</span>
-      <span className={styles.steps}>{Array.from({ length: STEPS }, (_, i) => <span key={i} className={styles.step} style={{ "--fill": `color-mix(in oklab, ${center.depth === 0 ? "var(--color-foreground)" : hueOf(branchOf.get(center.id) ?? -1)} ${Math.round(14 + (i / (STEPS - 1)) * 44)}%, var(--color-surface))` } as CSSProperties} />)}</span>
+      <span className={styles.steps}>{Array.from({ length: STEPS }, (_, i) => <span key={i} className={styles.step} style={{ "--fill": `color-mix(in oklab, ${center.depth === 0 ? "var(--color-fg-default)" : hueOf(branchOf.get(center.id) ?? -1)} ${Math.round(14 + (i / (STEPS - 1)) * 44)}%, var(--color-bg-surface))` } as CSSProperties} />)}</span>
       <span className={styles.scaleEnd}>{formatColor(hi)}</span>
     </div>}
     <p className={styles.srOnly} aria-live="polite" aria-atomic="true">{activeNode ? describe(activeNode) : `${center.label}, ${formatValue(center.value)}`}</p>

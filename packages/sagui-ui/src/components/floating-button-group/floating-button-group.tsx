@@ -65,26 +65,26 @@ const fadeOut: TargetAndTransition = { opacity: 0, transition: { duration: durat
 const tray = {
   base: [
     "group/fbg relative isolate inline-flex flex-none flex-nowrap items-center gap-[var(--fbg-gap)] p-[var(--fbg-pad)]",
-    "rounded-[var(--fbg-outer)] text-muted-foreground tracking-[-0.01em] [-webkit-tap-highlight-color:transparent]",
+    "rounded-[var(--fbg-outer)] text-fg-muted tracking-[-0.01em] [-webkit-tap-highlight-color:transparent]",
     "[--fbg-h:36px] [--fbg-pad:4px] [--fbg-gap:4px] [--fbg-pad-x:12px] [--fbg-outer:var(--radius-lg)]",
     "[--fbg-radius:calc(var(--fbg-outer)-var(--fbg-pad)-1px)]",
-    "[--fbg-highlight:color-mix(in_oklab,var(--color-foreground)_7%,transparent)]",
-    "[--fbg-highlight-press:color-mix(in_oklab,var(--color-foreground)_12%,transparent)]",
-    "[--fbg-on:color-mix(in_oklab,var(--color-foreground)_12%,transparent)]",
-    "[--fbg-rule:color-mix(in_oklab,var(--color-foreground)_12%,transparent)]",
-    "[--fbg-tray:color-mix(in_oklab,var(--color-foreground)_4.5%,transparent)]",
-    "[--fbg-tray-edge:color-mix(in_oklab,var(--color-foreground)_3%,transparent)]",
-    "dark:[--fbg-highlight:color-mix(in_oklab,var(--color-foreground)_9%,transparent)]",
-    "dark:[--fbg-highlight-press:color-mix(in_oklab,var(--color-foreground)_15%,transparent)]",
-    "dark:[--fbg-on:color-mix(in_oklab,var(--color-foreground)_16%,transparent)]",
-    "dark:[--fbg-tray:color-mix(in_oklab,var(--color-foreground)_6%,transparent)]",
-    "dark:[--fbg-tray-edge:color-mix(in_oklab,var(--color-foreground)_5%,transparent)]",
+    "[--fbg-highlight:color-mix(in_oklab,var(--color-fg-default)_7%,transparent)]",
+    "[--fbg-highlight-press:color-mix(in_oklab,var(--color-fg-default)_12%,transparent)]",
+    "[--fbg-on:color-mix(in_oklab,var(--color-fg-default)_12%,transparent)]",
+    "[--fbg-rule:color-mix(in_oklab,var(--color-fg-default)_12%,transparent)]",
+    "[--fbg-tray:color-mix(in_oklab,var(--color-fg-default)_4.5%,transparent)]",
+    "[--fbg-tray-edge:color-mix(in_oklab,var(--color-fg-default)_3%,transparent)]",
+    "dark:[--fbg-highlight:color-mix(in_oklab,var(--color-fg-default)_9%,transparent)]",
+    "dark:[--fbg-highlight-press:color-mix(in_oklab,var(--color-fg-default)_15%,transparent)]",
+    "dark:[--fbg-on:color-mix(in_oklab,var(--color-fg-default)_16%,transparent)]",
+    "dark:[--fbg-tray:color-mix(in_oklab,var(--color-fg-default)_6%,transparent)]",
+    "dark:[--fbg-tray-edge:color-mix(in_oklab,var(--color-fg-default)_5%,transparent)]",
     "border",
   ].join(" "),
   // The muted tray is a translucent tint, not a fill, so it still reads when it sits on a muted surface.
   muted: "border-[color:var(--fbg-tray-edge)] bg-[var(--fbg-tray)]",
   // Raised for overlays such as a selection toolbar: the floating layer shadow and a hairline edge.
-  floating: "border-border bg-surface shadow-floating",
+  floating: "border-border-default bg-bg-surface shadow-floating",
   sm: "[--fbg-h:30px] [--fbg-pad:3px] [--fbg-gap:3px] [--fbg-pad-x:10px] [--fbg-outer:calc(var(--radius-lg)-3px)] text-xs",
   md: "text-sm",
   vertical: "flex-col items-stretch",
@@ -96,10 +96,10 @@ const itemClass = [
   "cursor-pointer select-none touch-manipulation [-webkit-tap-highlight-color:transparent]",
   "transition-[color,background-color,opacity] duration-[var(--duration-quick)] ease-[var(--ease-out-quint)] motion-reduce:duration-[var(--duration-instant)]",
   "data-[icon]:not-data-[icon-only]:pl-[calc(var(--fbg-pad-x)-2px)] data-[icon-only]:w-[var(--fbg-h)] data-[icon-only]:px-0",
-  "data-[active]:text-foreground aria-pressed:text-foreground aria-pressed:bg-[var(--fbg-on)]",
-  "aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:text-muted-foreground/70",
+  "data-[active]:text-fg-default aria-pressed:text-fg-default aria-pressed:bg-[var(--fbg-on)]",
+  "aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:text-fg-muted/70",
   "group-data-[orientation=vertical]/fbg:not-data-[icon-only]:justify-start group-data-[orientation=vertical]/fbg:data-[icon-only]:self-center",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus",
 ].join(" ");
 
 function Phase({ children, reduced }: { children: React.ReactNode; reduced: boolean }) {
@@ -146,7 +146,7 @@ function TipContent({ label, shortcut }: { label: string; shortcut?: string }) {
   return (
     <span className="inline-flex items-baseline gap-3 whitespace-nowrap">
       {label}
-      {shortcut ? <kbd className="font-[inherit] tabular-nums text-[color-mix(in_oklab,var(--color-background)_58%,var(--color-foreground))]">{shortcut}</kbd> : null}
+      {shortcut ? <kbd className="font-[inherit] tabular-nums text-[color-mix(in_oklab,var(--color-bg-canvas)_58%,var(--color-fg-default))]">{shortcut}</kbd> : null}
     </span>
   );
 }
