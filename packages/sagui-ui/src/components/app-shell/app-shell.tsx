@@ -132,11 +132,11 @@ function NavList({ nav, current, rail, Link, label, layoutId, onNavigate, accent
   const itemClass = cn(
     "group/item relative isolate flex items-center gap-3 rounded-control px-3 text-sm text-fg-muted outline-none transition-colors duration-[var(--duration-fast)] ease-out-quint [-webkit-tap-highlight-color:transparent]",
     "[@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:ring-2 focus-visible:ring-border-focus aria-[current=page]:font-medium",
-    accent ? "h-10 font-medium aria-[current=page]:text-fg-on-accent" : "h-9 aria-[current=page]:text-fg-default",
+    accent ? "h-10 font-medium text-fg-subtle aria-[current=page]:text-fg-on-accent" : "h-9 aria-[current=page]:text-fg-default",
     rail && "justify-center px-0"
   );
   const iconOf = (item: AppShellNavItem) =>
-    item.icon && <span className="grid size-5 flex-none place-items-center [&_svg]:size-[18px]" aria-hidden="true">{item.icon}</span>;
+    item.icon && <span className={cn("grid size-5 flex-none place-items-center", accent ? "[&_svg]:size-5" : "[&_svg]:size-[18px]")} aria-hidden="true">{item.icon}</span>;
 
   const pageLink = (item: AppShellNavItem, active: boolean, extra?: React.ReactNode) => {
     const link = (
@@ -154,9 +154,9 @@ function NavList({ nav, current, rail, Link, label, layoutId, onNavigate, accent
   return (
     <nav aria-label={label} className="grid gap-5">
       {nav.map((section, sectionIndex) => (
-        <div key={section.label ?? sectionIndex} className="grid gap-0.5">
+        <div key={section.label ?? sectionIndex} className={cn("grid", accent ? "gap-1" : "gap-0.5")}>
           {section.label && (
-            <p className={cn("type-overline truncate px-3 pb-1 text-fg-muted transition-opacity duration-[var(--duration-fast)]", rail && "pointer-events-none h-0 overflow-hidden pb-0 opacity-0")} aria-hidden={rail || undefined}>
+            <p className={cn("type-overline truncate px-3 pb-1 text-fg-muted transition-opacity duration-[var(--duration-fast)]", accent && "pt-1", rail && "pointer-events-none h-0 overflow-hidden pb-0 opacity-0")} aria-hidden={rail || undefined}>
               {section.label}
             </p>
           )}
@@ -190,7 +190,7 @@ function NavGroup({ item, pages, current, holdsCurrent, accent, renderPage, icon
   // Opening a page inside the group from elsewhere opens the group.
   React.useEffect(() => { if (holdsCurrent) setOpen(true); }, [holdsCurrent]);
   return (
-    <li className="grid gap-0.5">
+    <li className={cn("grid", accent ? "gap-1" : "gap-0.5")}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -198,7 +198,7 @@ function NavGroup({ item, pages, current, holdsCurrent, accent, renderPage, icon
         aria-controls={listId}
         className={cn(
           "group/item relative isolate flex w-full cursor-pointer items-center gap-3 rounded-control px-3 text-left text-sm text-fg-muted outline-none transition-colors duration-[var(--duration-fast)] [@media(hover:hover)_and_(pointer:fine)]:hover:text-fg-default focus-visible:ring-2 focus-visible:ring-border-focus",
-          accent ? "h-10 font-medium" : "h-9",
+          accent ? "h-10 font-medium text-fg-subtle" : "h-9",
           holdsCurrent && "text-accent-default [@media(hover:hover)_and_(pointer:fine)]:hover:text-accent-default"
         )}
       >
@@ -226,7 +226,7 @@ function NavGroup({ item, pages, current, holdsCurrent, accent, renderPage, icon
 /** A page inside a group, drawn with a leading dot. Reuses the item renderer so links, badges and tooltips stay consistent. */
 function SubLink({ page, active, render }: { page: AppShellNavItem; active: boolean; render: (item: AppShellNavItem, active: boolean) => React.ReactNode }) {
   return (
-    <div className="[&_a]:h-8 [&_a]:gap-2.5 [&_a]:font-normal [&_a[aria-current=page]]:font-medium [&_a[aria-current=page]]:text-accent-default [&_a[aria-current=page]>span:first-child]:hidden">
+    <div className="[&_a]:h-9 [&_a]:gap-2.5 [&_a]:font-normal [&_a]:text-fg-subtle [&_a>span:nth-child(2)]:size-1.5 [&_a[aria-current=page]]:font-medium [&_a[aria-current=page]]:text-accent-default [&_a[aria-current=page]>span:first-child]:hidden">
       {render({ ...page, icon: <span className={cn("block size-1.5 rounded-full", active ? "bg-accent-default" : "bg-border-strong")} /> }, active)}
     </div>
   );
@@ -330,26 +330,29 @@ export function AppShell({
         data-collapsed={collapsed || undefined}
         data-variant={variant}
       >
-        <div className={cn("flex min-w-0 flex-1 flex-col", inset && "overflow-hidden rounded-container border border-border-default bg-bg-surface shadow-raised")}>
+        <div className={cn("flex min-w-0 flex-1 flex-col", inset && "gap-3 overflow-hidden rounded-container border border-border-default bg-bg-surface p-3 shadow-raised")}>
         {inset ? (
-          /* Inset: the org header carries the toggle; on the rail the mark and toggle stack. */
-          <div className={cn("flex flex-none items-center gap-3 border-b border-border-default p-3", collapsed && "flex-col")}>
-            <div className={cn("flex min-w-0 items-center gap-2", !collapsed && "flex-1")}>{collapsed ? brandMark ?? brand : brand}</div>
-            {toggle}
-          </div>
+          /* Inset: the org header carries the toggle; on the rail the mark and toggle stack. Dividers sit inside the panel padding. */
+          <>
+            <div className={cn("flex flex-none items-center gap-3", collapsed && "flex-col")}>
+              <div className={cn("flex min-w-0 items-center gap-2", !collapsed && "flex-1")}>{collapsed ? brandMark ?? brand : brand}</div>
+              {toggle}
+            </div>
+            <div className="h-px flex-none bg-border-default" aria-hidden="true" />
+          </>
         ) : (
           <div className={cn("flex h-14 flex-none items-center gap-2 px-4", collapsed && "justify-center px-0")}>
             {collapsed ? brandMark ?? brand : brand}
           </div>
         )}
         <LayoutGroup id={`${id}-wide`}>
-          <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 py-3 [scrollbar-width:thin]">
+          <div className={cn("min-h-0 flex-1 overflow-y-auto overflow-x-hidden [scrollbar-width:thin]", inset ? "-m-1 p-1" : "px-3 py-3")}>
             <NavList nav={nav} current={current} rail={collapsed} Link={Link} label={label} layoutId="current" accent={inset} />
           </div>
         </LayoutGroup>
         {/* The inset variant keeps the toggle in the top bar, so its footer only exists when there is footer content. */}
         {(!inset || sidebarFooter || sidebarFooterRail) && (
-          <div className={cn("grid flex-none gap-2 border-t border-border-default p-3", collapsed && "justify-items-center")}>
+          <div className={cn("grid flex-none", inset ? "gap-3 before:h-px before:bg-border-default before:content-['']" : "gap-2 border-t border-border-default p-3", collapsed && "justify-items-center")}>
             {collapsed ? sidebarFooterRail : sidebarFooter}
             {!inset && toggle}
           </div>
@@ -357,8 +360,8 @@ export function AppShell({
         </div>
       </motion.aside>
 
-      <div className="flex min-w-0 flex-col">
-        <header className={cn("sticky top-0 z-30 flex h-14 flex-none items-center gap-3 px-4 backdrop-blur sm:px-6", inset ? "bg-bg-muted/85" : "border-b border-border-default bg-bg-canvas/85")}>
+      <div className={cn("flex min-w-0 flex-col", inset && "lg:pl-3")}>
+        <header className={cn("sticky top-0 z-30 flex flex-none items-center gap-3 backdrop-blur", inset ? "min-h-14 bg-bg-muted/85 px-4 pt-5 pb-0 lg:pr-7" : "h-14 border-b border-border-default bg-bg-canvas/85 px-4 sm:px-6")}>
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
@@ -371,7 +374,7 @@ export function AppShell({
           <div className="min-w-0 flex-1">{header}</div>
           {actions && <div className="flex flex-none items-center gap-2">{actions}</div>}
         </header>
-        <main id={mainId} tabIndex={-1} className="min-w-0 flex-1 outline-none">
+        <main id={mainId} tabIndex={-1} className={cn("min-w-0 flex-1 outline-none", inset && "pt-6 lg:pr-3")}>
           {children}
         </main>
       </div>

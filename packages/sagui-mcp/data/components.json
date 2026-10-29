@@ -4642,6 +4642,11 @@
             "description": "Chip in the top corner, such as \"+12%\". A leading plus reads green and a leading minus red. Omit to hide it."
           },
           {
+            "name": "changeTone",
+            "type": "\"positive\" | \"negative\" | \"neutral\"",
+            "description": "Overrides the color the sign implies, for metrics where up is bad, such as review time or churn."
+          },
+          {
             "name": "className",
             "type": "string",
             "description": "Added to the root article."

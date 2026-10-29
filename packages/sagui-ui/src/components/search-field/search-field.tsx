@@ -11,10 +11,12 @@ export interface SearchFieldProps extends Omit<React.InputHTMLAttributes<HTMLInp
   label: string;
   value: string;
   onValueChange: (value: string) => void;
+  /** Keep the label for screen readers only, for a search box in a toolbar or page header. */
+  hideLabel?: boolean;
 }
 
 /** A search entry point. The glass wakes up with the field, and the clear button has a reserved slot so the field never changes width. */
-export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(function SearchField({ label, value, onValueChange, id, className, ...props }, ref) {
+export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(function SearchField({ label, value, onValueChange, hideLabel, id, className, ...props }, ref) {
   const generated = React.useId();
   const controlId = id ?? generated;
   const reduced = useReducedMotion();
@@ -30,8 +32,8 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
     inputRef.current?.focus();
   }
   return (
-    <div className="grid min-w-0 gap-2">
-      <label className={cn(fieldLabel, "mb-0")} htmlFor={controlId}>{label}</label>
+    <div className={cn("grid min-w-0", !hideLabel && "gap-2", className)}>
+      <label className={cn(fieldLabel, "mb-0", hideLabel && "sr-only")} htmlFor={controlId}>{label}</label>
       <div className={cn(fieldShell(), "group/search gap-2 px-3")} data-filled={value ? "true" : undefined}>
         <Search className="flex-none text-fg-muted transition-colors duration-[var(--duration-quick)] group-focus-within/search:text-fg-default group-data-[filled]/search:text-fg-default" width={18} height={18} aria-hidden="true" />
         <input {...props} ref={setRefs} id={controlId} type="search" value={value} onChange={(event) => onValueChange(event.target.value)} className={cn(bareInput, "[&::-webkit-search-cancel-button]:hidden", className)} />

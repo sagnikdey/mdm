@@ -85,6 +85,7 @@ A compact card with a label, an odometer style number, context line, and optiona
 | `decimals` | `number` | `0` | Fixed fraction digits. |
 | `context` (required) | `string` | – | Line under the number, such as "vs last week". |
 | `change` | `string` | – | Chip in the top corner, such as "+12%". A leading plus reads green and a leading minus red. Omit to hide it. |
+| `changeTone` | `"positive" \| "negative" \| "neutral"` | – | Overrides the color the sign implies, for metrics where up is bad, such as review time or churn. |
 | `className` | `string` | – | Added to the root article. |
 
 ## Accessibility

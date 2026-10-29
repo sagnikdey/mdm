@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { BarChart3, Building2, FileText, Handshake, Home, LayoutDashboard, LayoutGrid, List, Plus, Search, Settings, Store, Target, Users } from "lucide-react";
-import { AppShell, Avatar, Badge, Breadcrumb, Button, Checkbox, MetricCard, NotificationCenter, UserMenu, type AppShellNavSection } from "@sagui/ui";
+import { BarChart3, Building2, File, Handshake, Home, LayoutDashboard, LayoutGrid, List, Plus, Search, Settings, Target, Users } from "lucide-react";
+import { useState } from "react";
+import { AppShell, Avatar, Badge, Breadcrumb, Button, Checkbox, MetricCard, NotificationCenter, SearchField, UserMenu, type AppShellNavSection } from "@sagui/ui";
 
 import { figma } from "../.storybook/figma";
 const nav: AppShellNavSection[] = [
@@ -56,8 +57,8 @@ const mdmNav: AppShellNavSection[] = [
     label: "Master Data",
     items: [
       { label: "Dashboard", href: "#dashboard", icon: <LayoutGrid /> },
-      { label: "Stores", href: "#stores", icon: <Store /> },
-      { label: "Products", href: "#products", icon: <FileText /> },
+      { label: "Stores", href: "#stores", icon: <Home /> },
+      { label: "Products", href: "#products", icon: <File /> },
       { label: "Inventory", href: "#inventory", icon: <List />, badge: 4, badgeTone: "danger" },
       {
         label: "Vendors",
@@ -118,13 +119,18 @@ const reviews = [
   ["Bayou Ice Co.", "info", "Low", "Leo", "Wed"],
 ] as const;
 
+function HeaderSearch() {
+  const [query, setQuery] = useState("");
+  return <SearchField label="Search vendors" hideLabel placeholder="Search vendors" value={query} onValueChange={setQuery} className="hidden w-[280px] md:grid" />;
+}
+
 function ApplicationsPage() {
   return (
-    <div className="grid gap-6 px-4 pb-4 sm:px-6">
+    <div className="grid gap-6 px-4 pb-4">
       <div className="grid gap-4 sm:grid-cols-3">
         <MetricCard label="Waiting for review" value={12} change="+3" context="New this week" />
         <MetricCard label="Approved this month" value={48} change="+9" context="Compared with September" />
-        <MetricCard label="Average review time" value={2.4} decimals={1} suffix=" d" context="Up 0.4 d on last month" />
+        <MetricCard label="Average review time" value={2.4} decimals={1} suffix={"\u00a0d"} change="+0.4 d" changeTone="negative" context="Slower than last month" />
       </div>
       <section className="overflow-hidden rounded-container border border-border-default bg-bg-surface">
         <header className="flex items-center gap-3 border-b border-border-default p-4">
@@ -133,7 +139,7 @@ function ApplicationsPage() {
         </header>
         <ul>
           {reviews.map(([vendor, tone, priority, owner, day]) => (
-            <li key={vendor} className="flex items-center gap-3 border-b border-border-subtle px-4 py-1.5 last:border-b-0">
+            <li key={vendor} className="flex items-center gap-3 border-b border-border-subtle py-1.5 pr-4 pl-2 last:border-b-0">
               <Checkbox aria-label={`Select ${vendor}`} />
               <span className="type-label min-w-0 flex-1 truncate">{vendor}</span>
               <Badge size="sm" tone={tone}>{priority}</Badge>
@@ -161,11 +167,16 @@ export const FloatingMDM: Story = {
     sidebarFooterRail: <Avatar name="MDM Admin" status="online" />,
     header: (
       <div className="grid">
-        <h1 className="type-h3 truncate">Applications</h1>
-        <p className="type-caption truncate text-fg-muted">Vendor onboarding · 12 waiting for review</p>
+        <h1 className="type-h2 truncate">Applications</h1>
+        <p className="type-body-sm truncate text-fg-muted">Vendor onboarding · 12 waiting for review</p>
       </div>
     ),
-    actions: <Button leadingIcon={<Plus />}>Invite vendor</Button>,
+    actions: (
+      <>
+        <HeaderSearch />
+        <Button leadingIcon={<Plus />}>Invite vendor</Button>
+      </>
+    ),
     children: <ApplicationsPage />,
   },
 };
