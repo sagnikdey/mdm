@@ -7545,6 +7545,41 @@
     ]
   },
   {
+    "slug": "stepper",
+    "name": "Stepper",
+    "title": "Stepper",
+    "category": "navigation",
+    "description": "Show progress through a linear, multi-step flow.",
+    "keywords": [
+      "navigation",
+      "stepper",
+      "wizard",
+      "onboarding",
+      "progress steps"
+    ],
+    "import": "import { Stepper } from \"@sagui/ui\";",
+    "whenToUse": [
+      "A linear flow of 3 to 10 steps where people need to see where they are, such as onboarding or setup.",
+      "The left rail of a wizard page, beside the current step's form card."
+    ],
+    "whenNotToUse": [
+      "Use tabs for peer views people switch between freely.",
+      "Use breadcrumb for page hierarchy, and app-shell for app navigation."
+    ],
+    "usage": "import { Stepper } from \"@sagui/ui\";\n\nexport function OnboardingRail() {\n  return <Stepper current={1} steps={[{ label: \"Company profile\" }, { label: \"Contacts\" }, { label: \"Banking\" }]} />;\n}",
+    "api": [],
+    "keyboard": [],
+    "accessibility": [
+      "Renders a `nav` with an ordered list, and the current step has `aria-current=\"step\"`.",
+      "Completed and error steps include hidden text, so their state doesn't rely on color.",
+      "Pass `aria-label` when a page has more than one stepper."
+    ],
+    "motion": [],
+    "responsive": [],
+    "notes": [],
+    "related": []
+  },
+  {
     "slug": "streamgraph",
     "name": "Streamgraph",
     "title": "Streamgraph",

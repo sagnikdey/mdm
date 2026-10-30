@@ -93,6 +93,7 @@ export { AnimatedCounter, type AnimatedCounterProps } from "./components/animate
 export { EmptyState, type EmptyStateProps } from "./components/empty-state/empty-state";
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./components/tabs/tabs";
+export { Stepper, type StepperProps, type StepperStep, type StepperStepStatus } from "./components/stepper/stepper";
 export { Accordion, type AccordionProps, type AccordionItem } from "./components/accordion/accordion";
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from "./components/breadcrumb/breadcrumb";
 export { Avatar, type AvatarProps } from "./components/avatar/avatar";

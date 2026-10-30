@@ -52,6 +52,7 @@ const loaders: Record<string, () => Promise<DemoModule>> = {
   "popover": () => import("../demos/popover.demos"),
   "tooltip": () => import("../demos/tooltip.demos"),
   "tabs": () => import("../demos/tabs.demos"),
+  "stepper": () => import("../demos/stepper.demos"),
   "accordion": () => import("../demos/accordion.demos"),
   "breadcrumb": () => import("../demos/breadcrumb.demos"),
   "avatar": () => import("../demos/avatar.demos"),

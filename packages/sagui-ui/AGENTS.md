@@ -17,5 +17,8 @@ These rules are always on. For anything not covered here, ask the `sagui` MCP se
 - Motion: durations and easings come from tokens (`--duration-*`, `--ease-*`) or `@sagui/tokens/motion`. Respect reduced motion.
 - Dark mode is `[data-theme="dark"]`; tokens switch automatically, so never write separate dark colors.
 - No arbitrary px utilities (`p-[13px]`). Use the Tailwind spacing scale.
+- Status never rests on color alone: pair it with an icon, shape or text.
+- Every field has a real label; errors set `aria-invalid` and are announced. Keep focus rings visible.
+- Icon-only controls need an `aria-label`.
 - One primary button per view. Use links for navigation (`<Button asChild>` to keep the look).
 - Don't create a new component if a SagUI one fits. If none does, compose existing ones and say so.
