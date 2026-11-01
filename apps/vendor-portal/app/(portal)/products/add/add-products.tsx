@@ -2,30 +2,29 @@
 
 import { useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 
 import type {
   CatalogCategory,
   CatalogProduct,
   ProductSubmissionItem,
 } from "@workspace/vendor-onboarding/portal-types"
-import { Button } from "@workspace/ui/components/button"
-import { Input } from "@workspace/ui/components/input"
 import {
-  GlassTabs,
-  GlassTabsContent,
-  GlassTabsList,
-  GlassTabsTrigger,
-} from "@workspace/ui/components/glass-tabs"
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
+  Alert,
+  Button,
+  Input,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@sagui/ui"
 
 import { PortalProductForm } from "@/app/(portal)/products/product-form"
+import { useToast } from "@/components/toast-provider"
 import type { PortalProductValues } from "@/lib/schemas/product"
 
 type AddProductsProps = {
@@ -37,6 +36,8 @@ type AddProductsProps = {
   allowedNames: string[]
 }
 
+type LookupNotice = { tone: "info" | "danger"; title: string }
+
 export function AddProducts({
   categories,
   liveProducts,
@@ -46,9 +47,12 @@ export function AddProducts({
   allowedNames,
 }: AddProductsProps) {
   const router = useRouter()
+  const showToast = useToast()
   const fileRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const [lookingUp, setLookingUp] = useState(false)
+  const [lookupNotice, setLookupNotice] = useState<LookupNotice | null>(null)
   const [barcode, setBarcode] = useState(editItem?.barcode ?? "")
   const [lookupDefaults, setLookupDefaults] = useState<Partial<PortalProductValues>>()
   const [autoFilled, setAutoFilled] = useState<string[]>([])
@@ -77,6 +81,7 @@ export function AddProducts({
 
   async function uploadFile(file: File) {
     setUploading(true)
+    setUploadError(null)
     try {
       const body = new FormData()
       body.set("file", file)
@@ -90,14 +95,16 @@ export function AddProducts({
         unknownColumns?: string[]
       }
       if (!response.ok) throw new Error(payload.error ?? "Upload failed")
-      if (payload.unknownColumns?.length) {
-        toast.message(`Ignored columns: ${payload.unknownColumns.join(", ")}`)
-      }
-      toast.success(`Added ${payload.added} products to your draft`)
+      showToast({
+        title: `Added ${payload.added} products to your draft`,
+        description: payload.unknownColumns?.length
+          ? `Ignored columns: ${payload.unknownColumns.join(", ")}`
+          : undefined,
+      })
       router.push("/products/review")
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Upload failed")
+      setUploadError(error instanceof Error ? error.message : "Upload failed")
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ""
@@ -106,6 +113,7 @@ export function AddProducts({
 
   async function lookup() {
     setLookingUp(true)
+    setLookupNotice(null)
     try {
       const response = await fetch(
         `/api/products/lookup?barcode=${encodeURIComponent(barcode)}`
@@ -149,14 +157,20 @@ export function AddProducts({
           filled.push("weight")
         }
         if (payload.weightUnit) defaults.weightUnit = payload.weightUnit
-        toast.success("Check the auto-filled fields against the product you sell")
+        setLookupNotice({
+          tone: "info",
+          title: "Check the auto-filled fields against the product you sell",
+        })
       } else {
-        toast.message("No match. Enter the rest by hand.")
+        setLookupNotice({ tone: "info", title: "No match. Enter the rest by hand." })
       }
       setLookupDefaults(defaults)
       setAutoFilled(filled)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Lookup failed")
+      setLookupNotice({
+        tone: "danger",
+        title: error instanceof Error ? error.message : "Lookup failed",
+      })
     } finally {
       setLookingUp(false)
     }
@@ -166,7 +180,7 @@ export function AddProducts({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/40 px-4 py-3 text-sm">
+      <div className="rounded-container border border-border-default bg-bg-muted px-4 py-3 text-sm">
         You&apos;re approved to submit in:{" "}
         <span className="font-medium">
           {allowedNames.length ? allowedNames.join(", ") : "none yet"}
@@ -175,39 +189,42 @@ export function AddProducts({
         the vendor record.
       </div>
 
-      <GlassTabs defaultValue={defaultTab}>
-        <GlassTabsList>
-          <GlassTabsTrigger value="bulk">Bulk upload</GlassTabsTrigger>
-          <GlassTabsTrigger value="barcode">Barcode</GlassTabsTrigger>
-          <GlassTabsTrigger value="manual">Manual</GlassTabsTrigger>
-        </GlassTabsList>
+      <Tabs defaultValue={defaultTab}>
+        <TabsList aria-label="How to add products">
+          <TabsTrigger value="bulk">Bulk upload</TabsTrigger>
+          <TabsTrigger value="barcode">Barcode</TabsTrigger>
+          <TabsTrigger value="manual">Manual</TabsTrigger>
+        </TabsList>
 
-        <GlassTabsContent value="bulk" className="text-sm">
-          <GlassCard>
-            <GlassCardHeader>
-              <GlassCardTitle>Excel or CSV</GlassCardTitle>
-              <GlassCardDescription>
+        <TabsContent value="bulk" className="pt-4 text-sm">
+          <Panel>
+            <PanelHeader>
+              <PanelTitle as="h2">Excel or CSV</PanelTitle>
+              <PanelDescription>
                 Download the template for your allowed categories, fill the
                 Products sheet, then upload. Rows are saved to your draft —
                 nothing goes to MDM until you send for review.
-              </GlassCardDescription>
-            </GlassCardHeader>
-            <GlassCardContent className="space-y-4">
+              </PanelDescription>
+            </PanelHeader>
+            <PanelContent className="space-y-4">
+              {uploadError ? <Alert tone="danger" title={uploadError} /> : null}
               <div className="flex flex-wrap gap-3">
                 <Button asChild variant="outline">
                   <a href="/api/products/template">Download template</a>
                 </Button>
                 <Button
                   type="button"
-                  disabled={locked || uploading}
+                  disabled={locked}
+                  loading={uploading}
                   onClick={() => fileRef.current?.click()}
                 >
-                  {uploading ? "Uploading..." : "Upload .xlsx or .csv"}
+                  Upload .xlsx or .csv
                 </Button>
                 <input
                   ref={fileRef}
                   type="file"
                   accept=".xlsx,.csv"
+                  aria-label="Product file"
                   className="hidden"
                   onChange={(event) => {
                     const file = event.target.files?.[0]
@@ -216,47 +233,56 @@ export function AddProducts({
                 />
               </div>
               {locked ? (
-                <p className="text-muted-foreground">
+                <p className="text-fg-muted">
                   This packet is waiting for MDM. You can add more after they
                   decide.
                 </p>
               ) : null}
-            </GlassCardContent>
-          </GlassCard>
-        </GlassTabsContent>
+            </PanelContent>
+          </Panel>
+        </TabsContent>
 
-        <GlassTabsContent value="barcode">
-          <GlassCard className="mb-6">
-            <GlassCardHeader>
-              <GlassCardTitle>Scan or type barcode</GlassCardTitle>
-              <GlassCardDescription>
+        <TabsContent value="barcode" className="space-y-6 pt-4">
+          <Panel>
+            <PanelHeader>
+              <PanelTitle as="h2">Scan or type barcode</PanelTitle>
+              <PanelDescription>
                 Hardware scanners just work in this field. We look up Open Food
                 Facts, then you finish vendor SKU, wholesale, category, and pack.
-              </GlassCardDescription>
-            </GlassCardHeader>
-            <GlassCardContent className="flex flex-col gap-3 sm:flex-row">
-              <Input
-                autoFocus
-                placeholder="Scan or type barcode"
-                value={barcode}
-                disabled={locked}
-                onChange={(event) => setBarcode(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault()
-                    void lookup()
-                  }
-                }}
-              />
-              <Button
-                type="button"
-                disabled={locked || lookingUp || !barcode.trim()}
-                onClick={() => void lookup()}
-              >
-                {lookingUp ? "Looking up..." : "Look up"}
-              </Button>
-            </GlassCardContent>
-          </GlassCard>
+              </PanelDescription>
+            </PanelHeader>
+            <PanelContent className="space-y-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                <div className="min-w-0 flex-1">
+                  <Input
+                    label="Barcode"
+                    autoFocus
+                    placeholder="Scan or type barcode"
+                    value={barcode}
+                    disabled={locked}
+                    onChange={(event) => setBarcode(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault()
+                        void lookup()
+                      }
+                    }}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  disabled={locked || !barcode.trim()}
+                  loading={lookingUp}
+                  onClick={() => void lookup()}
+                >
+                  Look up
+                </Button>
+              </div>
+              {lookupNotice ? (
+                <Alert tone={lookupNotice.tone} title={lookupNotice.title} />
+              ) : null}
+            </PanelContent>
+          </Panel>
           {lookupDefaults ? (
             <PortalProductForm
               key={JSON.stringify(lookupDefaults)}
@@ -268,13 +294,13 @@ export function AddProducts({
               locked={locked}
             />
           ) : (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-fg-muted">
               No camera needed. Type or paste if you don&apos;t have a scanner.
             </p>
           )}
-        </GlassTabsContent>
+        </TabsContent>
 
-        <GlassTabsContent value="manual">
+        <TabsContent value="manual" className="pt-4">
           <PortalProductForm
             key={editItem?.id ?? "new"}
             categories={categories}
@@ -286,8 +312,8 @@ export function AddProducts({
             itemId={editItem?.id}
             locked={locked}
           />
-        </GlassTabsContent>
-      </GlassTabs>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

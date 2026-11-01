@@ -1,31 +1,17 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+  Badge,
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 
+import { RecordTable } from "@/components/tables/record-table"
 import {
   availabilityAPI,
   categoriesAPI,
@@ -36,6 +22,17 @@ import {
 
 interface ProductDetailPageProps {
   params: Promise<{ sku: string }>
+}
+
+function StatTile({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <Panel>
+      <PanelHeader className="pb-5">
+        <PanelDescription>{label}</PanelDescription>
+        <PanelTitle as="h2" className="text-lg">{children}</PanelTitle>
+      </PanelHeader>
+    </Panel>
+  )
 }
 
 export default async function ProductDetailPage({
@@ -58,6 +55,20 @@ export default async function ProductDetailPage({
   const storeName = (storeId: string) =>
     stores.find((s) => s.storeId === storeId)?.storeName ?? storeId
 
+  const details = [
+    ["Brand", product.brand || "—"],
+    ["Manufacturer", product.manufacturer || "—"],
+    ["Description", product.description],
+    ["Vendor SKU", product.vendorSku],
+    ["Barcode", product.barcode],
+    [
+      "Pack",
+      `${product.packType} / ${product.packSize}${product.baseUnitSku ? ` (base ${product.baseUnitSku})` : ""}`,
+    ],
+    ["Units per Case", String(product.unitsPerCase)],
+    ["Weight", `${product.weight} ${product.weightUnit}`],
+  ]
+
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-start justify-between gap-4">
@@ -65,153 +76,74 @@ export default async function ProductDetailPage({
           <Button variant="ghost" size="sm" asChild className="mb-2 -ms-2">
             <Link href="/products">← Back to Products</Link>
           </Button>
-          <h2 className="text-3xl font-bold">{product.productName}</h2>
-          <p className="mt-1 text-muted-foreground">SKU: {product.sku}</p>
+          <h1 className="text-3xl font-bold">{product.productName}</h1>
+          <p className="mt-1 text-fg-muted">SKU: {product.sku}</p>
         </div>
-        <Badge variant={product.isActive ? "default" : "secondary"}>
+        <Badge tone={product.isActive ? "success" : "neutral"}>
           {product.isActive ? "Active" : "Inactive"}
         </Badge>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Category</CardDescription>
-            <CardTitle className="text-lg">
-              {category?.categoryName ?? product.categoryId}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Vendor</CardDescription>
-            <CardTitle className="text-lg">
-              {vendor ? (
-                <Link href={`/vendors/${vendor.vendorId}`} className="hover:underline">
-                  {vendor.vendorName}
-                </Link>
-              ) : (
-                product.vendorId
-              )}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Wholesale Price</CardDescription>
-            <CardTitle className="text-lg">
-              ${product.wholesalePrice.toFixed(2)}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Unit of Measure</CardDescription>
-            <CardTitle className="text-lg capitalize">
-              {product.unitOfMeasure}
-            </CardTitle>
-          </CardHeader>
-        </Card>
+        <StatTile label="Category">{category?.categoryName ?? product.categoryId}</StatTile>
+        <StatTile label="Vendor">
+          {vendor ? (
+            <Link href={`/vendors/${vendor.vendorId}`} className="hover:underline">
+              {vendor.vendorName}
+            </Link>
+          ) : (
+            product.vendorId
+          )}
+        </StatTile>
+        <StatTile label="Wholesale Price">${product.wholesalePrice.toFixed(2)}</StatTile>
+        <StatTile label="Unit of Measure">
+          <span className="capitalize">{product.unitOfMeasure}</span>
+        </StatTile>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Product Details</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-2 text-sm sm:grid-cols-2">
-          <p>
-            <span className="text-muted-foreground">Brand: </span>
-            {product.brand || "—"}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Manufacturer: </span>
-            {product.manufacturer || "—"}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Description: </span>
-            {product.description}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Vendor SKU: </span>
-            {product.vendorSku}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Barcode: </span>
-            {product.barcode}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Pack: </span>
-            {product.packType} / {product.packSize}
-            {product.baseUnitSku ? ` (base ${product.baseUnitSku})` : ""}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Units per Case: </span>
-            {product.unitsPerCase}
-          </p>
-          <p>
-            <span className="text-muted-foreground">Weight: </span>
-            {product.weight} {product.weightUnit}
-          </p>
-        </CardContent>
-      </Card>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Product Details</PanelTitle>
+        </PanelHeader>
+        <PanelContent className="grid gap-2 text-sm sm:grid-cols-2">
+          {details.map(([label, value]) => (
+            <p key={label}>
+              <span className="text-fg-muted">{label}: </span>
+              {value}
+            </p>
+          ))}
+        </PanelContent>
+      </Panel>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle className="text-lg font-semibold">
-            Store availability
-          </GlassCardTitle>
-          <GlassCardDescription>
-            Pricing and stock levels by location
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Store</TableHead>
-                  <TableHead>Retail Price</TableHead>
-                  <TableHead>Min / Max</TableHead>
-                  <TableHead>Reorder Point</TableHead>
-                  <TableHead>Available</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {availability.length ? (
-                  availability.map((item) => (
-                    <TableRow key={item.availabilityId}>
-                      <TableCell>
-                        <Link
-                          href={`/stores/${item.storeId}`}
-                          className="font-medium hover:underline"
-                        >
-                          {storeName(item.storeId)}
-                        </Link>
-                      </TableCell>
-                      <TableCell>${item.retailPrice.toFixed(2)}</TableCell>
-                      <TableCell>
-                        {item.minStockLevel} / {item.maxStockLevel}
-                      </TableCell>
-                      <TableCell>{item.reorderPoint}</TableCell>
-                      <TableCell>
-                        <Badge variant={item.isAvailable ? "active" : "inactive"}>
-                          {item.isAvailable ? "Yes" : "No"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
-                      No availability records.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </GlassCardContent>
-      </GlassCard>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Store availability</PanelTitle>
+          <PanelDescription>Pricing and stock levels by location</PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Store availability"
+            itemName={{ one: "store", other: "stores" }}
+            emptyMessage="No availability records."
+            rows={availability.map((item) => ({
+              id: item.availabilityId,
+              store: storeName(item.storeId),
+              storeHref: `/stores/${item.storeId}`,
+              retailPrice: `$${item.retailPrice.toFixed(2)}`,
+              minMax: `${item.minStockLevel} / ${item.maxStockLevel}`,
+              reorderPoint: item.reorderPoint,
+              available: item.isAvailable ? "Yes" : "No",
+            }))}
+            columns={[
+              { key: "store", label: "Store", hrefKey: "storeHref" },
+              { key: "retailPrice", label: "Retail Price" },
+              { key: "minMax", label: "Min / Max" },
+              { key: "reorderPoint", label: "Reorder Point" },
+              { key: "available", label: "Available", successValues: ["Yes"] },
+            ]}
+          />
+        </PanelContent>
+      </Panel>
     </div>
   )
 }

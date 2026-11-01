@@ -4,44 +4,29 @@ import Link from "next/link"
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { toast } from "sonner"
 
 import type {
   VendorProfileEdit,
   VendorProfileFields,
 } from "@workspace/vendor-onboarding/portal-types"
-import { ApprovalCard } from "@workspace/ui/components/approval-card"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import { Field, FieldContent, FieldLabel } from "@workspace/ui/components/field"
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
-import { Textarea } from "@workspace/ui/components/textarea"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+  Alert,
+  Badge,
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+  Textarea,
+} from "@sagui/ui"
 import {
   approveProfileEdit,
   rejectPendingProfileEdit,
 } from "@/app/admin/vendor-submissions/actions"
 import { PENDING_SUBMISSIONS_QUERY_KEY } from "@/app/admin/vendor-submissions/use-pending-submissions"
+import { ReviewDecision } from "@/components/review-decision"
+import { useToast } from "@/components/toast-provider"
 
 const FIELD_LABELS: Record<keyof VendorProfileFields, string> = {
   vendorName: "Company",
@@ -72,8 +57,10 @@ export function ProfileEditReview({
 }: ProfileEditReviewProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const showToast = useToast()
   const [notes, setNotes] = useState("")
   const [isWorking, setIsWorking] = useState(false)
+  const [actionError, setActionError] = useState<string | null>(null)
   const isPending = edit.status === "pending"
 
   async function run(
@@ -81,109 +68,107 @@ export function ProfileEditReview({
     successMessage: string
   ) {
     setIsWorking(true)
+    setActionError(null)
     try {
       await action()
       await queryClient.invalidateQueries({
         queryKey: PENDING_SUBMISSIONS_QUERY_KEY,
       })
-      toast.success(successMessage)
+      showToast({ title: successMessage })
       router.push("/admin/vendor-submissions")
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Action failed")
+      setActionError(error instanceof Error ? error.message : "Action failed")
     } finally {
       setIsWorking(false)
     }
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-      <div className="space-y-6">
-        <GlassCard>
-          <GlassCardHeader>
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <GlassCardTitle>Current vs proposed</GlassCardTitle>
-                <GlassCardDescription>
-                  Submitted {new Date(edit.createdAt).toLocaleString()} by{" "}
-                  {edit.submittedBy}
-                </GlassCardDescription>
-              </div>
-              <Badge variant={edit.status === "approved" ? "active" : "inactive"}>
-                {edit.status}
-              </Badge>
-            </div>
-          </GlassCardHeader>
-          <GlassCardContent>
-            {hasConflict && isPending ? (
-              <p className="mb-4 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-                The vendor master changed after this edit was submitted.
-                Approving is blocked until you review the latest profile.
-              </p>
-            ) : null}
-            <div className="overflow-hidden rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Field</TableHead>
-                    <TableHead>Current</TableHead>
-                    <TableHead>Proposed</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {FIELDS.map((field) => {
-                    const current = edit.currentSnapshot[field]
-                    const proposed = edit.proposedChanges[field] ?? current
-                    const changed = String(proposed) !== String(current)
-                    return (
-                      <TableRow
-                        key={field}
-                        className={changed ? "bg-primary/5" : undefined}
-                      >
-                        <TableCell className="font-medium">
-                          {FIELD_LABELS[field]}
-                        </TableCell>
-                        <TableCell>{displayValue(current)}</TableCell>
-                        <TableCell className={changed ? "font-medium" : undefined}>
-                          {displayValue(proposed)}
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-            <Button asChild variant="outline" size="sm" className="mt-4">
-              <Link href={`/vendors/${edit.vendorId}`}>Open vendor {edit.vendorId}</Link>
-            </Button>
-          </GlassCardContent>
-        </GlassCard>
-      </div>
+    <div className="grid items-start gap-6 lg:grid-cols-[2fr_1fr]">
+      <Panel as="section" className="min-w-0">
+        <PanelHeader
+          action={
+            <Badge tone={edit.status === "approved" ? "success" : "neutral"}>
+              {edit.status}
+            </Badge>
+          }
+        >
+          <PanelTitle as="h2">Current vs proposed</PanelTitle>
+          <PanelDescription>
+            Submitted {new Date(edit.createdAt).toLocaleString()} by{" "}
+            {edit.submittedBy}
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent className="space-y-4">
+          {hasConflict && isPending ? (
+            <Alert
+              tone="danger"
+              title="The vendor master changed after this edit was submitted."
+            >
+              Approving is blocked until you review the latest profile.
+            </Alert>
+          ) : null}
+          {/* Field order carries meaning here, so this stays a plain table rather than a sortable one. */}
+          <div className="overflow-x-auto rounded-control border border-border-default">
+            <table className="w-full border-collapse text-left text-sm">
+              <caption className="sr-only">Current and proposed profile values</caption>
+              <thead>
+                <tr className="border-b border-border-default text-fg-muted">
+                  <th scope="col" className="px-4 py-3 font-medium">Field</th>
+                  <th scope="col" className="px-4 py-3 font-medium">Current</th>
+                  <th scope="col" className="px-4 py-3 font-medium">Proposed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {FIELDS.map((field) => {
+                  const current = edit.currentSnapshot[field]
+                  const proposed = edit.proposedChanges[field] ?? current
+                  const changed = String(proposed) !== String(current)
+                  return (
+                    <tr
+                      key={field}
+                      className={`border-b border-border-default last:border-b-0 ${changed ? "bg-bg-muted" : ""}`}
+                    >
+                      <th scope="row" className="px-4 py-3 font-medium">
+                        {FIELD_LABELS[field]}
+                      </th>
+                      <td className="px-4 py-3">{displayValue(current)}</td>
+                      <td className={`px-4 py-3 ${changed ? "font-semibold" : ""}`}>
+                        {displayValue(proposed)}
+                        {changed ? <span className="sr-only"> (changed)</span> : null}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/vendors/${edit.vendorId}`}>Open vendor {edit.vendorId}</Link>
+          </Button>
+        </PanelContent>
+      </Panel>
 
       <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Review note</CardTitle>
-            <CardDescription>
+        {actionError ? <Alert tone="danger" title={actionError} /> : null}
+        <Panel as="section">
+          <PanelHeader>
+            <PanelTitle as="h2">Review note</PanelTitle>
+            <PanelDescription>
               Optional. Shown if you reject or want a record of the decision.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Field>
-              <FieldLabel htmlFor="review-note">Note</FieldLabel>
-              <FieldContent>
-                <Textarea
-                  id="review-note"
-                  value={notes}
-                  onChange={(event) => setNotes(event.target.value)}
-                  disabled={!isPending}
-                />
-              </FieldContent>
-            </Field>
-          </CardContent>
-        </Card>
-        <ApprovalCard
-          title="Review decision"
+            </PanelDescription>
+          </PanelHeader>
+          <PanelContent>
+            <Textarea
+              label="Note"
+              value={notes}
+              onChange={(event) => setNotes(event.target.value)}
+              disabled={!isPending}
+            />
+          </PanelContent>
+        </Panel>
+        <ReviewDecision
           description="Approved changes update the vendor master immediately."
           question={`Apply this profile edit for ${edit.vendorId}?`}
           actions={[
@@ -198,7 +183,7 @@ export function ProfileEditReview({
             },
             {
               label: "Reject",
-              variant: "destructive",
+              variant: "danger",
               onClick: () =>
                 void run(
                   () => rejectPendingProfileEdit(edit.id, notes || undefined),

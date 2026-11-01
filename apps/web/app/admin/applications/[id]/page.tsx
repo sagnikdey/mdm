@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 
 import { ApplicationReviewPanel } from "@/app/admin/applications/[id]/application-review-panel"
 import { fetchApplication } from "@/app/admin/vendors/invite/actions"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@sagui/ui"
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -23,8 +23,8 @@ export default async function ApplicationDetailPage({ params }: PageProps) {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Application review</h2>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold">Application review</h1>
+          <p className="mt-1 text-fg-muted">
             Evaluate onboarding submission and promote to vendor master
           </p>
         </div>

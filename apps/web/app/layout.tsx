@@ -1,33 +1,10 @@
-import { Poppins, Merriweather, JetBrains_Mono } from "next/font/google"
-
 export const dynamic = "force-dynamic"
 
-import "@workspace/ui/globals.css"
-import { AppSidebar } from "@/components/app-sidebar"
-import { AppHeader } from "@/components/layout/app-header"
+import "./globals.css"
+import { MdmShell } from "@/components/mdm-shell"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ToastProvider } from "@/components/toast-provider"
 import { ReactQueryProvider } from "@/providers/react-query-provider"
-import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
-import { Toaster } from "@workspace/ui/components/sonner"
-import { TooltipProvider } from "@workspace/ui/components/tooltip"
-import { AppLightRays } from "@workspace/ui/components/app-light-rays"
-import { cn } from "@workspace/ui/lib/utils"
-
-const fontSans = Poppins({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-})
-
-const fontSerif = Merriweather({
-  subsets: ["latin"],
-  variable: "--font-serif",
-})
-
-const fontMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
 
 export default function RootLayout({
   children,
@@ -35,35 +12,22 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased")}
-    >
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          async
-          crossOrigin="anonymous"
-          src="https://tweakcn.com/live-preview.min.js"
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap"
         />
       </head>
-      <body
-        className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}
-      >
+      <body className="min-h-screen bg-bg-canvas font-sans text-fg-default antialiased">
         <ThemeProvider>
-          <AppLightRays />
-          <TooltipProvider>
-            <ReactQueryProvider>
-              <SidebarProvider>
-                <AppSidebar />
-                <SidebarInset className="relative z-10 bg-transparent">
-                  <AppHeader />
-                  <main className="flex-1 overflow-auto">{children}</main>
-                </SidebarInset>
-              </SidebarProvider>
-            </ReactQueryProvider>
-          </TooltipProvider>
-          <Toaster richColors closeButton />
+          <ReactQueryProvider>
+            <ToastProvider>
+              <MdmShell>{children}</MdmShell>
+            </ToastProvider>
+          </ReactQueryProvider>
         </ThemeProvider>
       </body>
     </html>

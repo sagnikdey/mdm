@@ -4,29 +4,20 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
+
+import { Checkbox, Input, Select, Textarea } from "@sagui/ui"
 
 import { EntityFormLayout } from "@/components/entities/entity-form-layout"
+import { useToast } from "@/components/toast-provider"
 import { categoriesAPI, productsAPI, vendorsAPI } from "@/lib/api-client"
 import { productSchema, type ProductFormValues } from "@/lib/schemas/product.schema"
 import type { Category, Product, Vendor } from "@/lib/types"
-import { Checkbox } from "@workspace/ui/components/checkbox"
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
-import { Textarea } from "@workspace/ui/components/textarea"
+
+const PACK_TYPE_OPTIONS = [
+  { value: "single", label: "Single" },
+  { value: "multi_pack", label: "Multi-pack" },
+  { value: "case", label: "Case" },
+]
 
 type ProductFormProps = {
   initialValues?: Product
@@ -35,7 +26,9 @@ type ProductFormProps = {
 
 export function ProductForm({ initialValues, mode }: ProductFormProps) {
   const router = useRouter()
+  const showToast = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [vendors, setVendors] = useState<Vendor[]>([])
 
@@ -71,22 +64,24 @@ export function ProductForm({ initialValues, mode }: ProductFormProps) {
       isActive: true,
     },
   })
+  const { errors } = form.formState
 
   async function onSubmit(values: ProductFormValues) {
     setIsSubmitting(true)
+    setSaveError(null)
     try {
       const payload = values as Product
       if (mode === "create") {
         await productsAPI.create(payload)
-        toast.success("Product created")
+        showToast({ title: "Product created" })
       } else {
         await productsAPI.update(values.sku, payload)
-        toast.success("Product updated")
+        showToast({ title: "Product updated" })
       }
       router.push(`/products/${values.sku}`)
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to save product")
+      setSaveError(error instanceof Error ? error.message : "Failed to save product")
     } finally {
       setIsSubmitting(false)
     }
@@ -98,200 +93,79 @@ export function ProductForm({ initialValues, mode }: ProductFormProps) {
       description="Manage product catalog details and pricing."
       cancelHref={mode === "create" ? "/products" : `/products/${initialValues?.sku}`}
       isSubmitting={isSubmitting}
+      error={saveError}
       onSubmit={form.handleSubmit(onSubmit)}
     >
-      <FieldGroup>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="sku">SKU</FieldLabel>
-            <FieldContent>
-              <Input id="sku" {...form.register("sku")} disabled={mode === "edit"} />
-              <FieldError errors={[form.formState.errors.sku]} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="productName">Product Name</FieldLabel>
-            <FieldContent>
-              <Input id="productName" {...form.register("productName")} />
-              <FieldError errors={[form.formState.errors.productName]} />
-            </FieldContent>
-          </Field>
-        </div>
+      <div className="grid items-start gap-4 md:grid-cols-2">
+        <Input label="SKU" error={errors.sku?.message} {...form.register("sku")} disabled={mode === "edit"} />
+        <Input label="Product Name" error={errors.productName?.message} {...form.register("productName")} />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="brand">Brand</FieldLabel>
-            <FieldContent>
-              <Input id="brand" {...form.register("brand")} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="manufacturer">Manufacturer</FieldLabel>
-            <FieldContent>
-              <Input id="manufacturer" {...form.register("manufacturer")} />
-            </FieldContent>
-          </Field>
-        </div>
+      <div className="grid items-start gap-4 md:grid-cols-2">
+        <Input label="Brand" {...form.register("brand")} />
+        <Input label="Manufacturer" {...form.register("manufacturer")} />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel>Category</FieldLabel>
-            <FieldContent>
-              <Select
-                value={form.watch("categoryId")}
-                onValueChange={(value) => form.setValue("categoryId", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.categoryId} value={category.categoryId}>
-                      {category.categoryName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[form.formState.errors.categoryId]} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel>Vendor</FieldLabel>
-            <FieldContent>
-              <Select
-                value={form.watch("vendorId")}
-                onValueChange={(value) => form.setValue("vendorId", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select vendor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {vendors.map((vendor) => (
-                    <SelectItem key={vendor.vendorId} value={vendor.vendorId}>
-                      {vendor.vendorName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[form.formState.errors.vendorId]} />
-            </FieldContent>
-          </Field>
-        </div>
+      <div className="grid items-start gap-4 md:grid-cols-2">
+        <Select
+          label="Category"
+          placeholder="Select category"
+          value={form.watch("categoryId")}
+          options={categories.map((category) => ({
+            value: category.categoryId,
+            label: category.categoryName,
+          }))}
+          error={errors.categoryId?.message}
+          onValueChange={(value) => form.setValue("categoryId", value)}
+        />
+        <Select
+          label="Vendor"
+          placeholder="Select vendor"
+          value={form.watch("vendorId")}
+          options={vendors.map((vendor) => ({
+            value: vendor.vendorId,
+            label: vendor.vendorName,
+          }))}
+          error={errors.vendorId?.message}
+          onValueChange={(value) => form.setValue("vendorId", value)}
+        />
+      </div>
 
-        <Field>
-          <FieldLabel htmlFor="vendorSku">Vendor SKU</FieldLabel>
-          <FieldContent>
-            <Input id="vendorSku" {...form.register("vendorSku")} />
-            <FieldError errors={[form.formState.errors.vendorSku]} />
-          </FieldContent>
-        </Field>
+      <Input label="Vendor SKU" error={errors.vendorSku?.message} {...form.register("vendorSku")} />
+      <Textarea label="Description" {...form.register("description")} />
 
-        <Field>
-          <FieldLabel htmlFor="description">Description</FieldLabel>
-          <FieldContent>
-            <Textarea id="description" {...form.register("description")} />
-          </FieldContent>
-        </Field>
+      <div className="grid items-start gap-4 md:grid-cols-3">
+        <Select
+          label="Pack type"
+          value={form.watch("packType")}
+          options={PACK_TYPE_OPTIONS}
+          onValueChange={(value) => form.setValue("packType", value)}
+        />
+        <Input label="Pack size" type="number" {...form.register("packSize", { valueAsNumber: true })} />
+        <Input
+          label="Base unit SKU"
+          value={form.watch("baseUnitSku") ?? ""}
+          onChange={(event) => form.setValue("baseUnitSku", event.target.value || null)}
+        />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Field>
-            <FieldLabel>Pack type</FieldLabel>
-            <FieldContent>
-              <Select
-                value={form.watch("packType")}
-                onValueChange={(value) => form.setValue("packType", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="single">Single</SelectItem>
-                  <SelectItem value="multi_pack">Multi-pack</SelectItem>
-                  <SelectItem value="case">Case</SelectItem>
-                </SelectContent>
-              </Select>
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="packSize">Pack size</FieldLabel>
-            <FieldContent>
-              <Input
-                id="packSize"
-                type="number"
-                {...form.register("packSize", { valueAsNumber: true })}
-              />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="baseUnitSku">Base unit SKU</FieldLabel>
-            <FieldContent>
-              <Input
-                id="baseUnitSku"
-                value={form.watch("baseUnitSku") ?? ""}
-                onChange={(event) =>
-                  form.setValue("baseUnitSku", event.target.value || null)
-                }
-              />
-            </FieldContent>
-          </Field>
-        </div>
+      <div className="grid items-start gap-4 md:grid-cols-3">
+        <Input label="Unit of Measure" {...form.register("unitOfMeasure")} />
+        <Input label="Units per Case" type="number" {...form.register("unitsPerCase", { valueAsNumber: true })} />
+        <Input label="Wholesale Price" type="number" step="0.01" {...form.register("wholesalePrice", { valueAsNumber: true })} />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Field>
-            <FieldLabel htmlFor="unitOfMeasure">Unit of Measure</FieldLabel>
-            <FieldContent>
-              <Input id="unitOfMeasure" {...form.register("unitOfMeasure")} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="unitsPerCase">Units per Case</FieldLabel>
-            <FieldContent>
-              <Input id="unitsPerCase" type="number" {...form.register("unitsPerCase", { valueAsNumber: true })} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="wholesalePrice">Wholesale Price</FieldLabel>
-            <FieldContent>
-              <Input
-                id="wholesalePrice"
-                type="number"
-                step="0.01"
-                {...form.register("wholesalePrice", { valueAsNumber: true })}
-              />
-            </FieldContent>
-          </Field>
-        </div>
+      <div className="grid items-start gap-4 md:grid-cols-3">
+        <Input label="Weight" type="number" step="0.01" {...form.register("weight", { valueAsNumber: true })} />
+        <Input label="Weight unit" {...form.register("weightUnit")} />
+        <Input label="Barcode" {...form.register("barcode")} />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Field>
-            <FieldLabel htmlFor="weight">Weight</FieldLabel>
-            <FieldContent>
-              <Input id="weight" type="number" step="0.01" {...form.register("weight", { valueAsNumber: true })} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="weightUnit">Weight unit</FieldLabel>
-            <FieldContent>
-              <Input id="weightUnit" {...form.register("weightUnit")} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="barcode">Barcode</FieldLabel>
-            <FieldContent>
-              <Input id="barcode" {...form.register("barcode")} />
-            </FieldContent>
-          </Field>
-        </div>
-
-        <Field orientation="horizontal">
-          <Checkbox
-            id="isActive"
-            checked={form.watch("isActive")}
-            onCheckedChange={(checked) => form.setValue("isActive", checked === true)}
-          />
-          <FieldLabel htmlFor="isActive">Active product</FieldLabel>
-        </Field>
-      </FieldGroup>
+      <Checkbox
+        label="Active product"
+        checked={form.watch("isActive")}
+        onCheckedChange={(checked) => form.setValue("isActive", checked === true)}
+      />
     </EntityFormLayout>
   )
 }

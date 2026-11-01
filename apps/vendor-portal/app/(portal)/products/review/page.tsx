@@ -8,7 +8,7 @@ import {
 
 import { ReviewPacket } from "@/app/(portal)/products/review/review-packet"
 import { requireVendorSession } from "@/lib/auth/session"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@sagui/ui"
 
 export default async function ReviewPacketPage() {
   const session = await requireVendorSession()
@@ -21,10 +21,10 @@ export default async function ReviewPacketPage() {
 
   return (
     <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold">Review packet</h2>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold">Review packet</h1>
+          <p className="mt-1 text-fg-muted">
             Send once when the list is complete. MDM approves or returns the
             whole packet.
           </p>
@@ -36,7 +36,7 @@ export default async function ReviewPacketPage() {
       {packet ? (
         <ReviewPacket packet={packet} categories={categories} />
       ) : (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-fg-muted">
           No draft yet.{" "}
           <Link href="/products/add" className="underline">
             Add products

@@ -2,21 +2,23 @@
 
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { toast } from "sonner"
 
 import type { VendorPortalAccount } from "@workspace/vendor-onboarding/portal-types"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
+  Alert,
+  Badge,
+  Button,
+  Checkbox,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 import { grantVendorPortalAccess } from "@/app/admin/vendors/invite/actions"
 import { saveVendorAllowedCategories } from "@/app/admin/vendor-submissions/actions"
+import { CopyLinkBox } from "@/components/copy-link-box"
+import { useToast } from "@/components/toast-provider"
 import type { Category } from "@/lib/types"
 
 type PortalAccessCardProps = {
@@ -33,42 +35,25 @@ export function PortalAccessCard({
   categories,
 }: PortalAccessCardProps) {
   const router = useRouter()
+  const showToast = useToast()
   const [loginUrl, setLoginUrl] = useState<string | null>(null)
   const [selected, setSelected] = useState<string[]>(
     account?.allowedCategoryIds ?? []
   )
   const [isGranting, setIsGranting] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-
-  async function copyLoginUrl(url: string) {
-    try {
-      await navigator.clipboard.writeText(url)
-      toast.success("Portal login link copied")
-    } catch {
-      toast.error("Could not copy link")
-    }
-  }
+  const [actionError, setActionError] = useState<string | null>(null)
 
   async function grantAccess() {
     setIsGranting(true)
+    setActionError(null)
     try {
       const result = await grantVendorPortalAccess(vendorId, email)
       setLoginUrl(result.loginUrl)
-      toast.success(
-        account ? "Portal login link issued" : "Portal access granted",
-        {
-          duration: 8000,
-          action: {
-            label: "Copy link",
-            onClick: () => {
-              void copyLoginUrl(result.loginUrl)
-            },
-          },
-        }
-      )
+      showToast({ title: account ? "Portal login link issued" : "Portal access granted" })
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not grant access")
+      setActionError(error instanceof Error ? error.message : "Could not grant access")
     } finally {
       setIsGranting(false)
     }
@@ -76,12 +61,13 @@ export function PortalAccessCard({
 
   async function saveCategories() {
     setIsSaving(true)
+    setActionError(null)
     try {
       await saveVendorAllowedCategories(vendorId, selected)
-      toast.success("Allowed categories updated")
+      showToast({ title: "Allowed categories updated" })
       router.refresh()
     } catch (error) {
-      toast.error(
+      setActionError(
         error instanceof Error ? error.message : "Could not save categories"
       )
     } finally {
@@ -98,30 +84,29 @@ export function PortalAccessCard({
   }
 
   return (
-    <GlassCard>
-      <GlassCardHeader>
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <GlassCardTitle className="text-lg font-semibold">
-              Vendor portal
-            </GlassCardTitle>
-            <GlassCardDescription>
-              One seat per vendor. Magic-link login uses this email.
-            </GlassCardDescription>
-          </div>
-          <Badge variant={account ? "active" : "inactive"}>
+    <Panel as="section">
+      <PanelHeader
+        action={
+          <Badge tone={account ? "success" : "neutral"}>
             {account?.status ?? "No access"}
           </Badge>
-        </div>
-      </GlassCardHeader>
-      <GlassCardContent className="space-y-5 text-sm">
+        }
+      >
+        <PanelTitle as="h2">Vendor portal</PanelTitle>
+        <PanelDescription>
+          One seat per vendor. Magic-link login uses this email.
+        </PanelDescription>
+      </PanelHeader>
+      <PanelContent className="space-y-5 text-sm">
+        {actionError ? <Alert tone="danger" title={actionError} /> : null}
+
         <dl className="grid gap-3 md:grid-cols-2">
           <div>
-            <dt className="text-muted-foreground">Portal email</dt>
+            <dt className="text-fg-muted">Portal email</dt>
             <dd className="font-medium">{account?.email ?? email}</dd>
           </div>
           <div>
-            <dt className="text-muted-foreground">Last login</dt>
+            <dt className="text-fg-muted">Last login</dt>
             <dd className="font-medium">
               {account?.lastLoginAt
                 ? new Date(account.lastLoginAt).toLocaleString()
@@ -130,79 +115,53 @@ export function PortalAccessCard({
           </div>
         </dl>
 
-        <div className="flex flex-wrap gap-2">
-          <Button type="button" onClick={() => void grantAccess()} disabled={isGranting}>
-            {isGranting
-              ? "Issuing..."
-              : account
-                ? "Send login link"
-                : "Grant portal access"}
-          </Button>
-        </div>
+        <Button type="button" loading={isGranting} onClick={() => void grantAccess()}>
+          {account ? "Send login link" : "Grant portal access"}
+        </Button>
 
         {loginUrl ? (
-          <div className="space-y-2 rounded-lg border bg-muted/40 p-3">
-            <p className="font-medium">Portal login link</p>
-            <p className="break-all text-xs text-muted-foreground">{loginUrl}</p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => void copyLoginUrl(loginUrl)}
-              >
-                Copy link
-              </Button>
-              <Button type="button" size="sm" asChild>
-                <a href={loginUrl} target="_blank" rel="noreferrer">
-                  Open portal
-                </a>
-              </Button>
-            </div>
-          </div>
+          <CopyLinkBox
+            title="Portal login link"
+            url={loginUrl}
+            copiedMessage="Portal login link copied"
+            openLabel="Open portal"
+          />
         ) : null}
 
         {account ? (
           <div className="space-y-3">
             <p className="font-medium">Allowed categories</p>
-            <p className="text-muted-foreground">
+            <p className="text-fg-muted">
               Catalog submissions will be limited to these categories.
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
-              {categories.map((category) => {
-                const checked = selected.includes(category.categoryId)
-                return (
-                  <label
-                    key={category.categoryId}
-                    className="flex items-center gap-2 rounded-md border px-3 py-2"
-                  >
-                    <Checkbox
-                      checked={checked}
-                      onCheckedChange={(value) =>
-                        toggleCategory(category.categoryId, value === true)
-                      }
-                    />
-                    <span>{category.categoryName}</span>
-                  </label>
-                )
-              })}
+              {categories.map((category) => (
+                <Checkbox
+                  key={category.categoryId}
+                  label={category.categoryName}
+                  checked={selected.includes(category.categoryId)}
+                  onCheckedChange={(value) =>
+                    toggleCategory(category.categoryId, value === true)
+                  }
+                />
+              ))}
             </div>
             <Button
               type="button"
               variant="outline"
+              loading={isSaving}
               onClick={() => void saveCategories()}
-              disabled={isSaving}
             >
-              {isSaving ? "Saving..." : "Save categories"}
+              Save categories
             </Button>
           </div>
         ) : (
-          <p className="text-muted-foreground">
+          <p className="text-fg-muted">
             Grant access first, then choose the categories this vendor may
             submit products in.
           </p>
         )}
-      </GlassCardContent>
-    </GlassCard>
+      </PanelContent>
+    </Panel>
   )
 }

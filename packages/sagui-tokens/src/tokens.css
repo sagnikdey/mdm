@@ -1,0 +1,186 @@
+/* SagUI tokens, two tiers.
+   Tier 1 primitives (--sg-blue-600, --sg-size-12) and Tier 2 semantics (--sg-accent-default, --sg-space-3)
+   are generated from tokens.json into generated.css. Components only use Tier 2.
+   Edit tokens.json, then run: npm run build -w @sagui/tokens */
+@import "./generated.css";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Type scale. Each step pairs a size with its line height; large steps tighten their tracking.
+     Utilities: text-xs … text-6xl. For headings and body copy prefer the type-* roles below. */
+  --text-xs: 0.75rem;   --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;    --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;   --text-xl--line-height: 1.75rem;  --text-xl--letter-spacing: -0.01em;
+  --text-2xl: 1.5rem;   --text-2xl--line-height: 2rem;    --text-2xl--letter-spacing: -0.02em;
+  --text-3xl: 1.875rem; --text-3xl--line-height: 2.25rem; --text-3xl--letter-spacing: -0.025em;
+  --text-4xl: 2.25rem;  --text-4xl--line-height: 2.5rem;  --text-4xl--letter-spacing: -0.03em;
+  --text-5xl: 3rem;     --text-5xl--line-height: 1.1;     --text-5xl--letter-spacing: -0.035em;
+  --text-6xl: 3.75rem;  --text-6xl--line-height: 1.05;    --text-6xl--letter-spacing: -0.04em;
+
+  --font-weight-normal: 400; --font-weight-medium: 500; --font-weight-semibold: 600; --font-weight-bold: 700;
+
+  /* Radius scale, then the roles components use. Nested corners stay concentric: inner = outer - padding. */
+  --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px; --radius-2xl: 28px;
+  --radius-inner: var(--sg-radius-inner);
+  --radius-control-sm: var(--sg-radius-control-sm);
+  --radius-control: var(--sg-radius-control);
+  --radius-container: var(--sg-radius-container);
+  --radius-overlay: var(--sg-radius-overlay);
+  --radius-pill: var(--sg-radius-pill);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Spring with a gentle settle. Pair with --duration-spring for transform transitions. */
+  --ease-spring: linear(0, 0.0258, 0.09, 0.1763, 0.2732, 0.3724, 0.4683, 0.5573, 0.6376, 0.7082, 0.7689, 0.8202, 0.8628, 0.8976, 0.9256, 0.9476, 0.9648, 0.9778, 0.9875, 0.9945, 0.9994, 1.0026, 1.0047, 1.0058, 1.0062, 1.0062, 1.0059, 1.0055, 1.0049, 1.0043, 1.0036, 1.0031, 1.0025, 1.002, 1.0016, 1.0013, 1);
+  --duration-fast: 120ms; --duration-base: 200ms; --duration-slow: 360ms;
+  --duration-quick: 160ms; --duration-standard: 240ms; --duration-spring: 580ms;
+  --duration-instant: 120ms; --duration-considered: 480ms;
+
+  /* Elevation, lowest to highest. Values switch with the theme (dark shadows need more density to read). */
+  --shadow-resting: var(--sg-shadow-resting);
+  --shadow-raised: var(--sg-shadow-raised);
+  --shadow-floating: var(--sg-shadow-floating);
+  --shadow-overlay: var(--sg-shadow-overlay);
+
+}
+
+/* Colors are "inline" so utilities read var(--sg-*) on the element itself.
+   That lets a nested [data-theme="dark"] section switch its own colors. */
+@theme inline {
+  /* Semantic colors: bg-bg-surface, text-fg-muted, border-border-default, bg-accent-default … */
+  --color-bg-canvas: var(--sg-bg-canvas);
+  --color-bg-surface: var(--sg-bg-surface);
+  --color-bg-muted: var(--sg-bg-muted);
+  --color-bg-emphasis: var(--sg-bg-emphasis);
+  --color-bg-scrim: var(--sg-bg-scrim);
+  --color-fg-default: var(--sg-fg-default);
+  --color-fg-subtle: var(--sg-fg-subtle);
+  --color-fg-muted: var(--sg-fg-muted);
+  --color-fg-on-accent: var(--sg-fg-on-accent);
+  --color-fg-on-danger: var(--sg-fg-on-danger);
+  --color-fg-on-emphasis: var(--sg-fg-on-emphasis);
+  --color-border-subtle: var(--sg-border-subtle);
+  --color-border-default: var(--sg-border-default);
+  --color-border-strong: var(--sg-border-strong);
+  --color-border-focus: var(--sg-border-focus);
+  --color-border-focus-soft: var(--sg-border-focus-soft);
+  --color-accent-default: var(--sg-accent-default);
+  --color-accent-hover: var(--sg-accent-hover);
+  --color-accent-active: var(--sg-accent-active);
+  --color-accent-subtle: var(--sg-accent-subtle);
+  --color-accent-subtle-hover: var(--sg-accent-subtle-hover);
+  --color-accent-border: var(--sg-accent-border);
+  --color-secondary-default: var(--sg-secondary-default);
+  --color-secondary-hover: var(--sg-secondary-hover);
+  --color-secondary-fg: var(--sg-secondary-fg);
+  --color-success-default: var(--sg-success-default);
+  --color-success-subtle: var(--sg-success-subtle);
+  --color-success-border: var(--sg-success-border);
+  --color-warning-default: var(--sg-warning-default);
+  --color-warning-subtle: var(--sg-warning-subtle);
+  --color-warning-border: var(--sg-warning-border);
+  --color-danger-default: var(--sg-danger-default);
+  --color-danger-hover: var(--sg-danger-hover);
+  --color-danger-subtle: var(--sg-danger-subtle);
+  --color-danger-border: var(--sg-danger-border);
+  --color-interactive-hover: var(--sg-interactive-hover);
+  --color-interactive-pressed: var(--sg-interactive-pressed);
+  --color-interactive-track: var(--sg-interactive-track);
+  --color-interactive-track-hover: var(--sg-interactive-track-hover);
+  --color-interactive-thumb: var(--sg-interactive-thumb);
+  --color-on-accent-hover: var(--sg-on-accent-hover);
+  --color-on-accent-divider: var(--sg-on-accent-divider);
+  --color-on-accent-muted: var(--sg-on-accent-muted);
+
+  /* Deprecated: pre-two-tier names. Kept so existing components keep working; migrate, then remove. */
+  --color-background: var(--sg-background);
+  --color-foreground: var(--sg-foreground);
+  --color-muted: var(--sg-muted);
+  --color-muted-foreground: var(--sg-muted-foreground);
+  --color-surface: var(--sg-surface);
+  --color-border: var(--sg-border);
+  --color-border-strong: var(--sg-border-strong);
+  --color-success: var(--sg-success);
+  --color-warning: var(--sg-warning);
+  --color-ring: var(--sg-ring);
+  --color-primary: var(--sg-primary);
+  --color-primary-foreground: var(--sg-primary-foreground);
+  --color-secondary: var(--sg-secondary);
+  --color-secondary-foreground: var(--sg-secondary-foreground);
+  --color-destructive: var(--sg-destructive);
+  --color-destructive-foreground: var(--sg-destructive-foreground);
+}
+
+/* Chart palette. Series 1 leads; 2 to 4 are spaced in hue so adjacent series stay distinct in both themes.
+   Static, because charts pick a series color at runtime (var(--color-chart-N)) where Tailwind cannot see it in use. */
+@theme static {
+  --color-chart-1: var(--sg-chart-1);
+  --color-chart-2: var(--sg-chart-2);
+  --color-chart-3: var(--sg-chart-3);
+  --color-chart-4: var(--sg-chart-4);
+}
+
+/* Elevation. Shadow colors come from the semantic elevation tokens, so they switch with the theme. */
+:root {
+  --sg-shadow-resting: 0 1px 2px var(--sg-elevation-resting);
+  --sg-shadow-raised: 0 6px 18px var(--sg-elevation-raised-1), 0 1px 3px var(--sg-elevation-raised-2);
+  --sg-shadow-floating: 0 20px 48px var(--sg-elevation-floating-1), 0 3px 10px var(--sg-elevation-floating-2);
+  --sg-shadow-overlay: 0 32px 80px var(--sg-elevation-overlay-1), 0 8px 24px var(--sg-elevation-overlay-2);
+}
+
+/* Deprecated: pre-two-tier --sg-* names, now aliases of the semantic tier. Remove after migrating components. */
+:root {
+  --sg-background: var(--sg-bg-canvas);
+  --sg-foreground: var(--sg-fg-default);
+  --sg-surface: var(--sg-bg-surface);
+  --sg-muted: var(--sg-bg-muted);
+  --sg-muted-foreground: var(--sg-fg-muted);
+  --sg-border: var(--sg-border-default);
+  --sg-success: var(--sg-success-default);
+  --sg-warning: var(--sg-warning-default);
+  --sg-ring: var(--sg-border-focus);
+  --sg-primary: var(--sg-accent-default);
+  --sg-primary-foreground: var(--sg-fg-on-accent);
+  --sg-secondary: var(--sg-secondary-default);
+  --sg-secondary-foreground: var(--sg-secondary-fg);
+  --sg-destructive: var(--sg-danger-default);
+  --sg-destructive-foreground: var(--sg-fg-on-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; --duration-quick: 0ms; --duration-standard: 0ms; --duration-spring: 0ms; --duration-instant: 0ms; --duration-considered: 0ms; }
+}
+
+/* Type roles: size, line height, weight and tracking set together. Display and h1 scale with the viewport. */
+:root {
+  --type-display: 600 clamp(2.5rem, 1.75rem + 3vw, 3.75rem) / 1.05 var(--font-sans);
+  --type-h1: 600 clamp(2rem, 1.6rem + 1.6vw, 2.5rem) / 1.1 var(--font-sans);
+  --type-h2: 600 1.5rem / 1.25 var(--font-sans);
+  --type-h3: 600 1.125rem / 1.4 var(--font-sans);
+  --type-title: 500 1rem / 1.4 var(--font-sans);
+  --type-body-lg: 400 1.125rem / 1.6 var(--font-sans);
+  --type-body: 400 1rem / 1.6 var(--font-sans);
+  --type-body-sm: 400 0.875rem / 1.5 var(--font-sans);
+  --type-label: 500 0.875rem / 1.25 var(--font-sans);
+  --type-caption: 400 0.75rem / 1.35 var(--font-sans);
+  --type-overline: 500 0.6875rem / 1.2 var(--font-sans);
+  --type-code: 400 0.8125rem / 1.6 var(--font-mono);
+}
+
+@utility type-display { font: var(--type-display); letter-spacing: -0.035em; text-wrap: balance; }
+@utility type-h1 { font: var(--type-h1); letter-spacing: -0.03em; text-wrap: balance; }
+@utility type-h2 { font: var(--type-h2); letter-spacing: -0.02em; text-wrap: balance; }
+@utility type-h3 { font: var(--type-h3); letter-spacing: -0.01em; }
+@utility type-title { font: var(--type-title); letter-spacing: -0.01em; }
+@utility type-body-lg { font: var(--type-body-lg); letter-spacing: -0.005em; text-wrap: pretty; }
+@utility type-body { font: var(--type-body); text-wrap: pretty; }
+@utility type-body-sm { font: var(--type-body-sm); text-wrap: pretty; }
+@utility type-label { font: var(--type-label); }
+@utility type-caption { font: var(--type-caption); letter-spacing: 0.005em; }
+@utility type-overline { font: var(--type-overline); letter-spacing: 0.08em; text-transform: uppercase; }
+@utility type-code { font: var(--type-code); font-variant-ligatures: none; }

@@ -1,67 +1,94 @@
 "use client"
 
 import { useMemo } from "react"
-import { InboxIcon } from "lucide-react"
+import Link from "next/link"
 
-import { DataTable } from "@/components/data-table/data-table"
-import {
-  submissionColumns,
-  submissionFilters,
-  TYPE_LABELS,
-  type SubmissionRow,
-} from "@/app/admin/vendor-submissions/submissions-columns"
+import type { VendorSubmissionInboxItem } from "@workspace/vendor-onboarding/portal-types"
+import { Alert, Badge, Button, Skeleton, SortableDataTable } from "@sagui/ui"
+
 import { usePendingSubmissions } from "@/app/admin/vendor-submissions/use-pending-submissions"
-import { Skeleton } from "@workspace/ui/components/skeleton"
+
+const TYPE_LABELS: Record<VendorSubmissionInboxItem["type"], string> = {
+  profile_edit: "Profile edit",
+  product_submission: "Product submission",
+}
 
 export function SubmissionsInbox() {
   const { data: items = [], isLoading } = usePendingSubmissions()
 
-  const rows = useMemo<SubmissionRow[]>(
+  const rows = useMemo(
     () =>
       items.map((item) => ({
-        ...item,
+        key: `${item.type}-${item.href}`,
         typeLabel: TYPE_LABELS[item.type],
+        vendorName: item.vendorName,
+        submittedBy: item.submittedBy,
+        createdAt: item.createdAt,
+        href: item.href,
       })),
     [items]
   )
 
-  if (isLoading) {
-    return (
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <Skeleton key={index} className="h-10 w-full" />
-        ))}
-      </div>
-    )
-  }
+  if (isLoading) return <Skeleton label="Loading submissions" lines={5} />
 
   return (
     <div className="space-y-4">
       {rows.length ? (
-        <div
-          role="status"
-          className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4"
+        <Alert
+          tone="info"
+          title={`${rows.length} submission${rows.length === 1 ? "" : "s"} waiting for review`}
         >
-          <InboxIcon className="mt-0.5 size-4 shrink-0 text-primary" />
-          <div>
-            <p className="text-sm font-medium">
-              {rows.length} submission{rows.length === 1 ? "" : "s"} waiting
-              for review
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Profile edits and product additions stay pending until you
-              approve or reject them.
-            </p>
-          </div>
-        </div>
+          Profile edits and product additions stay pending until you approve or reject them.
+        </Alert>
       ) : null}
 
-      <DataTable
-        columns={submissionColumns}
-        data={rows}
-        searchKey="vendorName"
+      <SortableDataTable
+        caption="Vendor submissions"
+        rows={rows}
+        rowKey="key"
+        itemName={{ one: "submission", other: "submissions" }}
+        emptyMessage="No submissions waiting."
+        searchable
         searchPlaceholder="Search submissions..."
-        filters={submissionFilters}
+        viewOptions
+        pageSize={10}
+        columns={[
+          {
+            key: "typeLabel",
+            label: "Type",
+            filterable: true,
+            render: (value) => <Badge>{String(value)}</Badge>,
+          },
+          {
+            key: "vendorName",
+            label: "Vendor",
+            hideable: false,
+            render: (value, row) => (
+              <Link href={row.href} className="font-medium hover:underline">
+                {String(value)}
+              </Link>
+            ),
+          },
+          { key: "submittedBy", label: "Submitted by" },
+          {
+            key: "createdAt",
+            label: "Submitted",
+            searchable: false,
+            render: (value) => new Date(String(value)).toLocaleString(),
+          },
+          {
+            key: "actions",
+            label: "Actions",
+            sortable: false,
+            searchable: false,
+            hideable: false,
+            render: (_value, row) => (
+              <Button asChild variant="ghost" size="sm">
+                <Link href={row.href}>Review</Link>
+              </Button>
+            ),
+          },
+        ]}
       />
     </div>
   )

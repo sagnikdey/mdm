@@ -1,21 +1,26 @@
-# shadcn/ui monorepo template
+# MDM monorepo
 
-This is a Next.js monorepo template with shadcn/ui.
+Master data management apps, built on the SagUI design system.
 
-## Adding components
+## Apps
 
-To add components to your app, run the following command at the root of your `web` app:
+- `apps/web`: MDM admin
+- `apps/onboarding`: invite-only vendor onboarding
+- `apps/vendor-portal`: vendor portal
+- `apps/sagui-docs`: SagUI documentation
+- `apps/sagui-storybook`: SagUI Storybook
 
-```bash
-pnpm dlx shadcn@latest add button -c apps/web
-```
+## Packages
 
-This will place the ui components in the `packages/ui/src/components` directory.
+- `packages/sagui-ui`: SagUI components (`@sagui/ui`)
+- `packages/sagui-tokens`: design tokens (`@sagui/tokens`)
+- `packages/sagui-mcp`: SagUI MCP server (`@sagui/mcp`)
+- `packages/vendor-onboarding`: shared vendor data and types
 
 ## Using components
 
-To use the components in your app, import them from the `ui` package.
-
 ```tsx
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@sagui/ui";
 ```
+
+Rules for UI work are in `packages/sagui-ui/AGENTS.md`.

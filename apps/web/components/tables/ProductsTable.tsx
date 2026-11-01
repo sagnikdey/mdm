@@ -2,15 +2,12 @@
 
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import Link from "next/link"
 
-import { DataTable } from "@/components/data-table/data-table"
-import {
-  buildProductFilters,
-  productColumns,
-  type ProductRow,
-} from "@/components/tables/products-columns"
+import { Badge, Skeleton, SortableDataTable } from "@sagui/ui"
+
+import { EntityRowActions } from "@/components/entities/entity-row-actions"
 import { categoriesAPI, productsAPI, vendorsAPI } from "@/lib/api-client"
-import { Skeleton } from "@workspace/ui/components/skeleton"
 
 export function ProductsTable() {
   const { data: products = [], isLoading: productsLoading } = useQuery({
@@ -28,39 +25,80 @@ export function ProductsTable() {
     queryFn: () => vendorsAPI.list(),
   })
 
-  const rows = useMemo<ProductRow[]>(
+  const rows = useMemo(
     () =>
       products.map((product) => ({
-        ...product,
+        sku: product.sku,
+        productName: product.productName,
         categoryName:
           categories.find((c) => c.categoryId === product.categoryId)
             ?.categoryName ?? product.categoryId,
         vendorName:
           vendors.find((v) => v.vendorId === product.vendorId)?.vendorName ??
           product.vendorId,
+        wholesalePrice: product.wholesalePrice,
+        status: product.isActive ? "Active" : "Inactive",
       })),
     [products, categories, vendors]
   )
 
-  const filters = useMemo(() => buildProductFilters(rows), [rows])
-
-  if (productsLoading) {
-    return (
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-10 w-full" />
-        ))}
-      </div>
-    )
-  }
+  if (productsLoading) return <Skeleton label="Loading products" lines={5} />
 
   return (
-    <DataTable
-      columns={productColumns}
-      data={rows}
-      searchKey="productName"
+    <SortableDataTable
+      caption="Products"
+      rows={rows}
+      rowKey="sku"
+      itemName={{ one: "product", other: "products" }}
+      searchable
       searchPlaceholder="Search products..."
-      filters={filters}
+      viewOptions
+      pageSize={10}
+      columns={[
+        {
+          key: "productName",
+          label: "Product",
+          hideable: false,
+          render: (value, row) => (
+            <Link href={`/products/${row.sku}`} className="font-medium hover:underline">
+              {String(value)}
+            </Link>
+          ),
+        },
+        { key: "sku", label: "SKU", width: "10%" },
+        { key: "categoryName", label: "Category", filterable: true },
+        { key: "vendorName", label: "Vendor", filterable: true },
+        {
+          key: "wholesalePrice",
+          label: "Wholesale",
+          numeric: true,
+          render: (value) => `$${Number(value).toFixed(2)}`,
+        },
+        {
+          key: "status",
+          label: "Status",
+          filterable: true,
+          render: (value) => (
+            <Badge tone={value === "Active" ? "success" : "neutral"}>{String(value)}</Badge>
+          ),
+        },
+        {
+          key: "actions",
+          label: "Actions",
+          sortable: false,
+          searchable: false,
+          hideable: false,
+          render: (_value, row) => (
+            <EntityRowActions
+              viewHref={`/products/${row.sku}`}
+              editHref={`/products/${row.sku}/edit`}
+              entityLabel="Product"
+              queryKey={["products"]}
+              onDelete={() => productsAPI.delete(row.sku)}
+            />
+          ),
+        },
+      ]}
     />
   )
 }

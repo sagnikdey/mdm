@@ -2,15 +2,14 @@
 
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { format } from "date-fns"
 
-import { DataTable } from "@/components/data-table/data-table"
-import {
-  buildInventoryFilters,
-  inventoryColumns,
-  type InventoryRow,
-} from "@/components/tables/inventory-columns"
+import { Skeleton, SortableDataTable } from "@sagui/ui"
+
+import { EntityRowActions } from "@/components/entities/entity-row-actions"
 import { inventoryAPI, productsAPI, storesAPI } from "@/lib/api-client"
-import { Skeleton } from "@workspace/ui/components/skeleton"
+
+const formatDate = (value: unknown) => format(new Date(String(value)), "MMM d, yyyy")
 
 export function InventoryTable() {
   const { data: inventory = [], isLoading: inventoryLoading } = useQuery({
@@ -28,38 +27,58 @@ export function InventoryTable() {
     queryFn: () => productsAPI.list(),
   })
 
-  const rows = useMemo<InventoryRow[]>(
+  const rows = useMemo(
     () =>
       inventory.map((record) => ({
-        ...record,
+        inventoryId: record.inventoryId,
         storeName:
           stores.find((s) => s.storeId === record.storeId)?.storeName ??
           record.storeId,
         productName:
           products.find((p) => p.sku === record.sku)?.productName ?? record.sku,
+        sku: record.sku,
+        quantity: `${record.currentQuantity} ${record.unitOfMeasure}`,
+        lastCountDate: record.lastCountDate,
+        nextCountDate: record.nextCountDate,
       })),
     [inventory, stores, products]
   )
 
-  const filters = useMemo(() => buildInventoryFilters(rows), [rows])
-
-  if (inventoryLoading) {
-    return (
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-10 w-full" />
-        ))}
-      </div>
-    )
-  }
+  if (inventoryLoading) return <Skeleton label="Loading inventory" lines={5} />
 
   return (
-    <DataTable
-      columns={inventoryColumns}
-      data={rows}
-      searchKey="productName"
+    <SortableDataTable
+      caption="Inventory"
+      rows={rows}
+      rowKey="inventoryId"
+      itemName={{ one: "record", other: "records" }}
+      searchable
       searchPlaceholder="Search inventory..."
-      filters={filters}
+      viewOptions
+      pageSize={10}
+      columns={[
+        { key: "storeName", label: "Store", filterable: true },
+        { key: "productName", label: "Product", hideable: false },
+        { key: "sku", label: "SKU", width: "10%" },
+        { key: "quantity", label: "Quantity" },
+        { key: "lastCountDate", label: "Last Count", searchable: false, render: formatDate },
+        { key: "nextCountDate", label: "Next Count", searchable: false, render: formatDate },
+        {
+          key: "actions",
+          label: "Actions",
+          sortable: false,
+          searchable: false,
+          hideable: false,
+          render: (_value, row) => (
+            <EntityRowActions
+              viewHref={`/inventory/${row.inventoryId}`}
+              editHref={`/inventory/${row.inventoryId}/edit`}
+              entityLabel="Inventory record"
+              queryKey={["inventory"]}
+            />
+          ),
+        },
+      ]}
     />
   )
 }

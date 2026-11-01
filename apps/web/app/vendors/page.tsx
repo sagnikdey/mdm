@@ -2,19 +2,19 @@ import { Plus } from "lucide-react"
 import Link from "next/link"
 
 import { VendorsTable } from "@/components/tables/VendorsTable"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@sagui/ui"
 
 export default function VendorsPage() {
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Vendors</h2>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold">Vendors</h1>
+          <p className="mt-1 text-fg-muted">
             Manage supplier relationships
           </p>
         </div>
-        <Button asChild size="lg">
+        <Button asChild>
           <Link href="/vendors/new">
             <Plus className="size-4" />
             New Vendor

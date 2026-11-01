@@ -4,15 +4,15 @@ import { notFound } from "next/navigation"
 import { getVendorProduct } from "@workspace/vendor-onboarding"
 
 import { requireVendorSession } from "@/lib/auth/session"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
+  Badge,
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 
 type PageProps = {
   params: Promise<{ sku: string }>
@@ -47,36 +47,36 @@ export default async function PortalProductPage({ params }: PageProps) {
           <Button variant="ghost" size="sm" asChild className="mb-2 -ms-2">
             <Link href="/products">← Back to Products</Link>
           </Button>
-          <h2 className="text-3xl font-bold">{product.productName}</h2>
-          <p className="mt-1 text-muted-foreground">SKU: {product.sku}</p>
+          <h1 className="text-3xl font-bold">{product.productName}</h1>
+          <p className="mt-1 text-fg-muted">SKU: {product.sku}</p>
         </div>
-        <Badge variant={product.isActive ? "active" : "inactive"}>
+        <Badge tone={product.isActive ? "success" : "neutral"}>
           {product.isActive ? "Active" : "Inactive"}
         </Badge>
       </div>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle>Product details</GlassCardTitle>
-          <GlassCardDescription>
+      <Panel>
+        <PanelHeader>
+          <PanelTitle as="h2">Product details</PanelTitle>
+          <PanelDescription>
             Live master data. Request an edit from MDM if something is wrong.
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent className="grid gap-3 text-sm sm:grid-cols-2">
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent className="grid gap-3 text-sm sm:grid-cols-2">
           {rows.map(([label, value]) => (
             <p key={label}>
-              <span className="text-muted-foreground">{label}: </span>
+              <span className="text-fg-muted">{label}: </span>
               {value}
             </p>
           ))}
           {product.description ? (
             <p className="sm:col-span-2">
-              <span className="text-muted-foreground">Description: </span>
+              <span className="text-fg-muted">Description: </span>
               {product.description}
             </p>
           ) : null}
-        </GlassCardContent>
-      </GlassCard>
+        </PanelContent>
+      </Panel>
     </div>
   )
 }

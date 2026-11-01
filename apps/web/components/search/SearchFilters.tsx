@@ -2,10 +2,7 @@
 
 import { useState } from "react"
 
-import { Button } from "@workspace/ui/components/button"
-import { Card } from "@workspace/ui/components/card"
-import { Checkbox } from "@workspace/ui/components/checkbox"
-import { Label } from "@workspace/ui/components/label"
+import { Button, Checkbox } from "@sagui/ui"
 
 import type { EntityType, SearchFilters } from "@/lib/types"
 
@@ -51,46 +48,31 @@ export function SearchFiltersPanel({
   }
 
   return (
-    <Card className="p-6">
-      <div className="space-y-6">
-        <div>
-          <h3 className="mb-3 font-medium">Entity Type</h3>
-          <div className="space-y-2">
-            {ENTITY_TYPES.map((type) => (
-              <div key={type} className="flex items-center gap-2">
-                <Checkbox
-                  id={type}
-                  checked={selectedTypes.includes(type)}
-                  onCheckedChange={(checked) =>
-                    handleTypeChange(type, checked === true)
-                  }
-                />
-                <Label htmlFor={type} className="cursor-pointer capitalize">
-                  {type}s
-                </Label>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="space-y-5 p-5">
+      <fieldset className="m-0 border-0 p-0">
+        <legend className="mb-2 p-0 text-sm font-medium">Entity Type</legend>
+        {ENTITY_TYPES.map((type) => (
+          <Checkbox
+            key={type}
+            label={`${type[0]!.toUpperCase()}${type.slice(1)}s`}
+            checked={selectedTypes.includes(type)}
+            onCheckedChange={(checked) => handleTypeChange(type, checked === true)}
+          />
+        ))}
+      </fieldset>
 
-        <div>
-          <h3 className="mb-3 font-medium">Status</h3>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="active"
-              checked={activeOnly === true}
-              onCheckedChange={(checked) => handleActiveChange(checked === true)}
-            />
-            <Label htmlFor="active" className="cursor-pointer">
-              Active Only
-            </Label>
-          </div>
-        </div>
+      <fieldset className="m-0 border-0 p-0">
+        <legend className="mb-2 p-0 text-sm font-medium">Status</legend>
+        <Checkbox
+          label="Active Only"
+          checked={activeOnly === true}
+          onCheckedChange={(checked) => handleActiveChange(checked === true)}
+        />
+      </fieldset>
 
-        <Button variant="outline" size="lg" className="w-full" onClick={clearFilters}>
-          Clear Filters
-        </Button>
-      </div>
-    </Card>
+      <Button variant="outline" className="w-full" onClick={clearFilters}>
+        Clear Filters
+      </Button>
+    </div>
   )
 }

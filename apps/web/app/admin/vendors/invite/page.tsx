@@ -2,33 +2,25 @@ import Link from "next/link"
 
 import { InviteVendorForm } from "@/app/admin/vendors/invite/invite-vendor-form"
 import { fetchInvitations } from "@/app/admin/vendors/invite/actions"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+import { RecordTable } from "@/components/tables/record-table"
 import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 
 export default async function InviteVendorPage() {
   const invitations = await fetchInvitations()
 
   return (
     <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold">Vendor invitations</h2>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold">Vendor invitations</h1>
+          <p className="mt-1 text-fg-muted">
             Send invite-only onboarding links to prospective vendors
           </p>
         </div>
@@ -39,56 +31,34 @@ export default async function InviteVendorPage() {
 
       <InviteVendorForm />
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle>Recent invitations</GlassCardTitle>
-          <GlassCardDescription>Token hashes are stored; raw links are only shown once at creation.</GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Company</TableHead>
-                  <TableHead>Invited by</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {invitations.length ? (
-                  invitations.map((invite) => (
-                    <TableRow key={invite.id}>
-                      <TableCell className="font-medium">
-                        {invite.invitedEmail}
-                      </TableCell>
-                      <TableCell>
-                        {invite.invitedCompany ?? "No company prefilled"}
-                      </TableCell>
-                      <TableCell>{invite.invitedByEmail}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            invite.status === "pending" ? "active" : "inactive"
-                          }
-                        >
-                          {invite.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      No invitations yet.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </GlassCardContent>
-      </GlassCard>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Recent invitations</PanelTitle>
+          <PanelDescription>
+            Token hashes are stored; raw links are only shown once at creation.
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Recent invitations"
+            itemName={{ one: "invitation", other: "invitations" }}
+            emptyMessage="No invitations yet."
+            rows={invitations.map((invite) => ({
+              id: String(invite.id),
+              email: invite.invitedEmail,
+              company: invite.invitedCompany ?? "No company prefilled",
+              invitedBy: invite.invitedByEmail,
+              status: invite.status,
+            }))}
+            columns={[
+              { key: "email", label: "Email" },
+              { key: "company", label: "Company" },
+              { key: "invitedBy", label: "Invited by" },
+              { key: "status", label: "Status", successValues: ["pending"] },
+            ]}
+          />
+        </PanelContent>
+      </Panel>
     </div>
   )
 }

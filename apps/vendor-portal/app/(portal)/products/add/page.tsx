@@ -5,9 +5,6 @@ import {
   listVendorProducts,
 } from "@workspace/vendor-onboarding"
 
-import { formContainerClassName } from "@workspace/ui/components/form-layout"
-import { cn } from "@workspace/ui/lib/utils"
-
 import { AddProducts } from "@/app/(portal)/products/add/add-products"
 import { requireVendorSession } from "@/lib/auth/session"
 
@@ -31,10 +28,10 @@ export default async function AddProductsPage({ searchParams }: PageProps) {
   const editItem = packet?.items.find((item) => item.id === editId)
 
   return (
-    <div className={cn(formContainerClassName, "space-y-6 p-6")}>
+    <div className="mx-auto w-full max-w-6xl space-y-6 p-6">
       <div>
-        <h2 className="text-3xl font-bold">Add products</h2>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-3xl font-bold">Add products</h1>
+        <p className="mt-1 text-fg-muted">
           Build a draft packet, then send it once for MDM review.
         </p>
       </div>

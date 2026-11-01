@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "access": "public",
+  "baseBranch": "main",
+  "ignore": [
+    "@sagui/storybook",
+    "@sagui/docs",
+    "web",
+    "onboarding",
+    "vendor-portal",
+    "@workspace/vendor-onboarding",
+    "@workspace/eslint-config",
+    "@workspace/typescript-config"
+  ]
+}

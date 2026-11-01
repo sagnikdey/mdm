@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 
 import { fetchProductSubmissionReview } from "@/app/admin/vendor-submissions/actions"
 import { ProductSubmissionReview } from "@/app/admin/vendor-submissions/product-submissions/[id]/product-submission-review"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@sagui/ui"
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -25,8 +25,8 @@ export default async function ProductSubmissionReviewPage({
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Product submission</h2>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold">Product submission</h1>
+          <p className="mt-1 text-fg-muted">
             Approve to assign MDM SKUs and add products to the catalog
           </p>
         </div>

@@ -4,30 +4,17 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
+
+import { Input, Select } from "@sagui/ui"
 
 import { EntityFormLayout } from "@/components/entities/entity-form-layout"
+import { useToast } from "@/components/toast-provider"
 import { inventoryAPI, productsAPI, storesAPI } from "@/lib/api-client"
 import {
   inventorySchema,
   type InventoryFormValues,
 } from "@/lib/schemas/inventory.schema"
 import type { InventoryRecord, Product, Store } from "@/lib/types"
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
 
 type InventoryFormProps = {
   initialValues?: InventoryRecord
@@ -36,7 +23,9 @@ type InventoryFormProps = {
 
 export function InventoryForm({ initialValues, mode }: InventoryFormProps) {
   const router = useRouter()
+  const showToast = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [stores, setStores] = useState<Store[]>([])
   const [products, setProducts] = useState<Product[]>([])
 
@@ -69,9 +58,11 @@ export function InventoryForm({ initialValues, mode }: InventoryFormProps) {
             .slice(0, 10),
         },
   })
+  const { errors } = form.formState
 
   async function onSubmit(values: InventoryFormValues) {
     setIsSubmitting(true)
+    setSaveError(null)
     try {
       const payload: InventoryRecord = {
         ...values,
@@ -81,15 +72,15 @@ export function InventoryForm({ initialValues, mode }: InventoryFormProps) {
 
       if (mode === "create") {
         await inventoryAPI.create(payload)
-        toast.success("Inventory record created")
+        showToast({ title: "Inventory record created" })
       } else {
         await inventoryAPI.update(values.inventoryId, payload)
-        toast.success("Inventory record updated")
+        showToast({ title: "Inventory record updated" })
       }
       router.push(`/inventory/${values.inventoryId}`)
       router.refresh()
     } catch (error) {
-      toast.error(
+      setSaveError(
         error instanceof Error ? error.message : "Failed to save inventory record"
       )
     } finally {
@@ -105,110 +96,58 @@ export function InventoryForm({ initialValues, mode }: InventoryFormProps) {
         mode === "create" ? "/inventory" : `/inventory/${initialValues?.inventoryId}`
       }
       isSubmitting={isSubmitting}
+      error={saveError}
       onSubmit={form.handleSubmit(onSubmit)}
     >
-      <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="inventoryId">Inventory ID</FieldLabel>
-          <FieldContent>
-            <Input
-              id="inventoryId"
-              {...form.register("inventoryId")}
-              disabled={mode === "edit"}
-            />
-            <FieldError errors={[form.formState.errors.inventoryId]} />
-          </FieldContent>
-        </Field>
+      <Input
+        label="Inventory ID"
+        error={errors.inventoryId?.message}
+        {...form.register("inventoryId")}
+        disabled={mode === "edit"}
+      />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel>Store</FieldLabel>
-            <FieldContent>
-              <Select
-                value={form.watch("storeId")}
-                onValueChange={(value) => form.setValue("storeId", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select store" />
-                </SelectTrigger>
-                <SelectContent>
-                  {stores.map((store) => (
-                    <SelectItem key={store.storeId} value={store.storeId}>
-                      {store.storeName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[form.formState.errors.storeId]} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel>Product SKU</FieldLabel>
-            <FieldContent>
-              <Select
-                value={form.watch("sku")}
-                onValueChange={(value) => {
-                  form.setValue("sku", value)
-                  const product = products.find((item) => item.sku === value)
-                  if (product) {
-                    form.setValue("unitOfMeasure", product.unitOfMeasure)
-                  }
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select product" />
-                </SelectTrigger>
-                <SelectContent>
-                  {products.map((product) => (
-                    <SelectItem key={product.sku} value={product.sku}>
-                      {product.sku} — {product.productName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[form.formState.errors.sku]} />
-            </FieldContent>
-          </Field>
-        </div>
+      <div className="grid items-start gap-4 md:grid-cols-2">
+        <Select
+          label="Store"
+          placeholder="Select store"
+          value={form.watch("storeId")}
+          options={stores.map((store) => ({ value: store.storeId, label: store.storeName }))}
+          error={errors.storeId?.message}
+          onValueChange={(value) => form.setValue("storeId", value)}
+        />
+        <Select
+          label="Product SKU"
+          placeholder="Select product"
+          value={form.watch("sku")}
+          options={products.map((product) => ({
+            value: product.sku,
+            label: `${product.sku} — ${product.productName}`,
+          }))}
+          error={errors.sku?.message}
+          onValueChange={(value) => {
+            form.setValue("sku", value)
+            const product = products.find((item) => item.sku === value)
+            if (product) {
+              form.setValue("unitOfMeasure", product.unitOfMeasure)
+            }
+          }}
+        />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="currentQuantity">Current Quantity</FieldLabel>
-            <FieldContent>
-              <Input
-                id="currentQuantity"
-                type="number"
-                {...form.register("currentQuantity", { valueAsNumber: true })}
-              />
-              <FieldError errors={[form.formState.errors.currentQuantity]} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="unitOfMeasure">Unit of Measure</FieldLabel>
-            <FieldContent>
-              <Input id="unitOfMeasure" {...form.register("unitOfMeasure")} />
-              <FieldError errors={[form.formState.errors.unitOfMeasure]} />
-            </FieldContent>
-          </Field>
-        </div>
+      <div className="grid items-start gap-4 md:grid-cols-2">
+        <Input
+          label="Current Quantity"
+          type="number"
+          error={errors.currentQuantity?.message}
+          {...form.register("currentQuantity", { valueAsNumber: true })}
+        />
+        <Input label="Unit of Measure" error={errors.unitOfMeasure?.message} {...form.register("unitOfMeasure")} />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="lastCountDate">Last Count Date</FieldLabel>
-            <FieldContent>
-              <Input id="lastCountDate" type="date" {...form.register("lastCountDate")} />
-              <FieldError errors={[form.formState.errors.lastCountDate]} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="nextCountDate">Next Count Date</FieldLabel>
-            <FieldContent>
-              <Input id="nextCountDate" type="date" {...form.register("nextCountDate")} />
-              <FieldError errors={[form.formState.errors.nextCountDate]} />
-            </FieldContent>
-          </Field>
-        </div>
-      </FieldGroup>
+      <div className="grid items-start gap-4 md:grid-cols-2">
+        <Input label="Last Count Date" type="date" error={errors.lastCountDate?.message} {...form.register("lastCountDate")} />
+        <Input label="Next Count Date" type="date" error={errors.nextCountDate?.message} {...form.register("nextCountDate")} />
+      </div>
     </EntityFormLayout>
   )
 }

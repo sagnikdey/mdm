@@ -1,19 +1,31 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 
 import type { VendorProfileFields } from "@workspace/vendor-onboarding/portal-types"
-import { Field, FieldContent, FieldLabel } from "@workspace/ui/components/field"
-import { FormLayout } from "@workspace/ui/components/form-layout"
-import { Input } from "@workspace/ui/components/input"
-import { Textarea } from "@workspace/ui/components/textarea"
+import {
+  Alert,
+  Button,
+  Input,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelFooter,
+  PanelHeader,
+  PanelTitle,
+  Textarea,
+} from "@sagui/ui"
+
+import { useToast } from "@/components/toast-provider"
 
 export function ProfileEditForm({ profile }: { profile: VendorProfileFields }) {
   const router = useRouter()
+  const showToast = useToast()
   const [values, setValues] = useState(profile)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   function set<K extends keyof VendorProfileFields>(
     key: K,
@@ -22,9 +34,10 @@ export function ProfileEditForm({ profile }: { profile: VendorProfileFields }) {
     setValues((current) => ({ ...current, [key]: value }))
   }
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLElement>) {
     event.preventDefault()
     setIsSubmitting(true)
+    setSubmitError(null)
     try {
       const response = await fetch("/api/submissions/profile", {
         method: "POST",
@@ -33,95 +46,63 @@ export function ProfileEditForm({ profile }: { profile: VendorProfileFields }) {
       })
       const payload = (await response.json()) as { error?: string }
       if (!response.ok) throw new Error(payload.error ?? "Submit failed")
-      toast.success("Profile edit submitted for review")
+      showToast({ title: "Profile edit submitted for review" })
       router.push("/settings")
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Submit failed")
+      setSubmitError(error instanceof Error ? error.message : "Submit failed")
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <FormLayout
-      title="Edit profile"
-      description="MDM staff will review these changes before they go live."
-      cancelHref="/settings"
-      onSubmit={onSubmit}
-      isSubmitting={isSubmitting}
-      submitLabel="Submit for review"
-      submittingLabel="Submitting..."
-    >
-      <Field>
-        <FieldLabel htmlFor="vendorName">Company name</FieldLabel>
-        <FieldContent>
+    <div className="mx-auto w-full max-w-6xl p-6">
+      <Panel as="form" onSubmit={onSubmit}>
+        <PanelHeader>
+          <PanelTitle as="h2">Edit profile</PanelTitle>
+          <PanelDescription>
+            MDM staff will review these changes before they go live.
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent className="grid gap-5">
+          {submitError ? <Alert tone="danger" title={submitError} /> : null}
           <Input
-            id="vendorName"
+            label="Company name"
             value={values.vendorName}
             onChange={(event) => set("vendorName", event.target.value)}
           />
-        </FieldContent>
-      </Field>
-      <Field>
-        <FieldLabel htmlFor="contactPerson">Contact person</FieldLabel>
-        <FieldContent>
           <Input
-            id="contactPerson"
+            label="Contact person"
             value={values.contactPerson}
             onChange={(event) => set("contactPerson", event.target.value)}
           />
-        </FieldContent>
-      </Field>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
-          <FieldContent>
+          <div className="grid items-start gap-4 sm:grid-cols-2">
             <Input
-              id="email"
+              label="Email"
               type="email"
               value={values.email}
               onChange={(event) => set("email", event.target.value)}
             />
-          </FieldContent>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="phone">Phone</FieldLabel>
-          <FieldContent>
             <Input
-              id="phone"
+              label="Phone"
               value={values.phone}
               onChange={(event) => set("phone", event.target.value)}
             />
-          </FieldContent>
-        </Field>
-      </div>
-      <Field>
-        <FieldLabel htmlFor="address">Address</FieldLabel>
-        <FieldContent>
+          </div>
           <Textarea
-            id="address"
+            label="Address"
             value={values.address}
             onChange={(event) => set("address", event.target.value)}
           />
-        </FieldContent>
-      </Field>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field>
-          <FieldLabel htmlFor="paymentTerms">Payment terms</FieldLabel>
-          <FieldContent>
+          <div className="grid items-start gap-4 sm:grid-cols-2">
             <Input
-              id="paymentTerms"
+              label="Payment terms"
               value={values.paymentTerms}
               onChange={(event) => set("paymentTerms", event.target.value)}
             />
-          </FieldContent>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="minimumOrderQuantity">Minimum order</FieldLabel>
-          <FieldContent>
             <Input
-              id="minimumOrderQuantity"
+              label="Minimum order"
               type="number"
               min={1}
               value={values.minimumOrderQuantity}
@@ -129,9 +110,17 @@ export function ProfileEditForm({ profile }: { profile: VendorProfileFields }) {
                 set("minimumOrderQuantity", Number(event.target.value) || 1)
               }
             />
-          </FieldContent>
-        </Field>
-      </div>
-    </FormLayout>
+          </div>
+        </PanelContent>
+        <PanelFooter>
+          <Button asChild variant="outline">
+            <Link href="/settings">Cancel</Link>
+          </Button>
+          <Button type="submit" loading={isSubmitting}>
+            Submit for review
+          </Button>
+        </PanelFooter>
+      </Panel>
+    </div>
   )
 }

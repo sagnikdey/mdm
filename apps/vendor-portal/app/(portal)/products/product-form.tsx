@@ -1,46 +1,44 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 
 import type { CatalogCategory, CatalogProduct } from "@workspace/vendor-onboarding/portal-types"
-import { FormLayout } from "@workspace/ui/components/form-layout"
 import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import {
+  Alert,
+  Button,
+  Checkbox,
+  Input,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelFooter,
+  PanelHeader,
+  PanelTitle,
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
-import { Textarea } from "@workspace/ui/components/textarea"
-import { Checkbox } from "@workspace/ui/components/checkbox"
-import { Badge } from "@workspace/ui/components/badge"
+  Textarea,
+} from "@sagui/ui"
 
+import { useToast } from "@/components/toast-provider"
 import {
   emptyPortalProduct,
   portalProductSchema,
   type PortalProductValues,
 } from "@/lib/schemas/product"
 
-function AutoBadge({ show }: { show?: boolean }) {
-  if (!show) return null
-  return (
-    <Badge variant="outline" className="ms-2 align-middle">
-      From Open Food Facts
-    </Badge>
-  )
-}
+const PACK_TYPE_OPTIONS = [
+  { value: "single", label: "Single unit" },
+  { value: "multi_pack", label: "Multi-pack" },
+  { value: "case", label: "Case" },
+]
+
+const WEIGHT_UNIT_OPTIONS = ["lb", "oz", "g", "kg"].map((value) => ({
+  value,
+  label: value,
+}))
 
 export function PortalProductForm({
   categories,
@@ -62,10 +60,13 @@ export function PortalProductForm({
   cancelHref?: string
 }) {
   const router = useRouter()
+  const showToast = useToast()
+  const [saveError, setSaveError] = useState<string | null>(null)
   const form = useForm<PortalProductValues>({
     resolver: zodResolver(portalProductSchema),
     defaultValues: { ...emptyPortalProduct(), ...defaultValues },
   })
+  const { errors } = form.formState
 
   const noBarcode = form.watch("noBarcode")
   const packType = form.watch("packType")
@@ -88,8 +89,13 @@ export function PortalProductForm({
     ...draftVendorSkus,
   ].filter((sku, index, all) => sku && all.indexOf(sku) === index)
 
+  function autoFilledNote(field: string) {
+    return autoFilled.includes(field) ? "From Open Food Facts" : undefined
+  }
+
   async function onSubmit(values: PortalProductValues) {
     if (locked) return
+    setSaveError(null)
     const path = itemId
       ? `/api/submissions/products/items/${itemId}`
       : "/api/submissions/products"
@@ -100,289 +106,198 @@ export function PortalProductForm({
     })
     const payload = (await response.json()) as { error?: string }
     if (!response.ok) {
-      toast.error(payload.error ?? "Could not save")
+      setSaveError(payload.error ?? "Could not save")
       return
     }
-    toast.success(itemId ? "Row updated" : "Added to draft packet")
+    showToast({ title: itemId ? "Row updated" : "Added to draft packet" })
     router.push("/products/review")
     router.refresh()
   }
 
   if (!categories.length) {
     return (
-      <FormLayout
-        title="New Product"
-        description="Your buyer has not assigned product categories yet."
-        cancelHref="/products"
-        contained={false}
-      >
-        <p className="text-sm text-muted-foreground">
-          Contact MDM staff to add allowed categories before submitting
-          products.
-        </p>
-      </FormLayout>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">New Product</PanelTitle>
+          <PanelDescription>
+            Your buyer has not assigned product categories yet.
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <p className="text-sm text-fg-muted">
+            Contact MDM staff to add allowed categories before submitting
+            products.
+          </p>
+        </PanelContent>
+      </Panel>
     )
   }
 
   return (
-    <FormLayout
-      title={itemId ? "Edit draft product" : "Add to packet"}
-      description="Saved to your draft. Send the whole packet for MDM review when you are done."
-      cancelHref={cancelHref}
-      contained={false}
-      isSubmitting={form.formState.isSubmitting}
-      submitLabel={itemId ? "Save row" : "Add to packet"}
-      submittingLabel="Saving..."
-      onSubmit={locked ? undefined : form.handleSubmit(onSubmit)}
-    >
-      <FieldGroup>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel>Pack type</FieldLabel>
-            <FieldContent>
-              <Select
-                value={packType}
-                onValueChange={(value) =>
-                  form.setValue("packType", value as PortalProductValues["packType"])
-                }
-                disabled={locked}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="single">Single unit</SelectItem>
-                  <SelectItem value="multi_pack">Multi-pack</SelectItem>
-                  <SelectItem value="case">Case</SelectItem>
-                </SelectContent>
-              </Select>
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="packSize">Pack size</FieldLabel>
-            <FieldContent>
-              <Input
-                id="packSize"
-                type="number"
-                disabled={locked || packType === "single"}
-                {...form.register("packSize", { valueAsNumber: true })}
-              />
-              <FieldError errors={[form.formState.errors.packSize]} />
-            </FieldContent>
-          </Field>
+    <Panel as="form" onSubmit={locked ? undefined : form.handleSubmit(onSubmit)}>
+      <PanelHeader>
+        <PanelTitle as="h2">{itemId ? "Edit draft product" : "Add to packet"}</PanelTitle>
+        <PanelDescription>
+          Saved to your draft. Send the whole packet for MDM review when you are done.
+        </PanelDescription>
+      </PanelHeader>
+      <PanelContent className="grid gap-5">
+        {saveError ? <Alert tone="danger" title={saveError} /> : null}
+
+        <div className="grid items-start gap-4 md:grid-cols-2">
+          <Select
+            label="Pack type"
+            value={packType}
+            options={PACK_TYPE_OPTIONS}
+            disabled={locked}
+            onValueChange={(value) =>
+              form.setValue("packType", value as PortalProductValues["packType"])
+            }
+          />
+          <Input
+            label="Pack size"
+            type="number"
+            disabled={locked || packType === "single"}
+            error={errors.packSize?.message}
+            {...form.register("packSize", { valueAsNumber: true })}
+          />
         </div>
 
         {packType !== "single" ? (
-          <Field>
-            <FieldLabel>Base unit vendor SKU (if you also sell the single)</FieldLabel>
-            <FieldContent>
-              <Select
-                value={form.watch("baseUnitVendorSku") || "__none"}
-                onValueChange={(value) =>
-                  form.setValue("baseUnitVendorSku", value === "__none" ? "" : value)
-                }
-                disabled={locked}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Not selling the single separately" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none">Not linked — case only</SelectItem>
-                  {baseOptions.map((sku) => (
-                    <SelectItem key={sku} value={sku}>
-                      {sku}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FieldContent>
-          </Field>
+          <Select
+            label="Base unit vendor SKU (if you also sell the single)"
+            placeholder="Not selling the single separately"
+            value={form.watch("baseUnitVendorSku") || "__none"}
+            options={[
+              { value: "__none", label: "Not linked — case only" },
+              ...baseOptions.map((sku) => ({ value: sku, label: sku })),
+            ]}
+            disabled={locked}
+            onValueChange={(value) =>
+              form.setValue("baseUnitVendorSku", value === "__none" ? "" : value)
+            }
+          />
         ) : null}
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="productName">
-              Product name
-              <AutoBadge show={autoFilled.includes("productName")} />
-            </FieldLabel>
-            <FieldContent>
-              <Input id="productName" disabled={locked} {...form.register("productName")} />
-              <FieldError errors={[form.formState.errors.productName]} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="brand">
-              Brand
-              <AutoBadge show={autoFilled.includes("brand")} />
-            </FieldLabel>
-            <FieldContent>
-              <Input id="brand" disabled={locked} {...form.register("brand")} />
-              <FieldError errors={[form.formState.errors.brand]} />
-            </FieldContent>
-          </Field>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="vendorSku">Vendor SKU</FieldLabel>
-            <FieldContent>
-              <Input id="vendorSku" disabled={locked} {...form.register("vendorSku")} />
-              <FieldError errors={[form.formState.errors.vendorSku]} />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="manufacturer">
-              Manufacturer
-              <AutoBadge show={autoFilled.includes("manufacturer")} />
-            </FieldLabel>
-            <FieldContent>
-              <Input
-                id="manufacturer"
-                disabled={locked}
-                {...form.register("manufacturer")}
-              />
-            </FieldContent>
-          </Field>
-        </div>
-
-        <Field>
-          <FieldLabel>Category</FieldLabel>
-          <FieldContent>
-            <Select
-              value={form.watch("categoryId")}
-              onValueChange={(value) => form.setValue("categoryId", value)}
-              disabled={locked}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category.categoryId} value={category.categoryId}>
-                    {category.categoryName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FieldError errors={[form.formState.errors.categoryId]} />
-          </FieldContent>
-        </Field>
-
-        <Field orientation="horizontal">
-          <Checkbox
-            id="noBarcode"
+        <div className="grid items-start gap-4 md:grid-cols-2">
+          <Input
+            label="Product name"
+            description={autoFilledNote("productName")}
             disabled={locked}
-            checked={noBarcode}
-            onCheckedChange={(checked) => form.setValue("noBarcode", checked === true)}
+            error={errors.productName?.message}
+            {...form.register("productName")}
           />
-          <FieldLabel htmlFor="noBarcode">No barcode</FieldLabel>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="barcode">
-            Barcode
-            <AutoBadge show={autoFilled.includes("barcode")} />
-          </FieldLabel>
-          <FieldContent>
-            <Input
-              id="barcode"
-              disabled={locked || noBarcode}
-              {...form.register("barcode")}
-            />
-            <FieldError errors={[form.formState.errors.barcode]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="description">
-            Description
-            <AutoBadge show={autoFilled.includes("description")} />
-          </FieldLabel>
-          <FieldContent>
-            <Textarea id="description" disabled={locked} {...form.register("description")} />
-          </FieldContent>
-        </Field>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <Field>
-            <FieldLabel htmlFor="unitOfMeasure">Unit of measure</FieldLabel>
-            <FieldContent>
-              <Input
-                id="unitOfMeasure"
-                disabled={locked}
-                {...form.register("unitOfMeasure")}
-              />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="unitsPerCase">Units per case</FieldLabel>
-            <FieldContent>
-              <Input
-                id="unitsPerCase"
-                type="number"
-                disabled={locked}
-                {...form.register("unitsPerCase", { valueAsNumber: true })}
-              />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="wholesalePrice">Wholesale price</FieldLabel>
-            <FieldContent>
-              <Input
-                id="wholesalePrice"
-                type="number"
-                step="0.01"
-                disabled={locked}
-                {...form.register("wholesalePrice", { valueAsNumber: true })}
-              />
-              <FieldError errors={[form.formState.errors.wholesalePrice]} />
-            </FieldContent>
-          </Field>
+          <Input
+            label="Brand"
+            description={autoFilledNote("brand")}
+            disabled={locked}
+            error={errors.brand?.message}
+            {...form.register("brand")}
+          />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="weight">
-              Weight
-              <AutoBadge show={autoFilled.includes("weight")} />
-            </FieldLabel>
-            <FieldContent>
-              <Input
-                id="weight"
-                type="number"
-                step="0.01"
-                disabled={locked}
-                {...form.register("weight", { valueAsNumber: true })}
-              />
-            </FieldContent>
-          </Field>
-          <Field>
-            <FieldLabel>Weight unit</FieldLabel>
-            <FieldContent>
-              <Select
-                value={form.watch("weightUnit")}
-                onValueChange={(value) =>
-                  form.setValue(
-                    "weightUnit",
-                    value as PortalProductValues["weightUnit"]
-                  )
-                }
-                disabled={locked}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="lb">lb</SelectItem>
-                  <SelectItem value="oz">oz</SelectItem>
-                  <SelectItem value="g">g</SelectItem>
-                  <SelectItem value="kg">kg</SelectItem>
-                </SelectContent>
-              </Select>
-            </FieldContent>
-          </Field>
+        <div className="grid items-start gap-4 md:grid-cols-2">
+          <Input
+            label="Vendor SKU"
+            disabled={locked}
+            error={errors.vendorSku?.message}
+            {...form.register("vendorSku")}
+          />
+          <Input
+            label="Manufacturer"
+            description={autoFilledNote("manufacturer")}
+            disabled={locked}
+            {...form.register("manufacturer")}
+          />
         </div>
-      </FieldGroup>
-    </FormLayout>
+
+        <Select
+          label="Category"
+          placeholder="Select category"
+          value={form.watch("categoryId")}
+          options={categories.map((category) => ({
+            value: category.categoryId,
+            label: category.categoryName,
+          }))}
+          disabled={locked}
+          error={errors.categoryId?.message}
+          onValueChange={(value) => form.setValue("categoryId", value)}
+        />
+
+        <Checkbox
+          label="No barcode"
+          disabled={locked}
+          checked={noBarcode}
+          onCheckedChange={(checked) => form.setValue("noBarcode", checked === true)}
+        />
+
+        <Input
+          label="Barcode"
+          description={autoFilledNote("barcode")}
+          disabled={locked || noBarcode}
+          error={errors.barcode?.message}
+          {...form.register("barcode")}
+        />
+
+        <Textarea
+          label="Description"
+          description={autoFilledNote("description")}
+          disabled={locked}
+          {...form.register("description")}
+        />
+
+        <div className="grid items-start gap-4 md:grid-cols-3">
+          <Input
+            label="Unit of measure"
+            disabled={locked}
+            {...form.register("unitOfMeasure")}
+          />
+          <Input
+            label="Units per case"
+            type="number"
+            disabled={locked}
+            {...form.register("unitsPerCase", { valueAsNumber: true })}
+          />
+          <Input
+            label="Wholesale price"
+            type="number"
+            step="0.01"
+            disabled={locked}
+            error={errors.wholesalePrice?.message}
+            {...form.register("wholesalePrice", { valueAsNumber: true })}
+          />
+        </div>
+
+        <div className="grid items-start gap-4 md:grid-cols-2">
+          <Input
+            label="Weight"
+            description={autoFilledNote("weight")}
+            type="number"
+            step="0.01"
+            disabled={locked}
+            {...form.register("weight", { valueAsNumber: true })}
+          />
+          <Select
+            label="Weight unit"
+            value={form.watch("weightUnit")}
+            options={WEIGHT_UNIT_OPTIONS}
+            disabled={locked}
+            onValueChange={(value) =>
+              form.setValue("weightUnit", value as PortalProductValues["weightUnit"])
+            }
+          />
+        </div>
+      </PanelContent>
+      {locked ? null : (
+        <PanelFooter>
+          <Button asChild variant="outline">
+            <Link href={cancelHref}>Cancel</Link>
+          </Button>
+          <Button type="submit" loading={form.formState.isSubmitting}>
+            {itemId ? "Save row" : "Add to packet"}
+          </Button>
+        </PanelFooter>
+      )}
+    </Panel>
   )
 }

@@ -1,36 +1,30 @@
 "use client"
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 
 import { UniversalSearch } from "@/components/search/UniversalSearch"
+import { Panel, PanelContent, PanelDescription, PanelHeader, PanelTitle } from "@sagui/ui"
 
 export default function SearchPage() {
   return (
     <div className="space-y-6 p-6">
       <div>
-        <h2 className="text-3xl font-bold">Search MDM</h2>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-3xl font-bold">Search MDM</h1>
+        <p className="mt-1 text-fg-muted">
           Find stores, vendors, products, and inventory
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Universal Search</CardTitle>
-          <CardDescription>
+      <Panel>
+        <PanelHeader>
+          <PanelTitle as="h2">Universal Search</PanelTitle>
+          <PanelDescription>
             Press ⌘K anywhere to open search quickly
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent>
           <UniversalSearch />
-        </CardContent>
-      </Card>
+        </PanelContent>
+      </Panel>
     </div>
   )
 }

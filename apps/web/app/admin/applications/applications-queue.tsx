@@ -7,17 +7,7 @@ import type {
   ApplicationStatus,
   VendorApplication,
 } from "@workspace/vendor-onboarding/types"
-import { FilterChips } from "@workspace/ui/components/filter-chips"
-import { Badge } from "@workspace/ui/components/badge"
-import { GlassCard } from "@workspace/ui/components/glass-card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+import { Badge, ChipGroup, SortableDataTable } from "@sagui/ui"
 
 type ApplicationsQueueProps = {
   applications: VendorApplication[]
@@ -57,69 +47,60 @@ export function ApplicationsQueue({
       ] as const
     ).map((status) => ({
       value: status,
-      label: STATUS_LABELS[status],
-      count: status === "all" ? total : countMap[status] ?? 0,
+      label: `${STATUS_LABELS[status]} (${status === "all" ? total : countMap[status] ?? 0})`,
     }))
   }, [counts])
 
-  const filtered =
-    filter === "all"
-      ? applications
-      : applications.filter((application) => application.status === filter)
+  const rows = applications
+    .filter((application) => filter === "all" || application.status === filter)
+    .map((application) => ({
+      id: application.id,
+      company:
+        application.companyData.legalName ||
+        application.legalName ||
+        application.ownerEmail,
+      email: application.ownerEmail,
+      status: application.status.replace("_", " "),
+    }))
 
   return (
-    <GlassCard>
-      <div className="space-y-4 px-(--card-spacing)">
-        <FilterChips options={options} value={filter} onChange={setFilter} />
-
-        <div className="overflow-hidden rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Company</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length ? (
-                filtered.map((application) => (
-                  <TableRow key={application.id}>
-                    <TableCell>
-                      <Link
-                        href={`/admin/applications/${application.id}`}
-                        className="font-medium hover:underline"
-                      >
-                        {application.companyData.legalName ||
-                          application.legalName ||
-                          application.ownerEmail}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{application.ownerEmail}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          application.status === "approved"
-                            ? "active"
-                            : "inactive"
-                        }
-                      >
-                        {application.status.replace("_", " ")}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={3} className="h-24 text-center">
-                    No applications in this queue.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-    </GlassCard>
+    <div className="space-y-4">
+      <ChipGroup
+        label="Filter by status"
+        multiple={false}
+        options={options}
+        value={[filter]}
+        onValueChange={(value) =>
+          setFilter((value[0] as ApplicationStatus | "all" | undefined) ?? "all")
+        }
+      />
+      <SortableDataTable
+        caption="Vendor applications"
+        rows={rows}
+        rowKey={(row) => String(row.id)}
+        itemName={{ one: "application", other: "applications" }}
+        emptyMessage="No applications in this queue."
+        pageSize={10}
+        columns={[
+          {
+            key: "company",
+            label: "Company",
+            render: (value, row) => (
+              <Link href={`/admin/applications/${row.id}`} className="font-medium hover:underline">
+                {String(value)}
+              </Link>
+            ),
+          },
+          { key: "email", label: "Email" },
+          {
+            key: "status",
+            label: "Status",
+            render: (value) => (
+              <Badge tone={value === "approved" ? "success" : "neutral"}>{String(value)}</Badge>
+            ),
+          },
+        ]}
+      />
+    </div>
   )
 }

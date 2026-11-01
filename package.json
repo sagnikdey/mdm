@@ -11,17 +11,20 @@
     "deploy:web": "vercel --cwd apps/web",
     "deploy:onboarding": "vercel --cwd apps/onboarding",
     "deploy:vendor-portal": "vercel --cwd apps/vendor-portal",
-    "dev:design-system": "turbo dev --filter=design-system",
-    "deploy:design-system": "vercel --cwd apps/design-system"
+    "dev:storybook": "turbo dev --filter=@sagui/storybook",
+    "dev:docs": "turbo dev --filter=@sagui/docs",
+    "build:sagui": "turbo build --filter=@sagui/ui --filter=@sagui/tokens --filter=@sagui/mcp",
+    "changeset": "changeset",
+    "release": "npm run build:sagui && changeset publish"
   },
   "devDependencies": {
     "@workspace/eslint-config": "*",
     "@workspace/typescript-config": "*",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "shadcn": "^4.16.1",
     "turbo": "^2.9.18",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@changesets/cli": "^2.27.0"
   },
   "packageManager": "npm@10.9.4",
   "engines": {

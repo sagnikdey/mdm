@@ -11,12 +11,12 @@ import {
 
 import { requireVendorSession } from "@/lib/auth/session"
 import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 
 export default async function DashboardPage() {
   const session = await requireVendorSession()
@@ -62,8 +62,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6 p-6">
       <div>
-        <h2 className="text-3xl font-bold">Dashboard</h2>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <p className="mt-1 text-fg-muted">
           {profile?.vendorName ?? "Your vendor account"}
         </p>
       </div>
@@ -72,33 +72,30 @@ export default async function DashboardPage() {
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
-            <Link key={stat.label} href={stat.href} className="block">
-              <GlassCard className="transition-colors hover:bg-white/60 dark:hover:bg-white/12">
-                <GlassCardHeader className="flex flex-row items-center justify-between pb-2">
-                  <GlassCardTitle>{stat.label}</GlassCardTitle>
-                  <Icon className="size-4 text-muted-foreground" />
-                </GlassCardHeader>
-                <GlassCardContent>
+            <Link key={stat.label} href={stat.href} className="block rounded-container">
+              <Panel className="h-full transition-colors hover:bg-bg-muted">
+                <PanelHeader action={<Icon className="size-4 text-fg-muted" />}>
+                  <PanelTitle as="h2">{stat.label}</PanelTitle>
+                </PanelHeader>
+                <PanelContent>
                   <div className="text-3xl font-bold">{stat.value}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {stat.description}
-                  </p>
-                </GlassCardContent>
-              </GlassCard>
+                  <p className="text-xs text-fg-muted">{stat.description}</p>
+                </PanelContent>
+              </Panel>
             </Link>
           )
         })}
       </div>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle>Catalog</GlassCardTitle>
-          <GlassCardDescription>
+      <Panel>
+        <PanelHeader className="pb-5">
+          <PanelTitle as="h2">Catalog</PanelTitle>
+          <PanelDescription>
             Add products in bulk, by barcode, or by hand. Send the packet once
             when you are done — MDM reviews the whole list.
-          </GlassCardDescription>
-        </GlassCardHeader>
-      </GlassCard>
+          </PanelDescription>
+        </PanelHeader>
+      </Panel>
     </div>
   )
 }

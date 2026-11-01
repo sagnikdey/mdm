@@ -2,31 +2,17 @@ import { format } from "date-fns"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+  Badge,
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 
+import { RecordTable } from "@/components/tables/record-table"
 import {
   availabilityAPI,
   inventoryAPI,
@@ -38,6 +24,18 @@ import {
 
 interface StoreDetailPageProps {
   params: Promise<{ id: string }>
+}
+
+function StatTile({ label, value, note }: { label: string; value: string; note?: string }) {
+  return (
+    <Panel>
+      <PanelHeader className="pb-5">
+        <PanelDescription>{label}</PanelDescription>
+        <PanelTitle as="h2" className="text-lg">{value}</PanelTitle>
+        {note ? <PanelDescription>{note}</PanelDescription> : null}
+      </PanelHeader>
+    </Panel>
+  )
 }
 
 export default async function StoreDetailPage({ params }: StoreDetailPageProps) {
@@ -70,225 +68,130 @@ export default async function StoreDetailPage({ params }: StoreDetailPageProps) 
           <Button variant="ghost" size="sm" asChild className="mb-2 -ms-2">
             <Link href="/stores">← Back to Stores</Link>
           </Button>
-          <h2 className="text-3xl font-bold">{store.storeName}</h2>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold">{store.storeName}</h1>
+          <p className="mt-1 text-fg-muted">
             {store.address} • {store.city}, {store.state} {store.zipCode}
           </p>
         </div>
-        <Badge variant={store.isActive ? "default" : "secondary"}>
+        <Badge tone={store.isActive ? "success" : "neutral"}>
           {store.isActive ? "Active" : "Inactive"}
         </Badge>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Region</CardDescription>
-            <CardTitle className="text-lg">{store.region}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Store Type</CardDescription>
-            <CardTitle className="text-lg capitalize">{store.storeType}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Manager</CardDescription>
-            <CardTitle className="text-lg">{store.manager}</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 text-sm text-muted-foreground">
-            {store.managerPhone}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Square Footage</CardDescription>
-            <CardTitle className="text-lg">
-              {store.squareFootage.toLocaleString()} sq ft
-            </CardTitle>
-          </CardHeader>
-        </Card>
+        <StatTile label="Region" value={store.region} />
+        <StatTile
+          label="Store Type"
+          value={`${store.storeType[0]!.toUpperCase()}${store.storeType.slice(1)}`}
+        />
+        <StatTile label="Manager" value={store.manager} note={store.managerPhone} />
+        <StatTile label="Square Footage" value={`${store.squareFootage.toLocaleString()} sq ft`} />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Operating Hours</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Operating Hours</PanelTitle>
+        </PanelHeader>
+        <PanelContent>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {Object.entries(store.operatingHours).map(([day, hours]) => (
-              <div key={day} className="flex justify-between rounded-lg border p-3">
+              <div
+                key={day}
+                className="flex justify-between rounded-control border border-border-default p-3"
+              >
                 <span className="capitalize">{day}</span>
-                <span className="text-muted-foreground">{hours}</span>
+                <span className="text-fg-muted">{hours}</span>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </PanelContent>
+      </Panel>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle className="text-lg font-semibold">
-            Vendor relationships
-          </GlassCardTitle>
-          <GlassCardDescription>
-            Delivery schedules for this store
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Vendor</TableHead>
-                  <TableHead>Representative</TableHead>
-                  <TableHead>Frequency</TableHead>
-                  <TableHead>Delivery Days</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {relationships.length ? (
-                  relationships.map((rel) => (
-                    <TableRow key={rel.relationshipId}>
-                      <TableCell>
-                        <Link
-                          href={`/vendors/${rel.vendorId}`}
-                          className="font-medium hover:underline"
-                        >
-                          {vendorName(rel.vendorId)}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{rel.vendorRepresentative}</TableCell>
-                      <TableCell>{rel.deliveryFrequency}</TableCell>
-                      <TableCell>{rel.deliveryDays.join(", ")}</TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      No vendor relationships.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </GlassCardContent>
-      </GlassCard>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Vendor relationships</PanelTitle>
+          <PanelDescription>Delivery schedules for this store</PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Vendor relationships"
+            itemName={{ one: "vendor", other: "vendors" }}
+            emptyMessage="No vendor relationships."
+            rows={relationships.map((rel) => ({
+              id: rel.relationshipId,
+              vendor: vendorName(rel.vendorId),
+              vendorHref: `/vendors/${rel.vendorId}`,
+              representative: rel.vendorRepresentative,
+              frequency: rel.deliveryFrequency,
+              days: rel.deliveryDays.join(", "),
+            }))}
+            columns={[
+              { key: "vendor", label: "Vendor", hrefKey: "vendorHref" },
+              { key: "representative", label: "Representative" },
+              { key: "frequency", label: "Frequency" },
+              { key: "days", label: "Delivery Days" },
+            ]}
+          />
+        </PanelContent>
+      </Panel>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle className="text-lg font-semibold">
-            Product availability
-          </GlassCardTitle>
-          <GlassCardDescription>
-            Retail pricing and stock thresholds
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Retail Price</TableHead>
-                  <TableHead>Min / Max</TableHead>
-                  <TableHead>Reorder Point</TableHead>
-                  <TableHead>Available</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {availability.length ? (
-                  availability.map((item) => (
-                    <TableRow key={item.availabilityId}>
-                      <TableCell>
-                        <Link
-                          href={`/products/${item.sku}`}
-                          className="font-medium hover:underline"
-                        >
-                          {productName(item.sku)}
-                        </Link>
-                      </TableCell>
-                      <TableCell>${item.retailPrice.toFixed(2)}</TableCell>
-                      <TableCell>
-                        {item.minStockLevel} / {item.maxStockLevel}
-                      </TableCell>
-                      <TableCell>{item.reorderPoint}</TableCell>
-                      <TableCell>
-                        <Badge variant={item.isAvailable ? "active" : "inactive"}>
-                          {item.isAvailable ? "Yes" : "No"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
-                      No availability records.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </GlassCardContent>
-      </GlassCard>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Product availability</PanelTitle>
+          <PanelDescription>Retail pricing and stock thresholds</PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Product availability"
+            itemName={{ one: "product", other: "products" }}
+            emptyMessage="No availability records."
+            rows={availability.map((item) => ({
+              id: item.availabilityId,
+              product: productName(item.sku),
+              productHref: `/products/${item.sku}`,
+              retailPrice: `$${item.retailPrice.toFixed(2)}`,
+              minMax: `${item.minStockLevel} / ${item.maxStockLevel}`,
+              reorderPoint: item.reorderPoint,
+              available: item.isAvailable ? "Yes" : "No",
+            }))}
+            columns={[
+              { key: "product", label: "Product", hrefKey: "productHref" },
+              { key: "retailPrice", label: "Retail Price" },
+              { key: "minMax", label: "Min / Max" },
+              { key: "reorderPoint", label: "Reorder Point" },
+              { key: "available", label: "Available", successValues: ["Yes"] },
+            ]}
+          />
+        </PanelContent>
+      </Panel>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle className="text-lg font-semibold">Inventory</GlassCardTitle>
-          <GlassCardDescription>
-            Current stock at this location
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Last Count</TableHead>
-                  <TableHead>Next Count</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {inventory.length ? (
-                  inventory.map((record) => (
-                    <TableRow key={record.inventoryId}>
-                      <TableCell>
-                        <Link
-                          href={`/inventory/${record.inventoryId}`}
-                          className="font-medium hover:underline"
-                        >
-                          {productName(record.sku)}
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        {record.currentQuantity} {record.unitOfMeasure}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(record.lastCountDate), "MMM d, yyyy")}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(record.nextCountDate), "MMM d, yyyy")}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      No inventory records.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </GlassCardContent>
-      </GlassCard>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Inventory</PanelTitle>
+          <PanelDescription>Current stock at this location</PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Inventory"
+            itemName={{ one: "record", other: "records" }}
+            emptyMessage="No inventory records."
+            rows={inventory.map((record) => ({
+              id: record.inventoryId,
+              product: productName(record.sku),
+              productHref: `/inventory/${record.inventoryId}`,
+              quantity: `${record.currentQuantity} ${record.unitOfMeasure}`,
+              lastCount: format(new Date(record.lastCountDate), "MMM d, yyyy"),
+              nextCount: format(new Date(record.nextCountDate), "MMM d, yyyy"),
+            }))}
+            columns={[
+              { key: "product", label: "Product", hrefKey: "productHref" },
+              { key: "quantity", label: "Quantity" },
+              { key: "lastCount", label: "Last Count" },
+              { key: "nextCount", label: "Next Count" },
+            ]}
+          />
+        </PanelContent>
+      </Panel>
     </div>
   )
 }

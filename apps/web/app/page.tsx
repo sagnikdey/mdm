@@ -1,10 +1,3 @@
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
 import { Archive, Building2, Package, Users } from "lucide-react"
 import Link from "next/link"
 
@@ -16,6 +9,7 @@ import {
   storesAPI,
   vendorsAPI,
 } from "@/lib/api"
+import { Panel, PanelContent, PanelDescription, PanelHeader, PanelTitle } from "@sagui/ui"
 
 export default async function DashboardPage() {
   const [stores, vendors, products, inventory, relationships, availability] =
@@ -62,8 +56,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6 p-6">
       <div>
-        <h2 className="text-3xl font-bold">Dashboard</h2>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <p className="mt-1 text-fg-muted">
           Convenience store master data overview
         </p>
       </div>
@@ -73,52 +67,51 @@ export default async function DashboardPage() {
           const Icon = stat.icon
           return (
             <Link key={stat.label} href={stat.href} className="block">
-              <GlassCard className="transition-colors hover:bg-white/60 dark:hover:bg-white/12">
-                <GlassCardHeader className="flex flex-row items-center justify-between pb-2">
-                  <GlassCardTitle>{stat.label}</GlassCardTitle>
-                  <Icon className="size-4 text-muted-foreground" />
-                </GlassCardHeader>
-                <GlassCardContent>
+              <Panel className="transition-colors hover:bg-bg-muted">
+                <PanelHeader action={<Icon className="size-4 text-fg-muted" />}>
+                  <PanelTitle as="h2">{stat.label}</PanelTitle>
+                </PanelHeader>
+                <PanelContent>
                   <div className="text-3xl font-bold">{stat.value}</div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-fg-muted">
                     {stat.description}
                   </p>
-                </GlassCardContent>
-              </GlassCard>
+                </PanelContent>
+              </Panel>
             </Link>
           )
         })}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <GlassCard>
-          <GlassCardHeader>
-            <GlassCardTitle>Store-Vendor Relationships</GlassCardTitle>
-            <GlassCardDescription>
+        <Panel>
+          <PanelHeader>
+            <PanelTitle as="h2">Store-Vendor Relationships</PanelTitle>
+            <PanelDescription>
               Active delivery partnerships across locations
-            </GlassCardDescription>
-          </GlassCardHeader>
-          <GlassCardContent>
+            </PanelDescription>
+          </PanelHeader>
+          <PanelContent>
             <p className="text-3xl font-bold">{relationships.length}</p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-fg-muted">
               Configured store-vendor delivery schedules
             </p>
-          </GlassCardContent>
-        </GlassCard>
-        <GlassCard>
-          <GlassCardHeader>
-            <GlassCardTitle>Product Availability</GlassCardTitle>
-            <GlassCardDescription>
+          </PanelContent>
+        </Panel>
+        <Panel>
+          <PanelHeader>
+            <PanelTitle as="h2">Product Availability</PanelTitle>
+            <PanelDescription>
               Store-level pricing and stock thresholds
-            </GlassCardDescription>
-          </GlassCardHeader>
-          <GlassCardContent>
+            </PanelDescription>
+          </PanelHeader>
+          <PanelContent>
             <p className="text-3xl font-bold">{availability.length}</p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-fg-muted">
               Products available across store locations
             </p>
-          </GlassCardContent>
-        </GlassCard>
+          </PanelContent>
+        </Panel>
       </div>
     </div>
   )

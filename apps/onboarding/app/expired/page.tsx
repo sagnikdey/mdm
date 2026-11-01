@@ -1,13 +1,13 @@
 import Link from "next/link"
 
-import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 
 const REASONS: Record<string, { title: string; description: string }> = {
   invalid: {
@@ -42,17 +42,17 @@ export default async function ExpiredPage({ searchParams }: PageProps) {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-lg items-center p-6">
-      <Card className="w-full border-destructive/30">
-        <CardHeader>
-          <CardTitle>{copy!.title}</CardTitle>
-          <CardDescription>{copy!.description}</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Panel elevation="resting" className="w-full border-danger-border">
+        <PanelHeader>
+          <PanelTitle as="h2">{copy!.title}</PanelTitle>
+          <PanelDescription>{copy!.description}</PanelDescription>
+        </PanelHeader>
+        <PanelContent>
           <Button asChild variant="outline">
             <Link href="/">Back to portal home</Link>
           </Button>
-        </CardContent>
-      </Card>
+        </PanelContent>
+      </Panel>
     </main>
   )
 }

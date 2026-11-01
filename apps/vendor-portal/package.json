@@ -13,8 +13,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
     "@tanstack/react-query": "^5.101.4",
-    "@tanstack/react-table": "^8.21.3",
-    "@workspace/ui": "*",
+    "@sagui/ui": "*",
     "@workspace/vendor-onboarding": "*",
     "jose": "^6.1.0",
     "lucide-react": "^1.28.0",
@@ -23,12 +22,12 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.85.0",
-    "sonner": "^2.0.8",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

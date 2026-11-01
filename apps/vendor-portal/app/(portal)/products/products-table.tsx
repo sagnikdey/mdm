@@ -1,49 +1,87 @@
 "use client"
 
 import { useMemo } from "react"
+import Link from "next/link"
 
-import type {
-  CatalogCategory,
-  CatalogProduct,
-} from "@workspace/vendor-onboarding/portal-types"
+import type { CatalogProduct } from "@workspace/vendor-onboarding/portal-types"
+import { Badge, Button, SortableDataTable } from "@sagui/ui"
 
-import { DataTable } from "@/components/data-table/data-table"
-import {
-  buildCatalogFilters,
-  catalogColumns,
-  type CatalogRow,
-} from "@/app/(portal)/products/products-columns"
-
-type ProductsTableProps = {
-  products: CatalogProduct[]
-  categories: CatalogCategory[]
+type CatalogRow = {
+  sku: string
+  productName: string
+  vendorSku: string
+  categoryName: string
+  wholesalePrice: number
+  status: "Active" | "Inactive"
 }
 
-export function ProductsTable({ products }: ProductsTableProps) {
+export function ProductsTable({ products }: { products: CatalogProduct[] }) {
   const rows = useMemo<CatalogRow[]>(
     () =>
       products.map((product) => ({
-        id: product.sku,
-        kind: "live" as const,
-        productName: product.productName,
         sku: product.sku,
+        productName: product.productName,
         vendorSku: product.vendorSku,
         categoryName: product.categoryName,
         wholesalePrice: product.wholesalePrice,
-        status: product.isActive ? ("active" as const) : ("inactive" as const),
+        status: product.isActive ? "Active" : "Inactive",
       })),
     [products]
   )
 
-  const filters = useMemo(() => buildCatalogFilters(rows), [rows])
-
   return (
-    <DataTable
-      columns={catalogColumns}
-      data={rows}
-      searchKey="productName"
+    <SortableDataTable
+      caption="Products"
+      rows={rows}
+      rowKey="sku"
+      itemName={{ one: "product", other: "products" }}
+      emptyMessage="No products yet."
+      noResultsMessage="No matching products."
+      searchable
       searchPlaceholder="Search products..."
-      filters={filters}
+      viewOptions
+      pageSize={10}
+      columns={[
+        {
+          key: "productName",
+          label: "Product",
+          hideable: false,
+          render: (value, row) => (
+            <Link href={`/products/${row.sku}`} className="font-medium hover:underline">
+              {String(value)}
+            </Link>
+          ),
+        },
+        { key: "sku", label: "SKU" },
+        { key: "vendorSku", label: "Vendor SKU" },
+        { key: "categoryName", label: "Category", filterable: true },
+        {
+          key: "wholesalePrice",
+          label: "Wholesale",
+          numeric: true,
+          render: (value) => `$${Number(value).toFixed(2)}`,
+        },
+        {
+          key: "status",
+          label: "Status",
+          filterable: true,
+          render: (value) => (
+            <Badge tone={value === "Active" ? "success" : "neutral"}>{String(value)}</Badge>
+          ),
+        },
+        {
+          key: "actions",
+          label: "Actions",
+          sortable: false,
+          searchable: false,
+          hideable: false,
+          render: (_value, row) => (
+            <Button asChild variant="ghost" size="sm">
+              <Link href={`/products/${row.sku}`}>View</Link>
+            </Button>
+          ),
+        },
+      ]}
     />
   )
 }

@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { toast } from "sonner"
 
 import {
   saveOnboardingStep,
@@ -15,41 +14,23 @@ import {
   ONBOARDING_STEPS,
   type VendorApplication,
 } from "@workspace/vendor-onboarding/types"
-import { FormLayout } from "@workspace/ui/components/form-layout"
-import { LoadingState } from "@workspace/ui/components/loading-state"
-import { TaskRows, type TaskRowItem } from "@workspace/ui/components/task-rows"
-import { ContextCard } from "@workspace/ui/components/context-card"
-import { Button } from "@workspace/ui/components/button"
-import { GlassCardFooter } from "@workspace/ui/components/glass-card"
-import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
-import {
+  Alert,
+  Button,
+  Card,
+  Checkbox,
+  Input,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelFooter,
+  PanelHeader,
+  PanelTitle,
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui/components/select"
-import { Textarea } from "@workspace/ui/components/textarea"
-import {
   Stepper,
-  StepperDescription,
-  StepperIndicator,
-  StepperItem,
-  StepperNav,
-  StepperPanel,
-  StepperSeparator,
-  StepperTitle,
-  StepperTrigger,
-} from "@workspace/ui/components/stepper"
-import { CheckIcon, CircleAlertIcon, LoaderCircleIcon } from "lucide-react"
+  Textarea,
+} from "@sagui/ui"
+import { CheckIcon, CircleAlertIcon, CircleIcon, LoaderCircleIcon } from "lucide-react"
 
 const CATEGORY_OPTIONS = [
   "Beverages",
@@ -60,6 +41,57 @@ const CATEGORY_OPTIONS = [
   "Health & Beauty",
 ]
 
+const PRIMARY_CATEGORY_OPTIONS = [
+  { value: "beverages", label: "Beverages" },
+  { value: "snacks", label: "Snacks" },
+  { value: "food", label: "Food" },
+]
+
+type TaskStatus = "pending" | "running" | "completed" | "failed"
+
+type SubmitTask = {
+  id: string
+  label: string
+  status: TaskStatus
+  detail?: string
+}
+
+const TASK_STATUS: Record<TaskStatus, { icon: React.ReactNode; text: string }> = {
+  pending: { icon: <CircleIcon className="size-4 text-fg-muted" />, text: "Pending" },
+  running: {
+    icon: <LoaderCircleIcon className="size-4 text-fg-muted motion-safe:animate-spin" />,
+    text: "In progress",
+  },
+  completed: { icon: <CheckIcon className="size-4 text-success-default" />, text: "Done" },
+  failed: { icon: <CircleAlertIcon className="size-4 text-danger-default" />, text: "Failed" },
+}
+
+function SubmitTaskList({ tasks }: { tasks: SubmitTask[] }) {
+  return (
+    <ul className="grid gap-3" aria-live="polite">
+      {tasks.map((task) => (
+        <li key={task.id} className="flex items-start gap-3 text-sm">
+          <span className="mt-0.5 shrink-0" aria-hidden>
+            {TASK_STATUS[task.status].icon}
+          </span>
+          <span className="min-w-0">
+            <span className="sr-only">{TASK_STATUS[task.status].text}: </span>
+            <span className="text-fg-default">{task.label}</span>
+            {task.detail ? <span className="block text-fg-muted">{task.detail}</span> : null}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+type EditableSection =
+  | "companyData"
+  | "contactData"
+  | "addressData"
+  | "paymentData"
+  | "categoriesData"
+
 type OnboardingWizardProps = {
   application: VendorApplication
 }
@@ -68,18 +100,13 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
   const [application, setApplication] = useState(initial)
   const [step, setStep] = useState(initial.currentStep)
   const [isSaving, setIsSaving] = useState(false)
-  const [submitTasks, setSubmitTasks] = useState<TaskRowItem[]>([])
-  const [elapsed, setElapsed] = useState(0)
+  const [submitTasks, setSubmitTasks] = useState<SubmitTask[]>([])
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [errorSteps, setErrorSteps] = useState<Set<number>>(new Set())
+  const [formError, setFormError] = useState<string | null>(null)
 
   const isSubmitted = application.status === "submitted" || application.status === "under_review" || application.status === "approved"
-
-  useEffect(() => {
-    if (!isSaving) return
-    const timer = setInterval(() => setElapsed((value) => value + 0.1), 100)
-    return () => clearInterval(timer)
-  }, [isSaving])
+  const isSubmitting = submitTasks.some((task) => task.status === "running")
 
   const stepMeta = ONBOARDING_STEPS[step - 1]!
 
@@ -123,9 +150,16 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
     })
   }
 
-  function fieldError(name: string) {
-    const message = errors[name]
-    return message ? [{ message }] : undefined
+  function updateSection<K extends EditableSection>(
+    section: K,
+    patch: Partial<VendorApplication[K]>,
+    errorName?: string
+  ) {
+    if (errorName) clearError(errorName)
+    setApplication((prev) => ({
+      ...prev,
+      [section]: { ...prev[section], ...patch },
+    }))
   }
 
   function validateCurrentStep() {
@@ -139,7 +173,7 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
       setErrors(invalid.errors)
       markStepError(invalid.step)
       setStep(invalid.step)
-      toast.error("Please complete the required fields")
+      setFormError("Please complete the required fields")
       return false
     }
 
@@ -152,7 +186,7 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
     setErrors(result.errors)
     markStepError(step)
-    toast.error("Please complete the required fields")
+    setFormError("Please complete the required fields")
     return false
   }
 
@@ -160,6 +194,7 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
     if (
       next === step ||
       isSaving ||
+      isSubmitting ||
       next < 1 ||
       next > ONBOARDING_STEPS.length
     ) {
@@ -167,6 +202,7 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
     }
     if (next < step) {
       setErrors({})
+      setFormError(null)
       setStep(next)
       return
     }
@@ -174,9 +210,9 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
   }
 
   async function persist(nextStep: number) {
+    setFormError(null)
     if (!validateCurrentStep()) return
     setIsSaving(true)
-    setElapsed(0)
     try {
       const updated = await saveOnboardingStep({
         step: nextStep,
@@ -190,19 +226,20 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
       setApplication(updated)
       setStep(nextStep)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to save step")
+      setFormError(error instanceof Error ? error.message : "Failed to save step")
     } finally {
       setIsSaving(false)
     }
   }
 
   async function handleSubmit() {
+    setFormError(null)
     const invalid = getFirstInvalidOnboardingStep(application)
     if (invalid) {
       setErrors(invalid.errors)
       markStepError(invalid.step)
       setStep(invalid.step)
-      toast.error("Please complete the required fields")
+      setFormError("Please complete the required fields")
       return
     }
 
@@ -245,14 +282,13 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
             : task
         )
       )
-      toast.success("Application submitted for review")
     } catch (error) {
       setSubmitTasks((tasks) =>
         tasks.map((task) =>
           task.status === "running" ? { ...task, status: "failed" } : task
         )
       )
-      toast.error(error instanceof Error ? error.message : "Submission failed")
+      setFormError(error instanceof Error ? error.message : "Submission failed")
     }
   }
 
@@ -274,452 +310,277 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
   if (isSubmitted && step === 8) {
     return (
-      <FormLayout
-        contained={false}
-        title="Application submitted"
-        description={`Your vendor application is in the review queue. We'll email ${application.ownerEmail} with updates.`}
-      >
-        <TaskRows
-          tasks={
-            submitTasks.length
-              ? submitTasks
-              : [{ id: "done", label: "Submitted for review", status: "completed" }]
-          }
-        />
-      </FormLayout>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Application submitted</PanelTitle>
+          <PanelDescription>
+            Your vendor application is in the review queue. We&apos;ll email {application.ownerEmail} with updates.
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <SubmitTaskList
+            tasks={
+              submitTasks.length
+                ? submitTasks
+                : [{ id: "done", label: "Submitted for review", status: "completed" }]
+            }
+          />
+        </PanelContent>
+      </Panel>
     )
   }
 
   return (
-    <Stepper
-      value={step}
-      onValueChange={goToStep}
-      orientation="vertical"
-      className="items-start gap-8 lg:gap-10"
-      indicators={{
-        completed: <CheckIcon className="size-3.5" />,
-        loading: <LoaderCircleIcon className="size-3.5 animate-spin" />,
-        error: <CircleAlertIcon className="size-3.5" />,
-      }}
-    >
-      <StepperNav>
-        {ONBOARDING_STEPS.map((item, index) => (
-          <StepperItem
-            key={item.id}
-            step={item.id}
-            loading={isSaving && item.id === step}
-            error={errorSteps.has(item.id)}
-            disabled={isSaving}
-          >
-            <StepperTrigger className="items-start gap-2.5">
-              <StepperIndicator>{item.id}</StepperIndicator>
-              <div className="mt-0.5 space-y-0.5 text-start">
-                <StepperTitle>{item.title}</StepperTitle>
-                <StepperDescription>{item.description}</StepperDescription>
-              </div>
-            </StepperTrigger>
-            {index < ONBOARDING_STEPS.length - 1 ? <StepperSeparator /> : null}
-          </StepperItem>
-        ))}
-      </StepperNav>
+    <div className="flex flex-col items-start gap-8 lg:flex-row lg:gap-10">
+      <div className="w-full lg:w-64 lg:shrink-0">
+        <Stepper
+          aria-label="Onboarding progress"
+          current={step - 1}
+          onStepClick={(index) => goToStep(index + 1)}
+          steps={ONBOARDING_STEPS.map((item) => ({
+            label: (
+              <>
+                {item.title}
+                <span className="block text-xs font-normal text-fg-muted">{item.description}</span>
+              </>
+            ),
+            error: errorSteps.has(item.id),
+          }))}
+        />
+      </div>
 
-      <StepperPanel>
-        <FormLayout
-          contained={false}
-          title={`Step ${step}: ${stepMeta.title}`}
-          description={stepMeta.description}
-        footer={
-          <GlassCardFooter className="justify-between gap-3 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              disabled={step <= 1 || isSaving}
-              onClick={() => goToStep(step - 1)}
-            >
-              Back
-            </Button>
+      <Panel as="section" className="w-full flex-1">
+        <PanelHeader>
+          <PanelTitle as="h2">{`Step ${step}: ${stepMeta.title}`}</PanelTitle>
+          <PanelDescription>{stepMeta.description}</PanelDescription>
+        </PanelHeader>
 
-            {step < 8 ? (
-              <Button
-                type="button"
-                size="lg"
-                disabled={isSaving}
-                onClick={() => void persist(step + 1)}
-              >
-                Save & continue
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                size="lg"
-                disabled={isSaving}
-                onClick={() => void handleSubmit()}
-              >
-                Submit application
-              </Button>
-            )}
-          </GlassCardFooter>
-        }
-      >
-          {isSaving ? <LoadingState label="Saving step" elapsedSeconds={elapsed} /> : null}
+        <PanelContent className="grid gap-5">
+          {formError ? <Alert tone="danger" title={formError} /> : null}
 
-          {!isSaving && step === 1 ? (
-            <FieldGroup>
-              <Field data-invalid={Boolean(errors.legalName) || undefined}>
-                <FieldLabel htmlFor="legalName">Legal company name</FieldLabel>
-                <FieldContent>
+          <fieldset disabled={isSaving} className="m-0 min-w-0 border-0 p-0">
+            {step === 1 ? (
+              <div className="grid gap-5">
+                <Input
+                  label="Legal company name"
+                  value={application.companyData.legalName}
+                  error={errors.legalName}
+                  onChange={(e) => updateSection("companyData", { legalName: e.target.value }, "legalName")}
+                />
+                <Input
+                  label="DBA name (optional)"
+                  value={application.companyData.dbaName ?? ""}
+                  onChange={(e) => updateSection("companyData", { dbaName: e.target.value })}
+                />
+                <div className="grid items-start gap-4 md:grid-cols-2">
                   <Input
-                    id="legalName"
-                    value={application.companyData.legalName}
-                    aria-invalid={Boolean(errors.legalName) || undefined}
-                    onChange={(e) => {
-                      clearError("legalName")
-                      setApplication((prev) => ({
-                        ...prev,
-                        companyData: { ...prev.companyData, legalName: e.target.value },
-                      }))
-                    }}
+                    label="Tax ID / EIN (optional)"
+                    value={application.companyData.taxId ?? ""}
+                    onChange={(e) => updateSection("companyData", { taxId: e.target.value })}
                   />
-                  <FieldError errors={fieldError("legalName")} />
-                </FieldContent>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="dbaName">DBA name (optional)</FieldLabel>
-                <FieldContent>
+                  <Select
+                    label="Primary category"
+                    placeholder="Select category"
+                    value={application.companyData.vendorCategory}
+                    options={PRIMARY_CATEGORY_OPTIONS}
+                    error={errors.vendorCategory}
+                    onValueChange={(value) => updateSection("companyData", { vendorCategory: value }, "vendorCategory")}
+                  />
+                </div>
+              </div>
+            ) : null}
+
+            {step === 2 ? (
+              <div className="grid gap-5">
+                <Input
+                  label="Contact person"
+                  value={application.contactData.contactPerson}
+                  error={errors.contactPerson}
+                  onChange={(e) => updateSection("contactData", { contactPerson: e.target.value }, "contactPerson")}
+                />
+                <Input label="Email (from invitation)" value={application.contactData.email} disabled />
+                <Input
+                  label="Phone"
+                  type="tel"
+                  value={application.contactData.phone}
+                  error={errors.phone}
+                  onChange={(e) => updateSection("contactData", { phone: e.target.value }, "phone")}
+                />
+              </div>
+            ) : null}
+
+            {step === 3 ? (
+              <div className="grid gap-5">
+                <Textarea
+                  label="Street address"
+                  value={application.addressData.street}
+                  error={errors.street}
+                  onChange={(e) => updateSection("addressData", { street: e.target.value }, "street")}
+                />
+                <div className="grid items-start gap-4 md:grid-cols-3">
                   <Input
-                    id="dbaName"
-                    value={application.companyData.dbaName ?? ""}
-                    onChange={(e) =>
-                      setApplication((prev) => ({
-                        ...prev,
-                        companyData: { ...prev.companyData, dbaName: e.target.value },
-                      }))
+                    label="City"
+                    value={application.addressData.city}
+                    error={errors.city}
+                    onChange={(e) => updateSection("addressData", { city: e.target.value }, "city")}
+                  />
+                  <Input
+                    label="State"
+                    value={application.addressData.state}
+                    error={errors.state}
+                    onChange={(e) => updateSection("addressData", { state: e.target.value }, "state")}
+                  />
+                  <Input
+                    label="ZIP"
+                    inputMode="numeric"
+                    value={application.addressData.zipCode}
+                    error={errors.zipCode}
+                    onChange={(e) => updateSection("addressData", { zipCode: e.target.value }, "zipCode")}
+                  />
+                </div>
+              </div>
+            ) : null}
+
+            {step === 4 ? (
+              <div className="grid gap-5">
+                <Input
+                  label="Payment terms"
+                  value={application.paymentData.paymentTerms}
+                  error={errors.paymentTerms}
+                  onChange={(e) => updateSection("paymentData", { paymentTerms: e.target.value }, "paymentTerms")}
+                />
+                <Input
+                  label="Minimum order quantity"
+                  type="number"
+                  min={1}
+                  value={application.paymentData.minimumOrderQuantity}
+                  error={errors.minimumOrderQuantity}
+                  onChange={(e) =>
+                    updateSection(
+                      "paymentData",
+                      { minimumOrderQuantity: Number(e.target.value) || 0 },
+                      "minimumOrderQuantity"
+                    )
+                  }
+                />
+              </div>
+            ) : null}
+
+            {step === 5 ? (
+              <fieldset className="m-0 grid min-w-0 gap-1 border-0 p-0">
+                <legend className="mb-2 p-0 text-sm font-medium text-fg-default">Categories you supply</legend>
+                {CATEGORY_OPTIONS.map((category) => (
+                  <Checkbox
+                    key={category}
+                    label={category}
+                    checked={application.categoriesData.categories.includes(category)}
+                    onCheckedChange={(value) =>
+                      updateSection(
+                        "categoriesData",
+                        {
+                          categories: value
+                            ? [...application.categoriesData.categories, category]
+                            : application.categoriesData.categories.filter((item) => item !== category),
+                        },
+                        "categories"
+                      )
                     }
                   />
-                </FieldContent>
-              </Field>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="taxId">Tax ID / EIN (optional)</FieldLabel>
-                  <FieldContent>
-                    <Input
-                      id="taxId"
-                      value={application.companyData.taxId ?? ""}
-                      onChange={(e) =>
-                        setApplication((prev) => ({
-                          ...prev,
-                          companyData: { ...prev.companyData, taxId: e.target.value },
-                        }))
-                      }
-                    />
-                  </FieldContent>
-                </Field>
-                <Field data-invalid={Boolean(errors.vendorCategory) || undefined}>
-                  <FieldLabel>Primary category</FieldLabel>
-                  <FieldContent>
-                    <Select
-                      value={application.companyData.vendorCategory}
-                      onValueChange={(value) => {
-                        clearError("vendorCategory")
-                        setApplication((prev) => ({
-                          ...prev,
-                          companyData: { ...prev.companyData, vendorCategory: value },
-                        }))
-                      }}
-                    >
-                      <SelectTrigger aria-invalid={Boolean(errors.vendorCategory) || undefined}>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {["beverages", "snacks", "food"].map((value) => (
-                          <SelectItem key={value} value={value} className="capitalize">
-                            {value}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FieldError errors={fieldError("vendorCategory")} />
-                  </FieldContent>
-                </Field>
-              </div>
-            </FieldGroup>
-          ) : null}
-
-          {!isSaving && step === 2 ? (
-            <FieldGroup>
-              <Field data-invalid={Boolean(errors.contactPerson) || undefined}>
-                <FieldLabel htmlFor="contactPerson">Contact person</FieldLabel>
-                <FieldContent>
-                  <Input
-                    id="contactPerson"
-                    value={application.contactData.contactPerson}
-                    aria-invalid={Boolean(errors.contactPerson) || undefined}
-                    onChange={(e) => {
-                      clearError("contactPerson")
-                      setApplication((prev) => ({
-                        ...prev,
-                        contactData: { ...prev.contactData, contactPerson: e.target.value },
-                      }))
-                    }}
-                  />
-                  <FieldError errors={fieldError("contactPerson")} />
-                </FieldContent>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="contactEmail">Email (from invitation)</FieldLabel>
-                <FieldContent>
-                  <Input id="contactEmail" value={application.contactData.email} disabled />
-                </FieldContent>
-              </Field>
-              <Field data-invalid={Boolean(errors.phone) || undefined}>
-                <FieldLabel htmlFor="phone">Phone</FieldLabel>
-                <FieldContent>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={application.contactData.phone}
-                    aria-invalid={Boolean(errors.phone) || undefined}
-                    onChange={(e) => {
-                      clearError("phone")
-                      setApplication((prev) => ({
-                        ...prev,
-                        contactData: { ...prev.contactData, phone: e.target.value },
-                      }))
-                    }}
-                  />
-                  <FieldError errors={fieldError("phone")} />
-                </FieldContent>
-              </Field>
-            </FieldGroup>
-          ) : null}
-
-          {!isSaving && step === 3 ? (
-            <FieldGroup>
-              <Field data-invalid={Boolean(errors.street) || undefined}>
-                <FieldLabel htmlFor="street">Street address</FieldLabel>
-                <FieldContent>
-                  <Textarea
-                    id="street"
-                    value={application.addressData.street}
-                    aria-invalid={Boolean(errors.street) || undefined}
-                    onChange={(e) => {
-                      clearError("street")
-                      setApplication((prev) => ({
-                        ...prev,
-                        addressData: { ...prev.addressData, street: e.target.value },
-                      }))
-                    }}
-                  />
-                  <FieldError errors={fieldError("street")} />
-                </FieldContent>
-              </Field>
-              <div className="grid gap-4 md:grid-cols-3">
-                <Field data-invalid={Boolean(errors.city) || undefined}>
-                  <FieldLabel htmlFor="city">City</FieldLabel>
-                  <FieldContent>
-                    <Input
-                      id="city"
-                      value={application.addressData.city}
-                      aria-invalid={Boolean(errors.city) || undefined}
-                      onChange={(e) => {
-                        clearError("city")
-                        setApplication((prev) => ({
-                          ...prev,
-                          addressData: { ...prev.addressData, city: e.target.value },
-                        }))
-                      }}
-                    />
-                    <FieldError errors={fieldError("city")} />
-                  </FieldContent>
-                </Field>
-                <Field data-invalid={Boolean(errors.state) || undefined}>
-                  <FieldLabel htmlFor="state">State</FieldLabel>
-                  <FieldContent>
-                    <Input
-                      id="state"
-                      value={application.addressData.state}
-                      aria-invalid={Boolean(errors.state) || undefined}
-                      onChange={(e) => {
-                        clearError("state")
-                        setApplication((prev) => ({
-                          ...prev,
-                          addressData: { ...prev.addressData, state: e.target.value },
-                        }))
-                      }}
-                    />
-                    <FieldError errors={fieldError("state")} />
-                  </FieldContent>
-                </Field>
-                <Field data-invalid={Boolean(errors.zipCode) || undefined}>
-                  <FieldLabel htmlFor="zipCode">ZIP</FieldLabel>
-                  <FieldContent>
-                    <Input
-                      id="zipCode"
-                      inputMode="numeric"
-                      value={application.addressData.zipCode}
-                      aria-invalid={Boolean(errors.zipCode) || undefined}
-                      onChange={(e) => {
-                        clearError("zipCode")
-                        setApplication((prev) => ({
-                          ...prev,
-                          addressData: { ...prev.addressData, zipCode: e.target.value },
-                        }))
-                      }}
-                    />
-                    <FieldError errors={fieldError("zipCode")} />
-                  </FieldContent>
-                </Field>
-              </div>
-            </FieldGroup>
-          ) : null}
-
-          {!isSaving && step === 4 ? (
-            <FieldGroup>
-              <Field data-invalid={Boolean(errors.paymentTerms) || undefined}>
-                <FieldLabel htmlFor="paymentTerms">Payment terms</FieldLabel>
-                <FieldContent>
-                  <Input
-                    id="paymentTerms"
-                    value={application.paymentData.paymentTerms}
-                    aria-invalid={Boolean(errors.paymentTerms) || undefined}
-                    onChange={(e) => {
-                      clearError("paymentTerms")
-                      setApplication((prev) => ({
-                        ...prev,
-                        paymentData: { ...prev.paymentData, paymentTerms: e.target.value },
-                      }))
-                    }}
-                  />
-                  <FieldError errors={fieldError("paymentTerms")} />
-                </FieldContent>
-              </Field>
-              <Field data-invalid={Boolean(errors.minimumOrderQuantity) || undefined}>
-                <FieldLabel htmlFor="minimumOrderQuantity">Minimum order quantity</FieldLabel>
-                <FieldContent>
-                  <Input
-                    id="minimumOrderQuantity"
-                    type="number"
-                    min={1}
-                    value={application.paymentData.minimumOrderQuantity}
-                    aria-invalid={Boolean(errors.minimumOrderQuantity) || undefined}
-                    onChange={(e) => {
-                      clearError("minimumOrderQuantity")
-                      setApplication((prev) => ({
-                        ...prev,
-                        paymentData: {
-                          ...prev.paymentData,
-                          minimumOrderQuantity: Number(e.target.value) || 0,
-                        },
-                      }))
-                    }}
-                  />
-                  <FieldError errors={fieldError("minimumOrderQuantity")} />
-                </FieldContent>
-              </Field>
-            </FieldGroup>
-          ) : null}
-
-          {!isSaving && step === 5 ? (
-            <FieldGroup>
-              <Field data-invalid={Boolean(errors.categories) || undefined}>
-                <FieldLabel>Categories you supply</FieldLabel>
-                <FieldContent>
-                  {CATEGORY_OPTIONS.map((category) => {
-                    const checked = application.categoriesData.categories.includes(category)
-                    return (
-                      <Field key={category} orientation="horizontal">
-                        <Checkbox
-                          checked={checked}
-                          onCheckedChange={(value) => {
-                            clearError("categories")
-                            setApplication((prev) => ({
-                              ...prev,
-                              categoriesData: {
-                                ...prev.categoriesData,
-                                categories: value
-                                  ? [...prev.categoriesData.categories, category]
-                                  : prev.categoriesData.categories.filter(
-                                      (item) => item !== category
-                                    ),
-                              },
-                            }))
-                          }}
-                        />
-                        <FieldLabel>{category}</FieldLabel>
-                      </Field>
-                    )
-                  })}
-                  <FieldError errors={fieldError("categories")} />
-                </FieldContent>
-              </Field>
-            </FieldGroup>
-          ) : null}
-
-          {!isSaving && step === 6 ? (
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Add compliance document references for review. File upload storage can be wired later.
-              </p>
-              <div className="grid gap-3 md:grid-cols-2">
-                {application.documentsData.map((doc) => (
-                  <ContextCard
-                    key={doc.id}
-                    title={doc.name}
-                    source={doc.name}
-                    sourceType={doc.type.toUpperCase()}
-                    excerpt={`Uploaded ${new Date(doc.uploadedAt).toLocaleDateString()}`}
-                  />
                 ))}
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                onClick={() =>
-                  setApplication((prev) => ({
-                    ...prev,
-                    documentsData: [
-                      ...prev.documentsData,
-                      {
-                        id: crypto.randomUUID(),
-                        name: `Compliance Document ${prev.documentsData.length + 1}.pdf`,
-                        type: "other",
-                        uploadedAt: new Date().toISOString(),
-                      },
-                    ],
-                  }))
-                }
-              >
-                Add document placeholder
-              </Button>
-            </div>
-          ) : null}
+                {errors.categories ? (
+                  <p role="alert" className="m-0 mt-1 text-sm text-danger-default">
+                    {errors.categories}
+                  </p>
+                ) : null}
+              </fieldset>
+            ) : null}
 
-          {!isSaving && step === 7 ? (
-            <div className="space-y-3">
-              {reviewSummary.map((row) => (
-                <div
-                  key={row.label}
-                  className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm"
+            {step === 6 ? (
+              <div className="grid justify-items-start gap-4">
+                <p className="m-0 text-sm text-fg-muted">
+                  Add compliance document references for review. File upload storage can be wired later.
+                </p>
+                {application.documentsData.length ? (
+                  <div className="grid w-full gap-3 md:grid-cols-2">
+                    {application.documentsData.map((doc) => (
+                      <Card
+                        key={doc.id}
+                        title={doc.name}
+                        description={`Uploaded ${new Date(doc.uploadedAt).toLocaleDateString()}`}
+                        meta={doc.type.toUpperCase()}
+                      />
+                    ))}
+                  </div>
+                ) : null}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setApplication((prev) => ({
+                      ...prev,
+                      documentsData: [
+                        ...prev.documentsData,
+                        {
+                          id: crypto.randomUUID(),
+                          name: `Compliance Document ${prev.documentsData.length + 1}.pdf`,
+                          type: "other",
+                          uploadedAt: new Date().toISOString(),
+                        },
+                      ],
+                    }))
+                  }
                 >
-                  <span className="text-muted-foreground">{row.label}</span>
-                  <span className="font-medium">{row.value}</span>
-                </div>
-              ))}
-            </div>
-          ) : null}
+                  Add document placeholder
+                </Button>
+              </div>
+            ) : null}
 
-          {!isSaving && step === 8 ? (
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Submit your application to the buyer review queue.
-              </p>
-              <TaskRows tasks={submitTasks} />
-            </div>
-          ) : null}
-      </FormLayout>
-      </StepperPanel>
-    </Stepper>
+            {step === 7 ? (
+              <dl className="m-0 grid gap-3">
+                {reviewSummary.map((row) => (
+                  <div
+                    key={row.label}
+                    className="flex items-center justify-between gap-4 rounded-control border border-border-default px-3 py-2 text-sm"
+                  >
+                    <dt className="text-fg-muted">{row.label}</dt>
+                    <dd className="m-0 text-right font-medium text-fg-default">{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+
+            {step === 8 ? (
+              <div className="grid gap-4">
+                <p className="m-0 text-sm text-fg-muted">
+                  Submit your application to the buyer review queue.
+                </p>
+                <SubmitTaskList tasks={submitTasks} />
+              </div>
+            ) : null}
+          </fieldset>
+        </PanelContent>
+
+        <PanelFooter className="justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={step <= 1 || isSaving || isSubmitting}
+            onClick={() => goToStep(step - 1)}
+          >
+            Back
+          </Button>
+
+          {step < 8 ? (
+            <Button type="button" loading={isSaving} onClick={() => void persist(step + 1)}>
+              Save & continue
+            </Button>
+          ) : (
+            <Button type="button" loading={isSubmitting} onClick={() => void handleSubmit()}>
+              Submit application
+            </Button>
+          )}
+        </PanelFooter>
+      </Panel>
+    </div>
   )
 }

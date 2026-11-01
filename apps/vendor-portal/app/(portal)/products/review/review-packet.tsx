@@ -3,26 +3,22 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { toast } from "sonner"
+import { CircleAlertIcon } from "lucide-react"
 
 import type { CatalogCategory, ProductSubmission } from "@workspace/vendor-onboarding/portal-types"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
+  Alert,
+  Badge,
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+  SortableDataTable,
+} from "@sagui/ui"
+
+import { useToast } from "@/components/toast-provider"
 
 type ReviewPacketProps = {
   packet: ProductSubmission
@@ -31,7 +27,9 @@ type ReviewPacketProps = {
 
 export function ReviewPacket({ packet, categories }: ReviewPacketProps) {
   const router = useRouter()
+  const showToast = useToast()
   const [working, setWorking] = useState<number | "send" | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
   const locked = packet.status === "pending"
   const blocking = packet.items.some((item) => item.errors.length)
   const canSend =
@@ -47,16 +45,17 @@ export function ReviewPacket({ packet, categories }: ReviewPacketProps) {
 
   async function remove(id: number) {
     setWorking(id)
+    setActionError(null)
     try {
       const response = await fetch(`/api/submissions/products/items/${id}`, {
         method: "DELETE",
       })
       const payload = (await response.json()) as { error?: string }
       if (!response.ok) throw new Error(payload.error ?? "Could not remove")
-      toast.success("Row removed")
+      showToast({ title: "Row removed" })
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not remove")
+      setActionError(error instanceof Error ? error.message : "Could not remove")
     } finally {
       setWorking(null)
     }
@@ -64,117 +63,137 @@ export function ReviewPacket({ packet, categories }: ReviewPacketProps) {
 
   async function send() {
     setWorking("send")
+    setActionError(null)
     try {
       const response = await fetch("/api/submissions/products/send", {
         method: "POST",
       })
       const payload = (await response.json()) as { error?: string }
       if (!response.ok) throw new Error(payload.error ?? "Could not send")
-      toast.success("Sent for MDM review")
+      showToast({ title: "Sent for MDM review" })
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not send")
+      setActionError(error instanceof Error ? error.message : "Could not send")
     } finally {
       setWorking(null)
     }
   }
 
+  const rows = packet.items.map((item) => ({
+    id: item.id,
+    productName: item.productName,
+    vendorSku: item.vendorSku,
+    barcode: item.noBarcode ? "None" : item.barcode || "—",
+    category: categoryName(item.categoryId),
+    pack: `${item.packType} / ${item.packSize}`,
+    wholesalePrice: item.wholesalePrice,
+    status: item.errors[0] ?? "Ready",
+    hasError: item.errors.length > 0,
+  }))
+
   return (
-    <GlassCard>
-      <GlassCardHeader className="flex flex-row items-start justify-between gap-4">
-        <div>
-          <GlassCardTitle>Packet</GlassCardTitle>
-          <GlassCardDescription>
-            {locked
-              ? "Waiting for MDM. You cannot edit until they approve or send it back."
-              : `${packet.items.length} product${packet.items.length === 1 ? "" : "s"} in draft.`}
-          </GlassCardDescription>
-        </div>
-        <Badge variant={locked ? "inactive" : "active"}>
-          {locked ? "Pending review" : "Draft"}
-        </Badge>
-      </GlassCardHeader>
-      <GlassCardContent className="space-y-4">
+    <Panel as="section">
+      <PanelHeader
+        action={
+          <Badge tone={locked ? "warning" : "info"}>
+            {locked ? "Pending review" : "Draft"}
+          </Badge>
+        }
+      >
+        <PanelTitle as="h2">Packet</PanelTitle>
+        <PanelDescription>
+          {locked
+            ? "Waiting for MDM. You cannot edit until they approve or send it back."
+            : `${packet.items.length} product${packet.items.length === 1 ? "" : "s"} in draft.`}
+        </PanelDescription>
+      </PanelHeader>
+      <PanelContent className="space-y-4">
+        {actionError ? <Alert tone="danger" title={actionError} /> : null}
         {packet.reviewNote ? (
-          <p className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm">
-            MDM note: {packet.reviewNote}
-          </p>
+          <Alert tone="warning" title="MDM note">
+            {packet.reviewNote}
+          </Alert>
         ) : null}
-        <div className="overflow-hidden rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Vendor SKU</TableHead>
-                <TableHead>Barcode</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Pack</TableHead>
-                <TableHead>Wholesale</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {packet.items.length ? (
-                packet.items.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.productName}</TableCell>
-                    <TableCell>{item.vendorSku}</TableCell>
-                    <TableCell>
-                      {item.noBarcode ? "None" : item.barcode || "—"}
-                    </TableCell>
-                    <TableCell>{categoryName(item.categoryId)}</TableCell>
-                    <TableCell>
-                      {item.packType} / {item.packSize}
-                    </TableCell>
-                    <TableCell>${item.wholesalePrice.toFixed(2)}</TableCell>
-                    <TableCell>
-                      {item.errors.length ? (
-                        <span className="text-destructive">{item.errors[0]}</span>
-                      ) : (
-                        <span className="text-muted-foreground">Ready</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {locked ? null : (
-                        <div className="flex justify-end gap-2">
-                          <Button asChild size="sm" variant="ghost">
-                            <Link href={`/products/add?itemId=${item.id}`}>
-                              Edit
-                            </Link>
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            disabled={working === item.id}
-                            onClick={() => void remove(item.id)}
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center">
-                    No products yet. Add from the Bulk, Barcode, or Manual tabs.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <SortableDataTable
+          caption="Products in this packet"
+          rows={rows}
+          rowKey={(row) => String(row.id)}
+          itemName={{ one: "product", other: "products" }}
+          emptyMessage="No products yet. Add from the Bulk, Barcode, or Manual tabs."
+          columns={[
+            {
+              key: "productName",
+              label: "Product",
+              render: (value, row) => (
+                <span className="block py-2">
+                  <span className="block font-medium">{String(value)}</span>
+                  <span className="block text-xs text-fg-muted">
+                    {`SKU ${row.vendorSku} · Barcode ${row.barcode}`}
+                  </span>
+                </span>
+              ),
+            },
+            { key: "category", label: "Category", width: "14%" },
+            { key: "pack", label: "Pack", width: "12%" },
+            {
+              key: "wholesalePrice",
+              label: "Wholesale",
+              width: "12%",
+              numeric: true,
+              render: (value) => `$${Number(value).toFixed(2)}`,
+            },
+            {
+              key: "status",
+              label: "Status",
+              width: "18%",
+              render: (value, row) =>
+                row.hasError ? (
+                  <span className="flex items-start gap-1 py-2 text-danger-default">
+                    <CircleAlertIcon className="mt-0.5 size-4 shrink-0" aria-hidden />
+                    {String(value)}
+                  </span>
+                ) : (
+                  <span className="text-fg-muted">{String(value)}</span>
+                ),
+            },
+            {
+              key: "actions",
+              label: "Actions",
+              width: "22%",
+              sortable: false,
+              searchable: false,
+              render: (_value, row) =>
+                locked ? null : (
+                  <div className="flex flex-wrap gap-1">
+                    <Button asChild size="sm" variant="ghost">
+                      <Link href={`/products/add?itemId=${row.id}`}>Edit</Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      loading={working === row.id}
+                      onClick={() => void remove(row.id)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ),
+            },
+          ]}
+        />
         <div className="flex flex-wrap justify-end gap-3">
           <Button asChild variant="outline">
             <Link href="/products/add">Add more</Link>
           </Button>
-          <Button disabled={!canSend || working === "send"} onClick={() => void send()}>
-            {working === "send" ? "Sending..." : "Send for review"}
+          <Button
+            disabled={!canSend}
+            loading={working === "send"}
+            onClick={() => void send()}
+          >
+            Send for review
           </Button>
         </div>
-      </GlassCardContent>
-    </GlassCard>
+      </PanelContent>
+    </Panel>
   )
 }

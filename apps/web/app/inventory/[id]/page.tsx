@@ -2,14 +2,6 @@ import { format } from "date-fns"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Button } from "@workspace/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 
 import {
   availabilityAPI,
@@ -17,6 +9,7 @@ import {
   productsAPI,
   storesAPI,
 } from "@/lib/api"
+import { Button, Panel, PanelContent, PanelDescription, PanelHeader, PanelTitle } from "@sagui/ui"
 
 interface InventoryDetailPageProps {
   params: Promise<{ id: string }>
@@ -48,62 +41,62 @@ export default async function InventoryDetailPage({
         <Button variant="ghost" size="sm" asChild className="mb-2 -ms-2">
           <Link href="/inventory">← Back to Inventory</Link>
         </Button>
-        <h2 className="text-3xl font-bold">
+        <h1 className="text-3xl font-bold">
           {product?.productName ?? record.sku}
-        </h2>
-        <p className="mt-1 text-muted-foreground">
+        </h1>
+        <p className="mt-1 text-fg-muted">
           {store?.storeName ?? record.storeId} • {record.inventoryId}
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Current Quantity</CardDescription>
-            <CardTitle className="text-lg">
+        <Panel>
+          <PanelHeader className="pb-5">
+            <PanelDescription>Current Quantity</PanelDescription>
+            <PanelTitle as="h2" className="text-lg">
               {record.currentQuantity} {record.unitOfMeasure}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Last Count</CardDescription>
-            <CardTitle className="text-lg">
+            </PanelTitle>
+          </PanelHeader>
+        </Panel>
+        <Panel>
+          <PanelHeader className="pb-5">
+            <PanelDescription>Last Count</PanelDescription>
+            <PanelTitle as="h2" className="text-lg">
               {format(new Date(record.lastCountDate), "MMM d, yyyy")}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Next Count</CardDescription>
-            <CardTitle className="text-lg">
+            </PanelTitle>
+          </PanelHeader>
+        </Panel>
+        <Panel>
+          <PanelHeader className="pb-5">
+            <PanelDescription>Next Count</PanelDescription>
+            <PanelTitle as="h2" className="text-lg">
               {format(new Date(record.nextCountDate), "MMM d, yyyy")}
-            </CardTitle>
-          </CardHeader>
-        </Card>
+            </PanelTitle>
+          </PanelHeader>
+        </Panel>
         {storeAvailability ? (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Reorder Point</CardDescription>
-              <CardTitle className="text-lg">
+          <Panel>
+            <PanelHeader className="pb-5">
+              <PanelDescription>Reorder Point</PanelDescription>
+              <PanelTitle as="h2" className="text-lg">
                 {storeAvailability.reorderPoint}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 text-sm text-muted-foreground">
+              </PanelTitle>
+            </PanelHeader>
+            <PanelContent className="-mt-4 pt-0 text-sm text-fg-muted">
               Min: {storeAvailability.minStockLevel} / Max:{" "}
               {storeAvailability.maxStockLevel}
-            </CardContent>
-          </Card>
+            </PanelContent>
+          </Panel>
         ) : null}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Store</CardTitle>
-            <CardDescription>Location for this inventory record</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <Panel>
+          <PanelHeader>
+            <PanelTitle as="h2">Store</PanelTitle>
+            <PanelDescription>Location for this inventory record</PanelDescription>
+          </PanelHeader>
+          <PanelContent>
             {store ? (
               <Link
                 href={`/stores/${store.storeId}`}
@@ -115,18 +108,18 @@ export default async function InventoryDetailPage({
               record.storeId
             )}
             {store ? (
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-fg-muted">
                 {store.city}, {store.state}
               </p>
             ) : null}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Product</CardTitle>
-            <CardDescription>SKU details</CardDescription>
-          </CardHeader>
-          <CardContent>
+          </PanelContent>
+        </Panel>
+        <Panel>
+          <PanelHeader>
+            <PanelTitle as="h2">Product</PanelTitle>
+            <PanelDescription>SKU details</PanelDescription>
+          </PanelHeader>
+          <PanelContent>
             {product ? (
               <>
                 <Link
@@ -135,7 +128,7 @@ export default async function InventoryDetailPage({
                 >
                   {product.productName}
                 </Link>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="mt-2 text-sm text-fg-muted">
                   SKU: {product.sku} • Wholesale: $
                   {product.wholesalePrice.toFixed(2)}
                 </p>
@@ -143,8 +136,8 @@ export default async function InventoryDetailPage({
             ) : (
               record.sku
             )}
-          </CardContent>
-        </Card>
+          </PanelContent>
+        </Panel>
       </div>
     </div>
   )

@@ -1,13 +1,10 @@
 "use client"
 
-import { Loader2, Search, X } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
-import { Card } from "@workspace/ui/components/card"
-import { Input } from "@workspace/ui/components/input"
+import { Badge, Button, SearchField } from "@sagui/ui"
 
 import { SearchFiltersPanel } from "@/components/search/SearchFilters"
 import { SearchResults } from "@/components/search/SearchResults"
@@ -20,12 +17,16 @@ export function UniversalSearch() {
   const [isOpen, setIsOpen] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        // Both search boxes can be mounted; the shortcut goes to the visible one.
+        if (!inputRef.current?.offsetParent) return
         e.preventDefault()
         setIsOpen(true)
+        inputRef.current.focus()
       }
       if (e.key === "Escape") {
         setIsOpen(false)
@@ -54,10 +55,6 @@ export function UniversalSearch() {
     }
   }, [filters, query, search])
 
-  const handleSearch = (value: string) => {
-    void search(value)
-  }
-
   const handleResultClick = (result: SearchResult) => {
     const routes: Record<SearchResult["type"], string> = {
       store: `/stores/${result.id}`,
@@ -69,73 +66,52 @@ export function UniversalSearch() {
     setIsOpen(false)
   }
 
-  const clearQuery = () => {
-    void search("")
-  }
-
-  const hasActiveFilters =
-    (filters.entityType?.length ?? 0) > 0 || filters.isActive !== undefined
+  const activeFilterCount =
+    (filters.entityType?.length ?? 0) + (filters.isActive !== undefined ? 1 : 0)
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-2xl">
-      <div className="relative">
-        <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder="Search stores, vendors, products, inventory..."
-          value={query}
-          onChange={(e) => handleSearch(e.target.value)}
-          onFocus={() => setIsOpen(true)}
-          className="pe-20 ps-10"
-        />
-        {query ? (
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={clearQuery}
-            className="absolute end-10 top-1/2 -translate-y-1/2"
-          >
-            <X className="size-4" />
-          </Button>
-        ) : null}
-        <kbd className="pointer-events-none absolute end-3 top-1/2 hidden -translate-y-1/2 rounded border bg-muted px-1.5 py-0.5 text-xs text-muted-foreground sm:inline-block">
-          ⌘K
-        </kbd>
-      </div>
-
-      {query ? (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setShowFilters(!showFilters)}
-          className="mt-2"
-        >
-          {hasActiveFilters ? (
-            <Badge variant="secondary" className="me-2">
-              {(filters.entityType?.length ?? 0) +
-                (filters.isActive !== undefined ? 1 : 0)}
-            </Badge>
-          ) : null}
-          Filters
-        </Button>
-      ) : null}
+    <div ref={searchRef} className="relative w-full">
+      <SearchField
+        ref={inputRef}
+        label="Search"
+        hideLabel
+        placeholder="Search everything (⌘K)"
+        value={query}
+        onValueChange={(value) => void search(value)}
+        onFocus={() => setIsOpen(true)}
+      />
 
       {isOpen ? (
-        <Card className="absolute top-full z-50 mt-2 w-full border shadow-lg">
+        <div className="absolute top-full right-0 z-50 mt-2 w-full min-w-72 overflow-hidden rounded-overlay border border-border-default bg-bg-surface shadow-overlay">
+          {query ? (
+            <div className="border-b border-border-default p-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-expanded={showFilters}
+                onClick={() => setShowFilters(!showFilters)}
+                trailingIcon={
+                  activeFilterCount > 0 ? <Badge size="sm">{activeFilterCount}</Badge> : undefined
+                }
+              >
+                Filters
+              </Button>
+            </div>
+          ) : null}
+
           {showFilters ? (
             <SearchFiltersPanel filters={filters} onChange={setFilters} />
           ) : (
             <>
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2 p-8">
-                  <Loader2 className="size-4 animate-spin" />
-                  <span className="text-sm text-muted-foreground">
-                    Searching...
-                  </span>
+                  <Loader2 className="size-4 motion-safe:animate-spin" />
+                  <span className="text-sm text-fg-muted">Searching...</span>
                 </div>
               ) : null}
 
               {!isLoading && query && results.length === 0 ? (
-                <div className="p-8 text-center text-sm text-muted-foreground">
+                <div className="p-8 text-center text-sm text-fg-muted">
                   No results found for &ldquo;{query}&rdquo;
                 </div>
               ) : null}
@@ -149,7 +125,7 @@ export function UniversalSearch() {
               ) : null}
 
               {!isLoading && !query ? (
-                <div className="p-6 text-center text-sm text-muted-foreground">
+                <div className="p-6 text-center text-sm text-fg-muted">
                   <p className="mb-2">Start typing to search</p>
                   <p className="text-xs">
                     Stores • Vendors • Products • Inventory
@@ -158,7 +134,7 @@ export function UniversalSearch() {
               ) : null}
             </>
           )}
-        </Card>
+        </div>
       ) : null}
     </div>
   )

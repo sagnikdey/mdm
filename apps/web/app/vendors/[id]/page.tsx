@@ -1,27 +1,20 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+  Badge,
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
 
 import { getPortalAccountByVendorId } from "@workspace/vendor-onboarding"
 
 import { PortalAccessCard } from "@/app/vendors/[id]/portal-access-card"
+import { RecordTable } from "@/components/tables/record-table"
 import {
   categoriesAPI,
   productsAPI,
@@ -65,56 +58,52 @@ export default async function VendorDetailPage({
           <Button variant="ghost" size="sm" asChild className="mb-2 -ms-2">
             <Link href="/vendors">← Back to Vendors</Link>
           </Button>
-          <h2 className="text-3xl font-bold">{vendor.vendorName}</h2>
-          <p className="mt-1 capitalize text-muted-foreground">
+          <h1 className="text-3xl font-bold">{vendor.vendorName}</h1>
+          <p className="mt-1 capitalize text-fg-muted">
             {vendor.vendorCategory} supplier
           </p>
         </div>
-        <Badge variant={vendor.isActive ? "active" : "inactive"}>
+        <Badge tone={vendor.isActive ? "success" : "neutral"}>
           {vendor.isActive ? "Active" : "Inactive"}
         </Badge>
       </div>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle className="text-lg font-semibold">
-            Vendor information
-          </GlassCardTitle>
-          <GlassCardDescription>
-            Contact details and commercial terms
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent className="grid gap-8 text-sm md:grid-cols-2">
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Vendor information</PanelTitle>
+          <PanelDescription>Contact details and commercial terms</PanelDescription>
+        </PanelHeader>
+        <PanelContent className="grid gap-8 text-sm md:grid-cols-2">
           <dl className="grid gap-3">
             <div>
-              <dt className="text-muted-foreground">Contact</dt>
+              <dt className="text-fg-muted">Contact</dt>
               <dd className="font-medium">{vendor.contactPerson}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">Email</dt>
+              <dt className="text-fg-muted">Email</dt>
               <dd className="font-medium">{vendor.email}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">Phone</dt>
+              <dt className="text-fg-muted">Phone</dt>
               <dd className="font-medium">{vendor.phone}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">Address</dt>
+              <dt className="text-fg-muted">Address</dt>
               <dd className="font-medium">{vendor.address}</dd>
             </div>
           </dl>
-          <dl className="grid gap-3">
+          <dl className="grid content-start gap-3">
             <div>
-              <dt className="text-muted-foreground">Payment terms</dt>
+              <dt className="text-fg-muted">Payment terms</dt>
               <dd className="font-medium">{vendor.paymentTerms}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">Minimum order</dt>
+              <dt className="text-fg-muted">Minimum order</dt>
               <dd className="font-medium">{vendor.minimumOrderQuantity} units</dd>
             </div>
           </dl>
-        </GlassCardContent>
-      </GlassCard>
+        </PanelContent>
+      </Panel>
 
       <PortalAccessCard
         vendorId={vendor.vendorId}
@@ -123,107 +112,61 @@ export default async function VendorDetailPage({
         categories={categories}
       />
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle className="text-lg font-semibold">
-            Store relationships
-          </GlassCardTitle>
-          <GlassCardDescription>
-            Stores this vendor delivers to
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Store</TableHead>
-                  <TableHead>Representative</TableHead>
-                  <TableHead>Frequency</TableHead>
-                  <TableHead>Delivery Days</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {relationships.length ? (
-                  relationships.map((rel) => (
-                    <TableRow key={rel.relationshipId}>
-                      <TableCell>
-                        <Link
-                          href={`/stores/${rel.storeId}`}
-                          className="font-medium hover:underline"
-                        >
-                          {storeName(rel.storeId)}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{rel.vendorRepresentative}</TableCell>
-                      <TableCell>{rel.deliveryFrequency}</TableCell>
-                      <TableCell>{rel.deliveryDays.join(", ")}</TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      No store relationships.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </GlassCardContent>
-      </GlassCard>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Store relationships</PanelTitle>
+          <PanelDescription>Stores this vendor delivers to</PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Store relationships"
+            itemName={{ one: "store", other: "stores" }}
+            emptyMessage="No store relationships."
+            rows={relationships.map((rel) => ({
+              id: rel.relationshipId,
+              store: storeName(rel.storeId),
+              storeHref: `/stores/${rel.storeId}`,
+              representative: rel.vendorRepresentative,
+              frequency: rel.deliveryFrequency,
+              days: rel.deliveryDays.join(", "),
+            }))}
+            columns={[
+              { key: "store", label: "Store", hrefKey: "storeHref" },
+              { key: "representative", label: "Representative" },
+              { key: "frequency", label: "Frequency" },
+              { key: "days", label: "Delivery Days" },
+            ]}
+          />
+        </PanelContent>
+      </Panel>
 
-      <GlassCard>
-        <GlassCardHeader>
-          <GlassCardTitle className="text-lg font-semibold">Products</GlassCardTitle>
-          <GlassCardDescription>
-            Catalog items from this vendor
-          </GlassCardDescription>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>SKU</TableHead>
-                  <TableHead>Wholesale</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {vendorProducts.length ? (
-                  vendorProducts.map((product) => (
-                    <TableRow key={product.sku}>
-                      <TableCell>
-                        <Link
-                          href={`/products/${product.sku}`}
-                          className="font-medium hover:underline"
-                        >
-                          {product.productName}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{product.sku}</TableCell>
-                      <TableCell>${product.wholesalePrice.toFixed(2)}</TableCell>
-                      <TableCell>
-                        <Badge variant={product.isActive ? "active" : "inactive"}>
-                          {product.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      No products.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </GlassCardContent>
-      </GlassCard>
+      <Panel as="section">
+        <PanelHeader>
+          <PanelTitle as="h2">Products</PanelTitle>
+          <PanelDescription>Catalog items from this vendor</PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Products from this vendor"
+            itemName={{ one: "product", other: "products" }}
+            emptyMessage="No products."
+            rows={vendorProducts.map((product) => ({
+              id: product.sku,
+              product: product.productName,
+              productHref: `/products/${product.sku}`,
+              sku: product.sku,
+              wholesale: `$${product.wholesalePrice.toFixed(2)}`,
+              status: product.isActive ? "Active" : "Inactive",
+            }))}
+            columns={[
+              { key: "product", label: "Product", hrefKey: "productHref" },
+              { key: "sku", label: "SKU" },
+              { key: "wholesale", label: "Wholesale" },
+              { key: "status", label: "Status", successValues: ["Active"] },
+            ]}
+          />
+        </PanelContent>
+      </Panel>
     </div>
   )
 }

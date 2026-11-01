@@ -4,44 +4,30 @@ import { useQueryClient } from "@tanstack/react-query"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { toast } from "sonner"
 
 import type {
   CatalogCategory,
   ProductSubmission,
 } from "@workspace/vendor-onboarding/portal-types"
-import { ApprovalCard } from "@workspace/ui/components/approval-card"
-import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import { Field, FieldContent, FieldLabel } from "@workspace/ui/components/field"
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@workspace/ui/components/glass-card"
-import { Textarea } from "@workspace/ui/components/textarea"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
+  Alert,
+  Badge,
+  Button,
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+  Textarea,
+} from "@sagui/ui"
 import {
   approveProductSubmission,
   rejectPendingProductSubmission,
 } from "@/app/admin/vendor-submissions/actions"
 import { PENDING_SUBMISSIONS_QUERY_KEY } from "@/app/admin/vendor-submissions/use-pending-submissions"
+import { ReviewDecision } from "@/components/review-decision"
+import { RecordTable } from "@/components/tables/record-table"
+import { useToast } from "@/components/toast-provider"
 
 type ProductSubmissionReviewProps = {
   submission: ProductSubmission
@@ -54,8 +40,10 @@ export function ProductSubmissionReview({
 }: ProductSubmissionReviewProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const showToast = useToast()
   const [notes, setNotes] = useState("")
   const [isWorking, setIsWorking] = useState(false)
+  const [actionError, setActionError] = useState<string | null>(null)
   const isPending = submission.status === "pending"
 
   function categoryName(id: string | null) {
@@ -68,112 +56,91 @@ export function ProductSubmissionReview({
 
   async function run(action: () => Promise<unknown>, successMessage: string) {
     setIsWorking(true)
+    setActionError(null)
     try {
       await action()
       await queryClient.invalidateQueries({
         queryKey: PENDING_SUBMISSIONS_QUERY_KEY,
       })
-      toast.success(successMessage)
+      showToast({ title: successMessage })
       router.push("/admin/vendor-submissions")
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Action failed")
+      setActionError(error instanceof Error ? error.message : "Action failed")
     } finally {
       setIsWorking(false)
     }
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-      <GlassCard>
-        <GlassCardHeader>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <GlassCardTitle>Proposed products</GlassCardTitle>
-              <GlassCardDescription>
-                Submitted {new Date(submission.createdAt).toLocaleString()} by{" "}
-                {submission.submittedBy}
-              </GlassCardDescription>
-            </div>
-            <Badge
-              variant={submission.status === "approved" ? "active" : "inactive"}
-            >
+    <div className="grid items-start gap-6 lg:grid-cols-[2fr_1fr]">
+      <Panel as="section" className="min-w-0">
+        <PanelHeader
+          action={
+            <Badge tone={submission.status === "approved" ? "success" : "neutral"}>
               {submission.status}
             </Badge>
-          </div>
-        </GlassCardHeader>
-        <GlassCardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Brand</TableHead>
-                  <TableHead>Vendor SKU</TableHead>
-                  <TableHead>Barcode</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Pack</TableHead>
-                  <TableHead>Wholesale</TableHead>
-                  <TableHead>MDM SKU</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {submission.items.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">
-                      {item.productName}
-                    </TableCell>
-                    <TableCell>{item.brand || "—"}</TableCell>
-                    <TableCell>{item.vendorSku}</TableCell>
-                    <TableCell>
-                      {item.noBarcode ? "None" : item.barcode || "—"}
-                    </TableCell>
-                    <TableCell>{categoryName(item.categoryId)}</TableCell>
-                    <TableCell>
-                      {item.packType} / {item.packSize}
-                      {item.baseUnitVendorSku
-                        ? ` → ${item.baseUnitVendorSku}`
-                        : ""}
-                    </TableCell>
-                    <TableCell>${item.wholesalePrice.toFixed(2)}</TableCell>
-                    <TableCell>{item.createdSku ?? "Assigned on approve"}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          }
+        >
+          <PanelTitle as="h2">Proposed products</PanelTitle>
+          <PanelDescription>
+            Submitted {new Date(submission.createdAt).toLocaleString()} by{" "}
+            {submission.submittedBy}
+          </PanelDescription>
+        </PanelHeader>
+        <PanelContent>
+          <RecordTable
+            caption="Proposed products"
+            itemName={{ one: "product", other: "products" }}
+            emptyMessage="No products in this packet."
+            rows={submission.items.map((item) => ({
+              id: String(item.id),
+              product: item.productName,
+              details: `${item.brand || "No brand"} · SKU ${item.vendorSku} · Barcode ${
+                item.noBarcode ? "None" : item.barcode || "—"
+              }`,
+              category: categoryName(item.categoryId),
+              pack: `${item.packType} / ${item.packSize}${
+                item.baseUnitVendorSku ? ` → ${item.baseUnitVendorSku}` : ""
+              }`,
+              wholesale: `$${item.wholesalePrice.toFixed(2)}`,
+              mdmSku: item.createdSku ?? "Assigned on approve",
+            }))}
+            columns={[
+              { key: "product", label: "Product", secondaryKey: "details" },
+              { key: "category", label: "Category", width: "16%" },
+              { key: "pack", label: "Pack", width: "16%" },
+              { key: "wholesale", label: "Wholesale", width: "14%" },
+              { key: "mdmSku", label: "MDM SKU", width: "16%" },
+            ]}
+          />
           <Button asChild variant="outline" size="sm" className="mt-4">
             <Link href={`/vendors/${submission.vendorId}`}>
               Open vendor {submission.vendorId}
             </Link>
           </Button>
-        </GlassCardContent>
-      </GlassCard>
+        </PanelContent>
+      </Panel>
 
       <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Review note</CardTitle>
-            <CardDescription>
+        {actionError ? <Alert tone="danger" title={actionError} /> : null}
+        <Panel as="section">
+          <PanelHeader>
+            <PanelTitle as="h2">Review note</PanelTitle>
+            <PanelDescription>
               Optional. Included if you reject the batch.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Field>
-              <FieldLabel htmlFor="review-note">Note</FieldLabel>
-              <FieldContent>
-                <Textarea
-                  id="review-note"
-                  value={notes}
-                  onChange={(event) => setNotes(event.target.value)}
-                  disabled={!isPending}
-                />
-              </FieldContent>
-            </Field>
-          </CardContent>
-        </Card>
-        <ApprovalCard
-          title="Review decision"
+            </PanelDescription>
+          </PanelHeader>
+          <PanelContent>
+            <Textarea
+              label="Note"
+              value={notes}
+              onChange={(event) => setNotes(event.target.value)}
+              disabled={!isPending}
+            />
+          </PanelContent>
+        </Panel>
+        <ReviewDecision
           description="Approved items are inserted into the product master with a new PRD SKU."
           question={`Approve this packet of ${submission.itemCount} product${submission.itemCount === 1 ? "" : "s"} for ${submission.vendorId}?`}
           actions={[
@@ -188,7 +155,7 @@ export function ProductSubmissionReview({
             },
             {
               label: "Reject packet",
-              variant: "destructive",
+              variant: "danger",
               onClick: () =>
                 void run(
                   () =>

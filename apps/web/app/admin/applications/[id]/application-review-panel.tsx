@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { toast } from "sonner"
+import Link from "next/link"
 
 import {
   approveVendorApplication,
@@ -11,18 +11,21 @@ import {
   requestVendorApplicationInfo,
 } from "@/app/admin/vendors/invite/actions"
 import type { VendorApplication } from "@workspace/vendor-onboarding/types"
-import { ApprovalCard } from "@workspace/ui/components/approval-card"
-import { ContextCard } from "@workspace/ui/components/context-card"
 import {
+  Alert,
+  Badge,
+  Button,
   Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
-import { Badge } from "@workspace/ui/components/badge"
-import Link from "next/link"
-import { Button } from "@workspace/ui/components/button"
+  Panel,
+  PanelContent,
+  PanelDescription,
+  PanelHeader,
+  PanelTitle,
+} from "@sagui/ui"
+
+import { CopyLinkBox } from "@/components/copy-link-box"
+import { ReviewDecision } from "@/components/review-decision"
+import { useToast } from "@/components/toast-provider"
 
 type ApplicationReviewPanelProps = {
   application: VendorApplication
@@ -30,20 +33,14 @@ type ApplicationReviewPanelProps = {
 
 export function ApplicationReviewPanel({ application }: ApplicationReviewPanelProps) {
   const router = useRouter()
+  const showToast = useToast()
   const [isWorking, setIsWorking] = useState(false)
   const [welcomeUrl, setWelcomeUrl] = useState<string | null>(null)
-
-  async function copyWelcomeUrl(url: string) {
-    try {
-      await navigator.clipboard.writeText(url)
-      toast.success("Portal login link copied")
-    } catch {
-      toast.error("Could not copy link")
-    }
-  }
+  const [actionError, setActionError] = useState<string | null>(null)
 
   async function run(action: () => Promise<unknown>, successMessage: string) {
     setIsWorking(true)
+    setActionError(null)
     try {
       const result = await action()
       const welcomeLink =
@@ -53,23 +50,11 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
         typeof result.welcomeUrl === "string"
           ? result.welcomeUrl
           : null
-      if (welcomeLink) {
-        setWelcomeUrl(welcomeLink)
-        toast.success(successMessage, {
-          duration: 8000,
-          action: {
-            label: "Copy link",
-            onClick: () => {
-              void copyWelcomeUrl(welcomeLink)
-            },
-          },
-        })
-      } else {
-        toast.success(successMessage)
-      }
+      if (welcomeLink) setWelcomeUrl(welcomeLink)
+      showToast({ title: successMessage })
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Action failed")
+      setActionError(error instanceof Error ? error.message : "Action failed")
     } finally {
       setIsWorking(false)
     }
@@ -79,33 +64,33 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
     application.companyData.legalName || application.legalName || application.ownerEmail
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>{companyName}</CardTitle>
-            <CardDescription>{application.ownerEmail}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
+    <div className="grid items-start gap-6 lg:grid-cols-[2fr_1fr]">
+      <div className="min-w-0 space-y-6">
+        <Panel as="section">
+          <PanelHeader>
+            <PanelTitle as="h2">{companyName}</PanelTitle>
+            <PanelDescription>{application.ownerEmail}</PanelDescription>
+          </PanelHeader>
+          <PanelContent className="space-y-3 text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">Status</span>
+              <span className="text-fg-muted">Status</span>
               <Badge>{application.status.replace("_", " ")}</Badge>
             </div>
             <p>
-              <span className="text-muted-foreground">Contact:</span>{" "}
+              <span className="text-fg-muted">Contact:</span>{" "}
               {application.contactData.contactPerson} · {application.contactData.phone}
             </p>
             <p>
-              <span className="text-muted-foreground">Address:</span>{" "}
+              <span className="text-fg-muted">Address:</span>{" "}
               {application.addressData.street}, {application.addressData.city},{" "}
               {application.addressData.state} {application.addressData.zipCode}
             </p>
             <p>
-              <span className="text-muted-foreground">Payment terms:</span>{" "}
+              <span className="text-fg-muted">Payment terms:</span>{" "}
               {application.paymentData.paymentTerms}
             </p>
             <p>
-              <span className="text-muted-foreground">Categories:</span>{" "}
+              <span className="text-fg-muted">Categories:</span>{" "}
               {application.categoriesData.categories.length
                 ? application.categoriesData.categories.join(", ")
                 : "—"}
@@ -117,25 +102,24 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
                 </Link>
               </Button>
             ) : null}
-          </CardContent>
-        </Card>
+          </PanelContent>
+        </Panel>
 
         <div className="grid gap-3 md:grid-cols-2">
           {application.documentsData.map((doc) => (
-            <ContextCard
+            <Card
               key={doc.id}
               title={doc.name}
-              source={doc.name}
-              sourceType={doc.type.toUpperCase()}
-              excerpt="Compliance document submitted during onboarding"
+              description="Compliance document submitted during onboarding"
+              meta={doc.type.toUpperCase()}
             />
           ))}
         </div>
       </div>
 
       <div className="space-y-4">
-        <ApprovalCard
-          title="Review decision"
+        {actionError ? <Alert tone="danger" title={actionError} /> : null}
+        <ReviewDecision
           description="Promote approved vendors into the MDM vendor master."
           question={`Approve ${companyName} as a vendor?`}
           actions={[
@@ -150,7 +134,7 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
             },
             {
               label: "Needs info",
-              variant: "secondary",
+              variant: "outline",
               onClick: () =>
                 void run(
                   () => requestVendorApplicationInfo(application.id, "Please provide additional documentation."),
@@ -160,7 +144,7 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
             },
             {
               label: "Reject",
-              variant: "destructive",
+              variant: "danger",
               onClick: () =>
                 void run(
                   () => rejectVendorApplication(application.id, "Application rejected."),
@@ -172,42 +156,29 @@ export function ApplicationReviewPanel({ application }: ApplicationReviewPanelPr
         />
 
         {welcomeUrl ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Vendor portal login</CardTitle>
-              <CardDescription>
+          <Panel as="section">
+            <PanelHeader>
+              <PanelTitle as="h2">Vendor portal login</PanelTitle>
+              <PanelDescription>
                 Email is logged in this environment. Copy the 14-day welcome
                 link for the vendor.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="break-all text-xs text-muted-foreground">
-                {welcomeUrl}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => void copyWelcomeUrl(welcomeUrl)}
-                >
-                  Copy link
-                </Button>
-                <Button type="button" size="sm" asChild>
-                  <a href={welcomeUrl} target="_blank" rel="noreferrer">
-                    Open portal
-                  </a>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </PanelDescription>
+            </PanelHeader>
+            <PanelContent>
+              <CopyLinkBox
+                title="Welcome link"
+                url={welcomeUrl}
+                copiedMessage="Portal login link copied"
+                openLabel="Open portal"
+              />
+            </PanelContent>
+          </Panel>
         ) : null}
 
         {application.status === "submitted" ? (
           <Button
             className="w-full"
             variant="outline"
-            size="lg"
             disabled={isWorking}
             onClick={() =>
               void run(

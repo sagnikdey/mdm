@@ -5,7 +5,7 @@ import {
   fetchApplicationCounts,
   fetchApplications,
 } from "@/app/admin/vendors/invite/actions"
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@sagui/ui"
 
 export default async function ApplicationsPage() {
   const [applications, counts] = await Promise.all([
@@ -17,12 +17,12 @@ export default async function ApplicationsPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Vendor applications</h2>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold">Vendor applications</h1>
+          <p className="mt-1 text-fg-muted">
             Review onboarding submissions and promote approved vendors into MDM
           </p>
         </div>
-        <Button asChild  size="lg">
+        <Button asChild>
           <Link href="/admin/vendors/invite">Send invitation</Link>
         </Button>
       </div>
