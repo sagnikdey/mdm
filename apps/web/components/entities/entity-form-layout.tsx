@@ -36,7 +36,7 @@ export function EntityFormLayout({
     <div className="mx-auto w-full max-w-6xl p-6">
       <Panel as="form" onSubmit={onSubmit}>
         <PanelHeader>
-          <PanelTitle as="h2">{title}</PanelTitle>
+          <PanelTitle as="h2" className="type-h1">{title}</PanelTitle>
           <PanelDescription>{description}</PanelDescription>
         </PanelHeader>
         <PanelContent className="grid gap-5">

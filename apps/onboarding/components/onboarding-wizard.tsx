@@ -351,7 +351,7 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
 
       <Panel as="section" className="w-full flex-1">
         <PanelHeader>
-          <PanelTitle as="h2">{`Step ${step}: ${stepMeta.title}`}</PanelTitle>
+          <PanelTitle as="h2" className="type-h1">{`Step ${step}: ${stepMeta.title}`}</PanelTitle>
           <PanelDescription>{stepMeta.description}</PanelDescription>
         </PanelHeader>
 

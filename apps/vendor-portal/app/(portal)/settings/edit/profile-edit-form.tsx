@@ -60,7 +60,7 @@ export function ProfileEditForm({ profile }: { profile: VendorProfileFields }) {
     <div className="mx-auto w-full max-w-6xl p-6">
       <Panel as="form" onSubmit={onSubmit}>
         <PanelHeader>
-          <PanelTitle as="h2">Edit profile</PanelTitle>
+          <PanelTitle as="h2" className="type-h1">Edit profile</PanelTitle>
           <PanelDescription>
             MDM staff will review these changes before they go live.
           </PanelDescription>

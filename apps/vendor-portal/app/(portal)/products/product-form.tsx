@@ -136,7 +136,7 @@ export function PortalProductForm({
   return (
     <Panel as="form" onSubmit={locked ? undefined : form.handleSubmit(onSubmit)}>
       <PanelHeader>
-        <PanelTitle as="h2">{itemId ? "Edit draft product" : "Add to packet"}</PanelTitle>
+        <PanelTitle as="h2" className="type-h1">{itemId ? "Edit draft product" : "Add to packet"}</PanelTitle>
         <PanelDescription>
           Saved to your draft. Send the whole packet for MDM review when you are done.
         </PanelDescription>

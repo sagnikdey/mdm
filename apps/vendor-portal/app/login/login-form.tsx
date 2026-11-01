@@ -53,7 +53,7 @@ export function LoginForm() {
     <main className="mx-auto flex min-h-screen max-w-lg items-center p-6">
       <Panel as="form" elevation="resting" className="w-full" onSubmit={onSubmit}>
         <PanelHeader>
-          <PanelTitle as="h2">Vendor portal</PanelTitle>
+          <PanelTitle as="h2" className="type-h1">Vendor portal</PanelTitle>
           <PanelDescription>
             Enter the email on your approved vendor account. We&apos;ll send a one-time login link.
           </PanelDescription>
