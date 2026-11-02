@@ -1,27 +1,27 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
-import type { CatalogCategory, CatalogProduct } from "@workspace/vendor-onboarding/portal-types"
+import type {
+  CatalogCategory,
+  CatalogProduct,
+} from "@workspace/vendor-onboarding/portal-types"
 import {
-  Alert,
-  Button,
   Checkbox,
   Input,
   Panel,
   PanelContent,
   PanelDescription,
-  PanelFooter,
   PanelHeader,
   PanelTitle,
   Select,
   Textarea,
 } from "@sagui/ui"
 
+import { FormPage, FormSection } from "@/components/entities/form-page"
 import { useToast } from "@/components/toast-provider"
 import {
   emptyPortalProduct,
@@ -134,24 +134,33 @@ export function PortalProductForm({
   }
 
   return (
-    <Panel as="form" onSubmit={locked ? undefined : form.handleSubmit(onSubmit)}>
-      <PanelHeader>
-        <PanelTitle as="h2" className="type-h1">{itemId ? "Edit draft product" : "Add to packet"}</PanelTitle>
-        <PanelDescription>
-          Saved to your draft. Send the whole packet for MDM review when you are done.
-        </PanelDescription>
-      </PanelHeader>
-      <PanelContent className="grid gap-5">
-        {saveError ? <Alert tone="danger" title={saveError} /> : null}
-
-        <div className="grid items-start gap-4 md:grid-cols-2">
+    <FormPage
+      eyebrow="Products / Packet"
+      title={itemId ? "Edit draft product" : "Add to packet"}
+      description="Saved to your draft. Send the whole packet for MDM review when you are done."
+      cancelHref={cancelHref}
+      isSubmitting={form.formState.isSubmitting}
+      submitLabel={itemId ? "Save row" : "Add to packet"}
+      error={saveError}
+      hideFooter={locked}
+      onSubmit={locked ? undefined : form.handleSubmit(onSubmit)}
+    >
+      <FormSection
+        number="01"
+        title="Pack"
+        description="How this product is packed and sold."
+      >
+        <div className="gap-6 md:grid-cols-2 grid items-start">
           <Select
             label="Pack type"
             value={packType}
             options={PACK_TYPE_OPTIONS}
             disabled={locked}
             onValueChange={(value) =>
-              form.setValue("packType", value as PortalProductValues["packType"])
+              form.setValue(
+                "packType",
+                value as PortalProductValues["packType"]
+              )
             }
           />
           <Input
@@ -174,12 +183,20 @@ export function PortalProductForm({
             ]}
             disabled={locked}
             onValueChange={(value) =>
-              form.setValue("baseUnitVendorSku", value === "__none" ? "" : value)
+              form.setValue(
+                "baseUnitVendorSku",
+                value === "__none" ? "" : value
+              )
             }
           />
         ) : null}
-
-        <div className="grid items-start gap-4 md:grid-cols-2">
+      </FormSection>
+      <FormSection
+        number="02"
+        title="Product details"
+        description="What the product is and how it is identified."
+      >
+        <div className="gap-6 md:grid-cols-2 grid items-start">
           <Input
             label="Product name"
             description={autoFilledNote("productName")}
@@ -196,7 +213,7 @@ export function PortalProductForm({
           />
         </div>
 
-        <div className="grid items-start gap-4 md:grid-cols-2">
+        <div className="gap-6 md:grid-cols-2 grid items-start">
           <Input
             label="Vendor SKU"
             disabled={locked}
@@ -228,7 +245,9 @@ export function PortalProductForm({
           label="No barcode"
           disabled={locked}
           checked={noBarcode}
-          onCheckedChange={(checked) => form.setValue("noBarcode", checked === true)}
+          onCheckedChange={(checked) =>
+            form.setValue("noBarcode", checked === true)
+          }
         />
 
         <Input
@@ -245,8 +264,13 @@ export function PortalProductForm({
           disabled={locked}
           {...form.register("description")}
         />
-
-        <div className="grid items-start gap-4 md:grid-cols-3">
+      </FormSection>
+      <FormSection
+        number="03"
+        title="Pricing & weight"
+        description="Units, wholesale price and weight."
+      >
+        <div className="gap-6 md:grid-cols-3 grid items-start">
           <Input
             label="Unit of measure"
             disabled={locked}
@@ -268,7 +292,7 @@ export function PortalProductForm({
           />
         </div>
 
-        <div className="grid items-start gap-4 md:grid-cols-2">
+        <div className="gap-6 md:grid-cols-2 grid items-start">
           <Input
             label="Weight"
             description={autoFilledNote("weight")}
@@ -283,21 +307,14 @@ export function PortalProductForm({
             options={WEIGHT_UNIT_OPTIONS}
             disabled={locked}
             onValueChange={(value) =>
-              form.setValue("weightUnit", value as PortalProductValues["weightUnit"])
+              form.setValue(
+                "weightUnit",
+                value as PortalProductValues["weightUnit"]
+              )
             }
           />
         </div>
-      </PanelContent>
-      {locked ? null : (
-        <PanelFooter>
-          <Button asChild variant="outline">
-            <Link href={cancelHref}>Cancel</Link>
-          </Button>
-          <Button type="submit" loading={form.formState.isSubmitting}>
-            {itemId ? "Save row" : "Add to packet"}
-          </Button>
-        </PanelFooter>
-      )}
-    </Panel>
+      </FormSection>
+    </FormPage>
   )
 }

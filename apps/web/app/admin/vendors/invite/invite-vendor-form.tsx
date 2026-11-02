@@ -7,7 +7,7 @@ import { Input } from "@sagui/ui"
 
 import { createVendorInvitation } from "@/app/admin/vendors/invite/actions"
 import { CopyLinkBox } from "@/components/copy-link-box"
-import { EntityFormLayout } from "@/components/entities/entity-form-layout"
+import { FormPage, FormSection } from "@/components/entities/form-page"
 import { useToast } from "@/components/toast-provider"
 
 export function InviteVendorForm() {
@@ -35,14 +35,17 @@ export function InviteVendorForm() {
       })
       router.refresh()
     } catch (error) {
-      setSendError(error instanceof Error ? error.message : "Failed to send invitation")
+      setSendError(
+        error instanceof Error ? error.message : "Failed to send invitation"
+      )
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <EntityFormLayout
+    <FormPage
+      eyebrow="Vendors / Invite"
       title="Invite a vendor"
       description="Creates a single-use, 14-day invite link for the onboarding portal."
       cancelHref="/admin/applications"
@@ -51,26 +54,32 @@ export function InviteVendorForm() {
       error={sendError}
       onSubmit={onSubmit}
     >
-      <Input
-        label="Vendor email"
-        type="email"
-        required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Input
-        label="Company name (optional)"
-        value={company}
-        onChange={(e) => setCompany(e.target.value)}
-      />
-      {inviteUrl ? (
-        <CopyLinkBox
-          title="Vendor onboarding link"
-          url={inviteUrl}
-          copiedMessage="Onboarding link copied"
-          openLabel="Open onboarding"
+      <FormSection
+        number="01"
+        title="Who to invite"
+        description="We send the onboarding link to this address."
+      >
+        <Input
+          label="Vendor email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
-      ) : null}
-    </EntityFormLayout>
+        <Input
+          label="Company name (optional)"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+        {inviteUrl ? (
+          <CopyLinkBox
+            title="Vendor onboarding link"
+            url={inviteUrl}
+            copiedMessage="Onboarding link copied"
+            openLabel="Open onboarding"
+          />
+        ) : null}
+      </FormSection>
+    </FormPage>
   )
 }

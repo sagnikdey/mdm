@@ -30,7 +30,13 @@ import {
   Stepper,
   Textarea,
 } from "@sagui/ui"
-import { CheckIcon, CircleAlertIcon, CircleIcon, LoaderCircleIcon } from "lucide-react"
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  CircleAlertIcon,
+  CircleIcon,
+  LoaderCircleIcon,
+} from "lucide-react"
 
 const CATEGORY_OPTIONS = [
   "Beverages",
@@ -56,28 +62,42 @@ type SubmitTask = {
   detail?: string
 }
 
-const TASK_STATUS: Record<TaskStatus, { icon: React.ReactNode; text: string }> = {
-  pending: { icon: <CircleIcon className="size-4 text-fg-muted" />, text: "Pending" },
-  running: {
-    icon: <LoaderCircleIcon className="size-4 text-fg-muted motion-safe:animate-spin" />,
-    text: "In progress",
-  },
-  completed: { icon: <CheckIcon className="size-4 text-success-default" />, text: "Done" },
-  failed: { icon: <CircleAlertIcon className="size-4 text-danger-default" />, text: "Failed" },
-}
+const TASK_STATUS: Record<TaskStatus, { icon: React.ReactNode; text: string }> =
+  {
+    pending: {
+      icon: <CircleIcon className="size-4 text-fg-muted" />,
+      text: "Pending",
+    },
+    running: {
+      icon: (
+        <LoaderCircleIcon className="size-4 motion-safe:animate-spin text-fg-muted" />
+      ),
+      text: "In progress",
+    },
+    completed: {
+      icon: <CheckIcon className="size-4 text-success-default" />,
+      text: "Done",
+    },
+    failed: {
+      icon: <CircleAlertIcon className="size-4 text-danger-default" />,
+      text: "Failed",
+    },
+  }
 
 function SubmitTaskList({ tasks }: { tasks: SubmitTask[] }) {
   return (
-    <ul className="grid gap-3" aria-live="polite">
+    <ul className="gap-3 grid" aria-live="polite">
       {tasks.map((task) => (
-        <li key={task.id} className="flex items-start gap-3 text-sm">
+        <li key={task.id} className="gap-3 flex items-start text-sm">
           <span className="mt-0.5 shrink-0" aria-hidden>
             {TASK_STATUS[task.status].icon}
           </span>
           <span className="min-w-0">
             <span className="sr-only">{TASK_STATUS[task.status].text}: </span>
             <span className="text-fg-default">{task.label}</span>
-            {task.detail ? <span className="block text-fg-muted">{task.detail}</span> : null}
+            {task.detail ? (
+              <span className="block text-fg-muted">{task.detail}</span>
+            ) : null}
           </span>
         </li>
       ))}
@@ -96,7 +116,9 @@ type OnboardingWizardProps = {
   application: VendorApplication
 }
 
-export function OnboardingWizard({ application: initial }: OnboardingWizardProps) {
+export function OnboardingWizard({
+  application: initial,
+}: OnboardingWizardProps) {
   const [application, setApplication] = useState(initial)
   const [step, setStep] = useState(initial.currentStep)
   const [isSaving, setIsSaving] = useState(false)
@@ -105,7 +127,10 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
   const [errorSteps, setErrorSteps] = useState<Set<number>>(new Set())
   const [formError, setFormError] = useState<string | null>(null)
 
-  const isSubmitted = application.status === "submitted" || application.status === "under_review" || application.status === "approved"
+  const isSubmitted =
+    application.status === "submitted" ||
+    application.status === "under_review" ||
+    application.status === "approved"
   const isSubmitting = submitTasks.some((task) => task.status === "running")
 
   const stepMeta = ONBOARDING_STEPS[step - 1]!
@@ -226,7 +251,9 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
       setApplication(updated)
       setStep(nextStep)
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : "Failed to save step")
+      setFormError(
+        error instanceof Error ? error.message : "Failed to save step"
+      )
     } finally {
       setIsSaving(false)
     }
@@ -253,7 +280,11 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
     setSubmitTasks((tasks) =>
       tasks.map((task) =>
         task.id === "1"
-          ? { ...task, status: "completed", detail: "All required fields present" }
+          ? {
+              ...task,
+              status: "completed",
+              detail: "All required fields present",
+            }
           : task.id === "2"
             ? { ...task, status: "running" }
             : task
@@ -264,7 +295,11 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
     setSubmitTasks((tasks) =>
       tasks.map((task) =>
         task.id === "2"
-          ? { ...task, status: "completed", detail: `${application.documentsData.length} documents attached` }
+          ? {
+              ...task,
+              status: "completed",
+              detail: `${application.documentsData.length} documents attached`,
+            }
           : task.id === "3"
             ? { ...task, status: "running" }
             : task
@@ -296,7 +331,10 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
     () => [
       { label: "Company", value: application.companyData.legalName || "—" },
       { label: "Contact", value: application.contactData.contactPerson || "—" },
-      { label: "Location", value: `${application.addressData.city}, ${application.addressData.state}` },
+      {
+        label: "Location",
+        value: `${application.addressData.city}, ${application.addressData.state}`,
+      },
       {
         label: "Categories",
         value: application.categoriesData.categories.length
@@ -314,7 +352,8 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
         <PanelHeader>
           <PanelTitle as="h2">Application submitted</PanelTitle>
           <PanelDescription>
-            Your vendor application is in the review queue. We&apos;ll email {application.ownerEmail} with updates.
+            Your vendor application is in the review queue. We&apos;ll email{" "}
+            {application.ownerEmail} with updates.
           </PanelDescription>
         </PanelHeader>
         <PanelContent>
@@ -322,7 +361,13 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
             tasks={
               submitTasks.length
                 ? submitTasks
-                : [{ id: "done", label: "Submitted for review", status: "completed" }]
+                : [
+                    {
+                      id: "done",
+                      label: "Submitted for review",
+                      status: "completed",
+                    },
+                  ]
             }
           />
         </PanelContent>
@@ -331,8 +376,8 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
   }
 
   return (
-    <div className="flex flex-col items-start gap-8 lg:flex-row lg:gap-10">
-      <div className="w-full lg:w-64 lg:shrink-0">
+    <div className="gap-8 lg:flex-row lg:gap-10 flex flex-col items-start">
+      <div className="lg:w-64 lg:shrink-0 w-full">
         <Stepper
           aria-label="Onboarding progress"
           current={step - 1}
@@ -341,7 +386,9 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
             label: (
               <>
                 {item.title}
-                <span className="block text-xs font-normal text-fg-muted">{item.description}</span>
+                <span className="block text-xs font-normal text-fg-muted">
+                  {item.description}
+                </span>
               </>
             ),
             error: errorSteps.has(item.id),
@@ -349,34 +396,51 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
         />
       </div>
 
-      <Panel as="section" className="w-full flex-1">
-        <PanelHeader>
-          <PanelTitle as="h2" className="type-h1">{`Step ${step}: ${stepMeta.title}`}</PanelTitle>
-          <PanelDescription>{stepMeta.description}</PanelDescription>
+      <Panel as="section" className="w-full flex-1 overflow-hidden">
+        <PanelHeader className="p-6 md:p-10">
+          <p className="mb-4 tracking-widest text-xs font-semibold text-accent-default uppercase">
+            {`Step ${step} of ${ONBOARDING_STEPS.length}`}
+          </p>
+          <PanelTitle as="h2" className="text-3xl font-semibold">
+            {stepMeta.title}
+          </PanelTitle>
+          <PanelDescription className="mt-1.5">
+            {stepMeta.description}
+          </PanelDescription>
         </PanelHeader>
 
-        <PanelContent className="grid gap-5">
+        <PanelContent className="mx-6 gap-6 px-0 pt-7 pb-8 md:mx-10 grid border-t border-border-default">
           {formError ? <Alert tone="danger" title={formError} /> : null}
 
-          <fieldset disabled={isSaving} className="m-0 min-w-0 border-0 p-0">
+          <fieldset disabled={isSaving} className="m-0 min-w-0 p-0 border-0">
             {step === 1 ? (
-              <div className="grid gap-5">
+              <div className="gap-6 grid">
                 <Input
                   label="Legal company name"
                   value={application.companyData.legalName}
                   error={errors.legalName}
-                  onChange={(e) => updateSection("companyData", { legalName: e.target.value }, "legalName")}
+                  onChange={(e) =>
+                    updateSection(
+                      "companyData",
+                      { legalName: e.target.value },
+                      "legalName"
+                    )
+                  }
                 />
                 <Input
                   label="DBA name (optional)"
                   value={application.companyData.dbaName ?? ""}
-                  onChange={(e) => updateSection("companyData", { dbaName: e.target.value })}
+                  onChange={(e) =>
+                    updateSection("companyData", { dbaName: e.target.value })
+                  }
                 />
-                <div className="grid items-start gap-4 md:grid-cols-2">
+                <div className="gap-6 md:grid-cols-2 grid items-start">
                   <Input
                     label="Tax ID / EIN (optional)"
                     value={application.companyData.taxId ?? ""}
-                    onChange={(e) => updateSection("companyData", { taxId: e.target.value })}
+                    onChange={(e) =>
+                      updateSection("companyData", { taxId: e.target.value })
+                    }
                   />
                   <Select
                     label="Primary category"
@@ -384,70 +448,122 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
                     value={application.companyData.vendorCategory}
                     options={PRIMARY_CATEGORY_OPTIONS}
                     error={errors.vendorCategory}
-                    onValueChange={(value) => updateSection("companyData", { vendorCategory: value }, "vendorCategory")}
+                    onValueChange={(value) =>
+                      updateSection(
+                        "companyData",
+                        { vendorCategory: value },
+                        "vendorCategory"
+                      )
+                    }
                   />
                 </div>
               </div>
             ) : null}
 
             {step === 2 ? (
-              <div className="grid gap-5">
+              <div className="gap-6 grid">
                 <Input
                   label="Contact person"
                   value={application.contactData.contactPerson}
                   error={errors.contactPerson}
-                  onChange={(e) => updateSection("contactData", { contactPerson: e.target.value }, "contactPerson")}
+                  onChange={(e) =>
+                    updateSection(
+                      "contactData",
+                      { contactPerson: e.target.value },
+                      "contactPerson"
+                    )
+                  }
                 />
-                <Input label="Email (from invitation)" value={application.contactData.email} disabled />
+                <Input
+                  label="Email (from invitation)"
+                  value={application.contactData.email}
+                  disabled
+                />
                 <Input
                   label="Phone"
                   type="tel"
                   value={application.contactData.phone}
                   error={errors.phone}
-                  onChange={(e) => updateSection("contactData", { phone: e.target.value }, "phone")}
+                  onChange={(e) =>
+                    updateSection(
+                      "contactData",
+                      { phone: e.target.value },
+                      "phone"
+                    )
+                  }
                 />
               </div>
             ) : null}
 
             {step === 3 ? (
-              <div className="grid gap-5">
+              <div className="gap-6 grid">
                 <Textarea
                   label="Street address"
                   value={application.addressData.street}
                   error={errors.street}
-                  onChange={(e) => updateSection("addressData", { street: e.target.value }, "street")}
+                  onChange={(e) =>
+                    updateSection(
+                      "addressData",
+                      { street: e.target.value },
+                      "street"
+                    )
+                  }
                 />
-                <div className="grid items-start gap-4 md:grid-cols-3">
+                <div className="gap-6 md:grid-cols-3 grid items-start">
                   <Input
                     label="City"
                     value={application.addressData.city}
                     error={errors.city}
-                    onChange={(e) => updateSection("addressData", { city: e.target.value }, "city")}
+                    onChange={(e) =>
+                      updateSection(
+                        "addressData",
+                        { city: e.target.value },
+                        "city"
+                      )
+                    }
                   />
                   <Input
                     label="State"
                     value={application.addressData.state}
                     error={errors.state}
-                    onChange={(e) => updateSection("addressData", { state: e.target.value }, "state")}
+                    onChange={(e) =>
+                      updateSection(
+                        "addressData",
+                        { state: e.target.value },
+                        "state"
+                      )
+                    }
                   />
                   <Input
                     label="ZIP"
                     inputMode="numeric"
                     value={application.addressData.zipCode}
                     error={errors.zipCode}
-                    onChange={(e) => updateSection("addressData", { zipCode: e.target.value }, "zipCode")}
+                    onChange={(e) =>
+                      updateSection(
+                        "addressData",
+                        { zipCode: e.target.value },
+                        "zipCode"
+                      )
+                    }
                   />
                 </div>
               </div>
             ) : null}
 
             {step === 4 ? (
-              <div className="grid gap-5">
+              <div className="gap-6 grid">
                 <Input
                   label="Payment terms"
                   value={application.paymentData.paymentTerms}
                   error={errors.paymentTerms}
-                  onChange={(e) => updateSection("paymentData", { paymentTerms: e.target.value }, "paymentTerms")}
+                  onChange={(e) =>
+                    updateSection(
+                      "paymentData",
+                      { paymentTerms: e.target.value },
+                      "paymentTerms"
+                    )
+                  }
                 />
                 <Input
                   label="Minimum order quantity"
@@ -467,20 +583,29 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
             ) : null}
 
             {step === 5 ? (
-              <fieldset className="m-0 grid min-w-0 gap-1 border-0 p-0">
-                <legend className="mb-2 p-0 text-sm font-medium text-fg-default">Categories you supply</legend>
+              <fieldset className="m-0 min-w-0 gap-1 p-0 grid border-0">
+                <legend className="mb-2 p-0 text-sm font-medium text-fg-default">
+                  Categories you supply
+                </legend>
                 {CATEGORY_OPTIONS.map((category) => (
                   <Checkbox
                     key={category}
                     label={category}
-                    checked={application.categoriesData.categories.includes(category)}
+                    checked={application.categoriesData.categories.includes(
+                      category
+                    )}
                     onCheckedChange={(value) =>
                       updateSection(
                         "categoriesData",
                         {
                           categories: value
-                            ? [...application.categoriesData.categories, category]
-                            : application.categoriesData.categories.filter((item) => item !== category),
+                            ? [
+                                ...application.categoriesData.categories,
+                                category,
+                              ]
+                            : application.categoriesData.categories.filter(
+                                (item) => item !== category
+                              ),
                         },
                         "categories"
                       )
@@ -488,7 +613,10 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
                   />
                 ))}
                 {errors.categories ? (
-                  <p role="alert" className="m-0 mt-1 text-sm text-danger-default">
+                  <p
+                    role="alert"
+                    className="m-0 mt-1 text-sm text-danger-default"
+                  >
                     {errors.categories}
                   </p>
                 ) : null}
@@ -496,12 +624,13 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
             ) : null}
 
             {step === 6 ? (
-              <div className="grid justify-items-start gap-4">
+              <div className="gap-4 grid justify-items-start">
                 <p className="m-0 text-sm text-fg-muted">
-                  Add compliance document references for review. File upload storage can be wired later.
+                  Add compliance document references for review. File upload
+                  storage can be wired later.
                 </p>
                 {application.documentsData.length ? (
-                  <div className="grid w-full gap-3 md:grid-cols-2">
+                  <div className="gap-3 md:grid-cols-2 grid w-full">
                     {application.documentsData.map((doc) => (
                       <Card
                         key={doc.id}
@@ -536,21 +665,23 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
             ) : null}
 
             {step === 7 ? (
-              <dl className="m-0 grid gap-3">
+              <dl className="m-0 gap-3 grid">
                 {reviewSummary.map((row) => (
                   <div
                     key={row.label}
-                    className="flex items-center justify-between gap-4 rounded-control border border-border-default px-3 py-2 text-sm"
+                    className="gap-4 px-3 py-2 flex items-center justify-between rounded-control border border-border-default text-sm"
                   >
                     <dt className="text-fg-muted">{row.label}</dt>
-                    <dd className="m-0 text-right font-medium text-fg-default">{row.value}</dd>
+                    <dd className="m-0 text-right font-medium text-fg-default">
+                      {row.value}
+                    </dd>
                   </div>
                 ))}
               </dl>
             ) : null}
 
             {step === 8 ? (
-              <div className="grid gap-4">
+              <div className="gap-4 grid">
                 <p className="m-0 text-sm text-fg-muted">
                   Submit your application to the buyer review queue.
                 </p>
@@ -560,7 +691,7 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
           </fieldset>
         </PanelContent>
 
-        <PanelFooter className="justify-between">
+        <PanelFooter className="px-6 py-7 md:px-10 justify-between bg-bg-canvas">
           <Button
             type="button"
             variant="outline"
@@ -571,11 +702,20 @@ export function OnboardingWizard({ application: initial }: OnboardingWizardProps
           </Button>
 
           {step < 8 ? (
-            <Button type="button" loading={isSaving} onClick={() => void persist(step + 1)}>
+            <Button
+              type="button"
+              loading={isSaving}
+              trailingIcon={<ArrowRightIcon className="size-4" />}
+              onClick={() => void persist(step + 1)}
+            >
               Save & continue
             </Button>
           ) : (
-            <Button type="button" loading={isSubmitting} onClick={() => void handleSubmit()}>
+            <Button
+              type="button"
+              loading={isSubmitting}
+              onClick={() => void handleSubmit()}
+            >
               Submit application
             </Button>
           )}

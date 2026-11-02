@@ -24,7 +24,8 @@ const LOGIN_ERRORS: Record<string, string> = {
     "Vendor portal is missing DATABASE_URL or VENDOR_PORTAL_SESSION_SECRET on its Vercel project. Those must match MDM's production database.",
   unavailable:
     "Could not reach the login database. Check that the vendor-portal Vercel project uses the same DATABASE_URL as MDM.",
-  rate_limited: "Too many login attempts. Wait a few minutes and request a new link.",
+  rate_limited:
+    "Too many login attempts. Wait a few minutes and request a new link.",
 }
 
 export function LoginForm() {
@@ -50,15 +51,26 @@ export function LoginForm() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-lg items-center p-6">
-      <Panel as="form" elevation="resting" className="w-full" onSubmit={onSubmit}>
-        <PanelHeader>
-          <PanelTitle as="h2" className="type-h1">Vendor portal</PanelTitle>
-          <PanelDescription>
-            Enter the email on your approved vendor account. We&apos;ll send a one-time login link.
+    <main className="max-w-lg p-6 mx-auto flex min-h-screen items-center">
+      <Panel
+        as="form"
+        elevation="resting"
+        className="w-full overflow-hidden"
+        onSubmit={onSubmit}
+      >
+        <PanelHeader className="p-6 md:p-10">
+          <p className="mb-4 tracking-widest text-xs font-semibold text-accent-default uppercase">
+            Vendor login
+          </p>
+          <PanelTitle as="h2" className="text-3xl font-semibold">
+            Vendor portal
+          </PanelTitle>
+          <PanelDescription className="mt-1.5">
+            Enter the email on your approved vendor account. We&apos;ll send a
+            one-time login link.
           </PanelDescription>
         </PanelHeader>
-        <PanelContent className="grid gap-4">
+        <PanelContent className="mx-6 gap-6 px-0 pt-7 pb-8 md:mx-10 grid border-t border-border-default">
           {error ? <Alert tone="danger" title={error} /> : null}
           <Input
             label="Email"
@@ -69,7 +81,7 @@ export function LoginForm() {
             onChange={(event) => setEmail(event.target.value)}
           />
         </PanelContent>
-        <PanelFooter>
+        <PanelFooter className="px-6 py-7 md:px-10 bg-bg-canvas">
           <Button type="submit" loading={isSubmitting}>
             Send login link
           </Button>

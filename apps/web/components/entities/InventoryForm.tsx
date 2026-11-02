@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 
 import { Input, Select } from "@sagui/ui"
 
-import { EntityFormLayout } from "@/components/entities/entity-form-layout"
+import { FormPage, FormSection } from "@/components/entities/form-page"
 import { useToast } from "@/components/toast-provider"
 import { inventoryAPI, productsAPI, storesAPI } from "@/lib/api-client"
 import {
@@ -81,7 +81,9 @@ export function InventoryForm({ initialValues, mode }: InventoryFormProps) {
       router.refresh()
     } catch (error) {
       setSaveError(
-        error instanceof Error ? error.message : "Failed to save inventory record"
+        error instanceof Error
+          ? error.message
+          : "Failed to save inventory record"
       )
     } finally {
       setIsSubmitting(false)
@@ -89,65 +91,99 @@ export function InventoryForm({ initialValues, mode }: InventoryFormProps) {
   }
 
   return (
-    <EntityFormLayout
-      title={mode === "create" ? "New Inventory Record" : "Edit Inventory Record"}
+    <FormPage
+      eyebrow={mode === "create" ? "Inventory / New" : "Inventory / Edit"}
+      submitLabel={mode === "create" ? "Create record" : "Save changes"}
+      title={
+        mode === "create" ? "New Inventory Record" : "Edit Inventory Record"
+      }
       description="Track stock levels and count schedules."
       cancelHref={
-        mode === "create" ? "/inventory" : `/inventory/${initialValues?.inventoryId}`
+        mode === "create"
+          ? "/inventory"
+          : `/inventory/${initialValues?.inventoryId}`
       }
       isSubmitting={isSubmitting}
       error={saveError}
       onSubmit={form.handleSubmit(onSubmit)}
     >
-      <Input
-        label="Inventory ID"
-        error={errors.inventoryId?.message}
-        {...form.register("inventoryId")}
-        disabled={mode === "edit"}
-      />
-
-      <div className="grid items-start gap-4 md:grid-cols-2">
-        <Select
-          label="Store"
-          placeholder="Select store"
-          value={form.watch("storeId")}
-          options={stores.map((store) => ({ value: store.storeId, label: store.storeName }))}
-          error={errors.storeId?.message}
-          onValueChange={(value) => form.setValue("storeId", value)}
-        />
-        <Select
-          label="Product SKU"
-          placeholder="Select product"
-          value={form.watch("sku")}
-          options={products.map((product) => ({
-            value: product.sku,
-            label: `${product.sku} — ${product.productName}`,
-          }))}
-          error={errors.sku?.message}
-          onValueChange={(value) => {
-            form.setValue("sku", value)
-            const product = products.find((item) => item.sku === value)
-            if (product) {
-              form.setValue("unitOfMeasure", product.unitOfMeasure)
-            }
-          }}
-        />
-      </div>
-
-      <div className="grid items-start gap-4 md:grid-cols-2">
+      <FormSection
+        number="01"
+        title="Record"
+        description="Which product this record tracks, and at which store."
+      >
         <Input
-          label="Current Quantity"
-          type="number"
-          error={errors.currentQuantity?.message}
-          {...form.register("currentQuantity", { valueAsNumber: true })}
+          label="Inventory ID"
+          error={errors.inventoryId?.message}
+          {...form.register("inventoryId")}
+          disabled={mode === "edit"}
         />
-        <Input label="Unit of Measure" error={errors.unitOfMeasure?.message} {...form.register("unitOfMeasure")} />
-      </div>
 
-      <div className="grid items-start gap-4 md:grid-cols-2">
-        <Input label="Last Count Date" type="date" error={errors.lastCountDate?.message} {...form.register("lastCountDate")} />
-        <Input label="Next Count Date" type="date" error={errors.nextCountDate?.message} {...form.register("nextCountDate")} />
-      </div>
-    </EntityFormLayout>
+        <div className="gap-6 md:grid-cols-2 grid items-start">
+          <Select
+            label="Store"
+            placeholder="Select store"
+            value={form.watch("storeId")}
+            options={stores.map((store) => ({
+              value: store.storeId,
+              label: store.storeName,
+            }))}
+            error={errors.storeId?.message}
+            onValueChange={(value) => form.setValue("storeId", value)}
+          />
+          <Select
+            label="Product SKU"
+            placeholder="Select product"
+            value={form.watch("sku")}
+            options={products.map((product) => ({
+              value: product.sku,
+              label: `${product.sku} — ${product.productName}`,
+            }))}
+            error={errors.sku?.message}
+            onValueChange={(value) => {
+              form.setValue("sku", value)
+              const product = products.find((item) => item.sku === value)
+              if (product) {
+                form.setValue("unitOfMeasure", product.unitOfMeasure)
+              }
+            }}
+          />
+        </div>
+      </FormSection>
+      <FormSection
+        number="02"
+        title="Stock & counts"
+        description="Current quantity and the count schedule."
+      >
+        <div className="gap-6 md:grid-cols-2 grid items-start">
+          <Input
+            label="Current Quantity"
+            type="number"
+            error={errors.currentQuantity?.message}
+            {...form.register("currentQuantity", { valueAsNumber: true })}
+          />
+          <Input
+            label="Unit of Measure"
+            error={errors.unitOfMeasure?.message}
+            {...form.register("unitOfMeasure")}
+          />
+        </div>
+
+        <div className="gap-6 md:grid-cols-2 grid items-start">
+          <Input
+            label="Last Count Date"
+            type="date"
+            error={errors.lastCountDate?.message}
+            {...form.register("lastCountDate")}
+          />
+          <Input
+            label="Next Count Date"
+            type="date"
+            error={errors.nextCountDate?.message}
+            {...form.register("nextCountDate")}
+          />
+        </div>
+      </FormSection>
+    </FormPage>
   )
 }

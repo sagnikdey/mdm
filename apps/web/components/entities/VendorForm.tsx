@@ -7,10 +7,13 @@ import { useForm } from "react-hook-form"
 
 import { Checkbox, Input, Select, Textarea } from "@sagui/ui"
 
-import { EntityFormLayout } from "@/components/entities/entity-form-layout"
+import { FormPage, FormRow, FormSection } from "@/components/entities/form-page"
 import { useToast } from "@/components/toast-provider"
 import { vendorsAPI } from "@/lib/api-client"
-import { vendorSchema, type VendorFormValues } from "@/lib/schemas/vendor.schema"
+import {
+  vendorSchema,
+  type VendorFormValues,
+} from "@/lib/schemas/vendor.schema"
 import type { Vendor } from "@/lib/types"
 
 const CATEGORY_OPTIONS = [
@@ -62,57 +65,114 @@ export function VendorForm({ initialValues, mode }: VendorFormProps) {
       router.push(`/vendors/${values.vendorId}`)
       router.refresh()
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : "Failed to save vendor")
+      setSaveError(
+        error instanceof Error ? error.message : "Failed to save vendor"
+      )
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <EntityFormLayout
+    <FormPage
+      eyebrow={mode === "create" ? "Vendors / New" : "Vendors / Edit"}
       title={mode === "create" ? "New Vendor" : "Edit Vendor"}
       description="Manage vendor contact and payment details."
-      cancelHref={mode === "create" ? "/vendors" : `/vendors/${initialValues?.vendorId}`}
+      cancelHref={
+        mode === "create" ? "/vendors" : `/vendors/${initialValues?.vendorId}`
+      }
       isSubmitting={isSubmitting}
+      submitLabel={mode === "create" ? "Create vendor" : "Save changes"}
       error={saveError}
       onSubmit={form.handleSubmit(onSubmit)}
     >
-      <div className="grid items-start gap-4 md:grid-cols-2">
-        <Input label="Vendor ID" error={errors.vendorId?.message} {...form.register("vendorId")} disabled={mode === "edit"} />
-        <Input label="Vendor Name" error={errors.vendorName?.message} {...form.register("vendorName")} />
-      </div>
+      <FormSection
+        number="01"
+        title="Vendor details"
+        description="How this vendor is identified across master data."
+      >
+        <FormRow>
+          <Input
+            label="Vendor ID"
+            error={errors.vendorId?.message}
+            {...form.register("vendorId")}
+            disabled={mode === "edit"}
+          />
+          <Input
+            label="Vendor Name"
+            error={errors.vendorName?.message}
+            {...form.register("vendorName")}
+          />
+        </FormRow>
+        <FormRow>
+          <Select
+            label="Category"
+            placeholder="Select category"
+            value={form.watch("vendorCategory")}
+            options={CATEGORY_OPTIONS}
+            onValueChange={(value) => form.setValue("vendorCategory", value)}
+          />
+        </FormRow>
+      </FormSection>
 
-      <Select
-        label="Category"
-        placeholder="Select category"
-        value={form.watch("vendorCategory")}
-        options={CATEGORY_OPTIONS}
-        onValueChange={(value) => form.setValue("vendorCategory", value)}
-      />
+      <FormSection
+        number="02"
+        title="Contact"
+        description="Who to reach about orders and deliveries."
+      >
+        <FormRow>
+          <Input
+            label="Contact Person"
+            error={errors.contactPerson?.message}
+            {...form.register("contactPerson")}
+          />
+          <Input
+            label="Phone"
+            error={errors.phone?.message}
+            {...form.register("phone")}
+          />
+        </FormRow>
+        <FormRow>
+          <Input
+            label="Email"
+            type="email"
+            error={errors.email?.message}
+            {...form.register("email")}
+          />
+          <Textarea
+            label="Address"
+            error={errors.address?.message}
+            {...form.register("address")}
+          />
+        </FormRow>
+      </FormSection>
 
-      <div className="grid items-start gap-4 md:grid-cols-2">
-        <Input label="Contact Person" error={errors.contactPerson?.message} {...form.register("contactPerson")} />
-        <Input label="Phone" error={errors.phone?.message} {...form.register("phone")} />
-      </div>
-
-      <Input label="Email" type="email" error={errors.email?.message} {...form.register("email")} />
-      <Textarea label="Address" error={errors.address?.message} {...form.register("address")} />
-
-      <div className="grid items-start gap-4 md:grid-cols-2">
-        <Input label="Payment Terms" error={errors.paymentTerms?.message} {...form.register("paymentTerms")} />
-        <Input
-          label="Minimum Order Qty"
-          type="number"
-          error={errors.minimumOrderQuantity?.message}
-          {...form.register("minimumOrderQuantity", { valueAsNumber: true })}
+      <FormSection
+        number="03"
+        title="Terms & status"
+        description="Commercial terms, and whether this vendor is active."
+      >
+        <FormRow>
+          <Input
+            label="Payment Terms"
+            error={errors.paymentTerms?.message}
+            {...form.register("paymentTerms")}
+          />
+          <Input
+            label="Minimum Order Qty"
+            type="number"
+            error={errors.minimumOrderQuantity?.message}
+            {...form.register("minimumOrderQuantity", { valueAsNumber: true })}
+          />
+        </FormRow>
+        <Checkbox
+          label="Active vendor"
+          checked={form.watch("isActive")}
+          onCheckedChange={(checked) =>
+            form.setValue("isActive", checked === true)
+          }
         />
-      </div>
-
-      <Checkbox
-        label="Active vendor"
-        checked={form.watch("isActive")}
-        onCheckedChange={(checked) => form.setValue("isActive", checked === true)}
-      />
-    </EntityFormLayout>
+      </FormSection>
+    </FormPage>
   )
 }

@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 
 import { Checkbox, Input, Select } from "@sagui/ui"
 
-import { EntityFormLayout } from "@/components/entities/entity-form-layout"
+import { FormPage, FormSection } from "@/components/entities/form-page"
 import { useToast } from "@/components/toast-provider"
 import { storesAPI } from "@/lib/api-client"
 import {
@@ -84,82 +84,141 @@ export function StoreForm({ initialValues, mode }: StoreFormProps) {
       router.push(`/stores/${values.storeId}`)
       router.refresh()
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : "Failed to save store")
+      setSaveError(
+        error instanceof Error ? error.message : "Failed to save store"
+      )
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <EntityFormLayout
+    <FormPage
+      eyebrow={mode === "create" ? "Stores / New" : "Stores / Edit"}
+      submitLabel={mode === "create" ? "Create store" : "Save changes"}
       title={mode === "create" ? "New Store" : "Edit Store"}
       description="Manage store location details and operating hours."
-      cancelHref={mode === "create" ? "/stores" : `/stores/${initialValues?.storeId}`}
+      cancelHref={
+        mode === "create" ? "/stores" : `/stores/${initialValues?.storeId}`
+      }
       isSubmitting={isSubmitting}
       error={saveError}
       onSubmit={form.handleSubmit(onSubmit)}
     >
-      <div className="grid items-start gap-4 md:grid-cols-2">
-        <Input label="Store ID" error={errors.storeId?.message} {...form.register("storeId")} disabled={mode === "edit"} />
-        <Input label="Store Name" error={errors.storeName?.message} {...form.register("storeName")} />
-      </div>
+      <FormSection
+        number="01"
+        title="Store details"
+        description="How this store is identified and where it is."
+      >
+        <div className="gap-6 md:grid-cols-2 grid items-start">
+          <Input
+            label="Store ID"
+            error={errors.storeId?.message}
+            {...form.register("storeId")}
+            disabled={mode === "edit"}
+          />
+          <Input
+            label="Store Name"
+            error={errors.storeName?.message}
+            {...form.register("storeName")}
+          />
+        </div>
 
-      <Input label="Address" error={errors.address?.message} {...form.register("address")} />
-
-      <div className="grid items-start gap-4 md:grid-cols-3">
-        <Input label="City" error={errors.city?.message} {...form.register("city")} />
-        <Input label="State" error={errors.state?.message} {...form.register("state")} />
-        <Input label="ZIP Code" error={errors.zipCode?.message} {...form.register("zipCode")} />
-      </div>
-
-      <div className="grid items-start gap-4 md:grid-cols-3">
-        <Select
-          label="Region"
-          placeholder="Select region"
-          value={form.watch("region")}
-          options={REGION_OPTIONS}
-          error={errors.region?.message}
-          onValueChange={(value) => form.setValue("region", value)}
+        <Input
+          label="Address"
+          error={errors.address?.message}
+          {...form.register("address")}
         />
-        <Select
-          label="Store Type"
-          placeholder="Select type"
-          value={form.watch("storeType")}
-          options={STORE_TYPE_OPTIONS}
-          onValueChange={(value) =>
-            form.setValue("storeType", value as StoreFormValues["storeType"])
+
+        <div className="gap-6 md:grid-cols-3 grid items-start">
+          <Input
+            label="City"
+            error={errors.city?.message}
+            {...form.register("city")}
+          />
+          <Input
+            label="State"
+            error={errors.state?.message}
+            {...form.register("state")}
+          />
+          <Input
+            label="ZIP Code"
+            error={errors.zipCode?.message}
+            {...form.register("zipCode")}
+          />
+        </div>
+      </FormSection>
+      <FormSection
+        number="02"
+        title="Classification & manager"
+        description="Region, format, size and who runs the store."
+      >
+        <div className="gap-6 md:grid-cols-3 grid items-start">
+          <Select
+            label="Region"
+            placeholder="Select region"
+            value={form.watch("region")}
+            options={REGION_OPTIONS}
+            error={errors.region?.message}
+            onValueChange={(value) => form.setValue("region", value)}
+          />
+          <Select
+            label="Store Type"
+            placeholder="Select type"
+            value={form.watch("storeType")}
+            options={STORE_TYPE_OPTIONS}
+            onValueChange={(value) =>
+              form.setValue("storeType", value as StoreFormValues["storeType"])
+            }
+          />
+          <Input
+            label="Square Footage"
+            type="number"
+            error={errors.squareFootage?.message}
+            {...form.register("squareFootage", { valueAsNumber: true })}
+          />
+        </div>
+
+        <div className="gap-6 md:grid-cols-2 grid items-start">
+          <Input
+            label="Manager"
+            error={errors.manager?.message}
+            {...form.register("manager")}
+          />
+          <Input
+            label="Manager Phone"
+            error={errors.managerPhone?.message}
+            {...form.register("managerPhone")}
+          />
+        </div>
+      </FormSection>
+      <FormSection
+        number="03"
+        title="Hours & status"
+        description="When the store is open, and whether it is active."
+      >
+        <fieldset className="m-0 min-w-0 gap-4 p-0 md:grid-cols-2 grid border-0">
+          <legend className="mb-2 p-0 text-sm font-medium">
+            Operating Hours
+          </legend>
+          {DAYS.map((day) => (
+            <Input
+              key={day}
+              label={`${day[0]!.toUpperCase()}${day.slice(1)}`}
+              placeholder="06:00-23:00"
+              {...form.register(`operatingHours.${day}`)}
+            />
+          ))}
+        </fieldset>
+
+        <Checkbox
+          label="Active store"
+          checked={form.watch("isActive")}
+          onCheckedChange={(checked) =>
+            form.setValue("isActive", checked === true)
           }
         />
-        <Input
-          label="Square Footage"
-          type="number"
-          error={errors.squareFootage?.message}
-          {...form.register("squareFootage", { valueAsNumber: true })}
-        />
-      </div>
-
-      <div className="grid items-start gap-4 md:grid-cols-2">
-        <Input label="Manager" error={errors.manager?.message} {...form.register("manager")} />
-        <Input label="Manager Phone" error={errors.managerPhone?.message} {...form.register("managerPhone")} />
-      </div>
-
-      <fieldset className="m-0 grid min-w-0 gap-4 border-0 p-0 md:grid-cols-2">
-        <legend className="mb-2 p-0 text-sm font-medium">Operating Hours</legend>
-        {DAYS.map((day) => (
-          <Input
-            key={day}
-            label={`${day[0]!.toUpperCase()}${day.slice(1)}`}
-            placeholder="06:00-23:00"
-            {...form.register(`operatingHours.${day}`)}
-          />
-        ))}
-      </fieldset>
-
-      <Checkbox
-        label="Active store"
-        checked={form.watch("isActive")}
-        onCheckedChange={(checked) => form.setValue("isActive", checked === true)}
-      />
-    </EntityFormLayout>
+      </FormSection>
+    </FormPage>
   )
 }
