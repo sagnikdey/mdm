@@ -33,6 +33,22 @@ export interface AppShellNavSection {
 }
 export type AppShellVariant = "sidebar" | "inset";
 
+export type AppShellBackground = "plain" | "dots";
+
+/** The dotted grid: a 1px dot on every `size` pixels, starting at 0,0 so dots fall on the spacing grid. */
+function dotGrid(size: 4 | 8): React.CSSProperties {
+  // 4px dots are twice as dense, so they get a lighter color to stay equally quiet.
+  const dot = size === 4 ? "var(--color-border-subtle)" : "var(--color-border-default)";
+  return {
+    ["--sg-grid" as string]: `${size}px`,
+    backgroundImage: `radial-gradient(circle at center, ${dot} 0.75px, transparent 1px)`,
+    backgroundSize: `${size}px ${size}px`,
+    backgroundPosition: `${-size / 2}px ${-size / 2}px`,
+    backgroundOrigin: "content-box",
+    backgroundAttachment: "local",
+  };
+}
+
 export interface AppShellProps {
   /** Navigation, in sections. */
   nav: AppShellNavSection[];
@@ -65,6 +81,14 @@ export interface AppShellProps {
    * header and drops the top bar's border.
    */
   variant?: AppShellVariant;
+  /**
+   * "dots" fills the content area behind the page with a faint dotted grid, like a FigJam canvas. Dots sit on every
+   * `gridSize` pixels from the content's top-left corner, so anything laid out on SagUI's 4px spacing lines up with
+   * them. The sidebar and top bar stay solid.
+   */
+  background?: AppShellBackground;
+  /** Gap between dots in pixels, for `background="dots"`. 8 is the default; 4 reads as a finer texture. */
+  gridSize?: 4 | 8;
   children: React.ReactNode;
   className?: string;
 }
@@ -79,7 +103,7 @@ const pagesOf = (nav: AppShellNavSection[]) =>
   nav.flatMap((section) => section.items.flatMap((item) => (item.items?.length ? item.items : [item]))).filter((item) => item.href);
 
 /** The longest href that the current path starts with wins, so /deals/42 marks Deals rather than Overview. */
-function currentItem(nav: AppShellNavSection[], currentHref?: string) {
+export function currentItem(nav: AppShellNavSection[], currentHref?: string) {
   const items = pagesOf(nav);
   const explicit = items.find((item) => item.current);
   if (explicit || !currentHref) return explicit?.href;
@@ -105,7 +129,7 @@ function ItemBadge({ item, rail }: { item: AppShellNavItem; rail: boolean }) {
   return simple ? <Badge size="sm" tone={item.badgeTone ?? "neutral"} className="flex-none tabular-nums">{item.badge}</Badge> : <span className="flex-none">{item.badge}</span>;
 }
 
-function NavList({ nav, current, rail, Link, label, layoutId, onNavigate, accent }: {
+export function NavList({ nav, current, rail, Link, label, layoutId, onNavigate, accent }: {
   nav: AppShellNavSection[];
   current?: string;
   rail: boolean;
@@ -252,6 +276,8 @@ export function AppShell({
   onCollapsedChange,
   label = "Main",
   variant = "sidebar",
+  background = "plain",
+  gridSize = 8,
   children,
   className,
 }: AppShellProps) {
@@ -360,7 +386,11 @@ export function AppShell({
         </div>
       </motion.aside>
 
-      <div className={cn("flex min-w-0 flex-col", inset && "lg:pl-3")}>
+      <div
+        className={cn("flex min-w-0 flex-col", inset && "lg:pl-3")}
+        data-background={background}
+        style={background === "dots" ? dotGrid(gridSize) : undefined}
+      >
         <header className={cn("sticky top-0 z-30 flex flex-none items-center gap-3 backdrop-blur", inset ? "min-h-14 bg-bg-muted/85 px-4 pt-5 pb-0 lg:pr-7" : "h-14 border-b border-border-default bg-bg-canvas/85 px-4 sm:px-6")}>
           <button
             type="button"

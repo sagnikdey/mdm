@@ -105,6 +105,8 @@ export function MdmShell({ children }: { children: React.ReactNode }) {
   return (
     <AppShell
       variant="inset"
+      background="dots"
+      gridSize={8}
       nav={nav}
       currentHref={pathname}
       linkComponent={Link}
